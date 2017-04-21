@@ -1,0 +1,11 @@
+/*
+	Manejador de errores
+	DLP 16/17
+*/
+
+int i, i; // Error: variable duplicada
+
+// Main program
+void main() {
+	i = 0;
+}

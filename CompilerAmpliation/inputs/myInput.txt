@@ -1,0 +1,9 @@
+int i;
+
+void main(){
+	i = 0;
+	write i+=2;
+	write i*=1;
+	write i/=2;
+	write i-=1;
+}

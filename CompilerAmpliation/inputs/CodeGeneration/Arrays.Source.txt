@@ -1,0 +1,14 @@
+
+char b;
+int i;
+int[10] v;
+
+void main() 
+{
+    v[7] = 100;
+
+    write v[7];
+
+    i = 2;
+    write v[i + 5];
+}

@@ -1,0 +1,524 @@
+#source "test.input.txt"
+#var integer:int
+#var character:byte
+#var real:float
+#var MATRIXSIZE:int
+#var matrix:10*10*int
+#type date: {
+	day:int
+	mounth:int
+	year:int
+}
+call main
+halt
+#func setValue
+setValue:
+enter 0
+
+# if
+pusha bp
+pushi 8
+addi
+loadi
+pushi 0
+gei
+pusha bp
+pushi 8
+addi
+loadi
+pusha 7
+loadi
+lti
+and
+pusha bp
+pushi 6
+addi
+loadi
+pushi 0
+gei
+and
+pusha bp
+pushi 6
+addi
+loadi
+pusha 7
+loadi
+lti
+and
+jz label1
+
+#line 23
+# assignment
+pusha 9
+pusha bp
+pushi 8
+addi
+loadi
+pushi 20
+muli
+addi
+pusha bp
+pushi 6
+addi
+loadi
+pushi 2
+muli
+addi
+pusha bp
+pushi 4
+addi
+loadi
+storei
+
+
+
+ret 0,0,6
+
+
+#func getValue
+getValue:
+enter 0
+
+# if
+pusha bp
+pushi 6
+addi
+loadi
+pushi 0
+lti
+pusha bp
+pushi 6
+addi
+loadi
+pusha 7
+loadi
+gei
+or
+pusha bp
+pushi 4
+addi
+loadi
+pushi 0
+lti
+pusha bp
+pushi 4
+addi
+loadi
+pusha 7
+loadi
+gei
+and
+or
+jz label3
+
+#line 28
+
+#line 28
+pushi 0
+pushi 1
+subi
+ret 2,0,4
+
+
+jmp label4
+label3:
+# else
+
+#line 31
+
+#line 31
+pusha 9
+pusha bp
+pushi 6
+addi
+loadi
+pushi 20
+muli
+addi
+pusha bp
+pushi 4
+addi
+loadi
+pushi 2
+muli
+addi
+loadi
+ret 2,0,4
+
+
+label4:
+
+
+
+
+#func fill
+#local i:int
+#local j:int
+fill:
+enter 4
+
+#local i:int
+
+
+#local j:int
+
+
+# assignment
+pusha bp
+pushi -2
+addi
+pushi 0
+storei
+
+
+# while
+label5:
+pusha bp
+pushi -2
+addi
+loadi
+pusha 7
+loadi
+lti
+jz label6
+# assignment
+pusha bp
+pushi -4
+addi
+pushi 0
+storei
+
+# while
+label7:
+pusha bp
+pushi -4
+addi
+loadi
+pusha 7
+loadi
+lti
+jz label8
+# invocation
+
+#line 40
+pusha bp
+pushi -2
+addi
+loadi
+pusha bp
+pushi -4
+addi
+loadi
+pusha bp
+pushi 4
+addi
+loadi
+call setValue
+
+# assignment
+pusha bp
+pushi -4
+addi
+pusha bp
+pushi -4
+addi
+loadi
+pushi 1
+addi
+storei
+
+jmp label7
+label8:
+
+# assignment
+pusha bp
+pushi -2
+addi
+pusha bp
+pushi -2
+addi
+loadi
+pushi 1
+addi
+storei
+
+jmp label5
+label6:
+
+ret 0,4,2
+
+
+#func show
+#local i:int
+#local j:int
+show:
+enter 4
+
+#local i:int
+
+
+#local j:int
+
+
+# assignment
+pusha bp
+pushi -2
+addi
+pushi 0
+storei
+
+
+# Write
+pushb 91
+outb
+pushb 10
+outb
+
+
+
+# while
+label9:
+pusha bp
+pushi -2
+addi
+loadi
+pusha 7
+loadi
+lti
+jz label10
+# assignment
+pusha bp
+pushi -4
+addi
+pushi 0
+storei
+
+# Write
+pushb 9
+outb
+pushb 91
+outb
+
+
+# while
+label11:
+pusha bp
+pushi -4
+addi
+loadi
+pusha 7
+loadi
+lti
+jz label12
+# Write
+pusha bp
+pushi -2
+addi
+loadi
+pusha bp
+pushi -4
+addi
+loadi
+call getValue
+outi
+
+
+# if
+pusha bp
+pushi -4
+addi
+loadi
+pusha 7
+loadi
+pushi 1
+subi
+nei
+jz label13
+
+#line 56
+# Write
+pushb 44
+outb
+
+
+
+
+# assignment
+pusha bp
+pushi -4
+addi
+pusha bp
+pushi -4
+addi
+loadi
+pushi 1
+addi
+storei
+
+jmp label11
+label12:
+
+# Write
+pushb 93
+outb
+pushb 10
+outb
+
+
+# assignment
+pusha bp
+pushi -2
+addi
+pusha bp
+pushi -2
+addi
+loadi
+pushi 1
+addi
+storei
+
+jmp label9
+label10:
+
+
+# Write
+pushb 93
+outb
+
+
+ret 0,4,0
+
+
+#func main
+#local characters:1*2*3*byte
+main:
+enter 6
+
+#local characters:1*2*3*byte
+
+
+# assignment
+pusha 7
+pushi 10
+storei
+
+
+# invocation
+
+#line 72
+pushi 1
+call fill
+
+
+# invocation
+
+#line 73
+pushi 5
+pushi 5
+pushi 5
+call setValue
+
+
+# assignment
+pusha 0
+pushi 5
+pushi 5
+call getValue
+storei
+
+
+# if
+pusha 0
+loadi
+pushi 5
+eqi
+jz label15
+
+#line 76
+# Write
+pushb 79
+outb
+pushb 107
+outb
+pushb 10
+outb
+
+
+jmp label16
+label15:
+# else
+
+#line 79
+# Write
+pushb 69
+outb
+pushb 114
+outb
+pushb 114
+outb
+pushb 111
+outb
+pushb 114
+outb
+pushb 10
+outb
+
+
+label16:
+
+
+
+# invocation
+
+#line 81
+call show
+
+
+# assignment
+pusha 209
+pushi 0
+addi
+pushi 9
+storei
+
+
+# assignment
+pusha 209
+pushi 2
+addi
+pushi 3
+storei
+
+
+# assignment
+pusha 209
+pushi 4
+addi
+pushi 2016
+storei
+
+
+# assignment
+pusha 2
+pusha 209
+pushi 0
+addi
+loadi
+i2b
+storeb
+
+
+# assignment
+pusha 3
+pushf 4.5
+pushf 4.0
+pushf 3000.0
+mulf
+addf
+pushf 0.0054
+subf
+storef
+
+ret 0,6,0
+
+
