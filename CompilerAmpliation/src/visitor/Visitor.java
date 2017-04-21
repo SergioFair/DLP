@@ -19,6 +19,7 @@ import ast.program.FunctionDefinition;
 import ast.program.Program;
 import ast.program.VariableDefinition;
 import ast.statement.Assignment;
+import ast.statement.ForStatement;
 import ast.statement.IfStatement;
 import ast.statement.Invocation;
 import ast.statement.Read;
@@ -112,4 +113,6 @@ public interface Visitor {
     public Object visit(Decrement decrement, Object params);
 
     public Object visit(ArithmeticAssignment arithmeticAssignment, Object params);
+
+    public Object visit(ForStatement forStatement, Object params);
 }

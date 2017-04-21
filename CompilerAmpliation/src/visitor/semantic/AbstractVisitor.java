@@ -21,6 +21,7 @@ import ast.program.FunctionDefinition;
 import ast.program.Program;
 import ast.program.VariableDefinition;
 import ast.statement.Assignment;
+import ast.statement.ForStatement;
 import ast.statement.IfStatement;
 import ast.statement.Invocation;
 import ast.statement.Read;
@@ -176,6 +177,16 @@ public abstract class AbstractVisitor implements Visitor {
     public Object visit(Assignment as, Object params) {
 	as.getLeft().accept(this, params);
 	as.getRight().accept(this, params);
+	return null;
+    }
+    
+    @Override
+    public Object visit(ForStatement forStatement, Object params){
+	forStatement.getInitilization().accept(this, params);
+	forStatement.getCondition().accept(this, params);
+	forStatement.getIncrement().accept(this, params);
+	for(Statement st : forStatement.getBody())
+	    st.accept(this, params);
 	return null;
     }
 

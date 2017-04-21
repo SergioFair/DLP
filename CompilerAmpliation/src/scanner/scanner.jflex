@@ -89,6 +89,8 @@ read				{ yylval = "read";
 					  return Parser.READ; }
 write				{ yylval = "write";
 					  return Parser.WRITE; }
+for					{ yylval = "for";
+					  return Parser.FOR; }
 
 // * Constants
 

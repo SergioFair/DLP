@@ -19,6 +19,7 @@ import ast.program.FunctionDefinition;
 import ast.program.Program;
 import ast.program.VariableDefinition;
 import ast.statement.Assignment;
+import ast.statement.ForStatement;
 import ast.statement.IfStatement;
 import ast.statement.Invocation;
 import ast.statement.Read;
@@ -126,6 +127,11 @@ public abstract class AbstractCGVisitor implements Visitor {
 
     @Override
     public Object visit(Assignment as, Object params) {
+	throw new IllegalArgumentException("Code generation was not possible");
+    }
+    
+    @Override
+    public Object visit(ForStatement forStatement, Object params){
 	throw new IllegalArgumentException("Code generation was not possible");
     }
 
