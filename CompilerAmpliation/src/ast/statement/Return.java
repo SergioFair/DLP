@@ -30,7 +30,7 @@ public class Return implements Statement {
     
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("Return: return ").append(expression.toString()).append(";\n");
+	StringBuilder sb = new StringBuilder().append("Return: return ").append(expression.toString()).append(";");
 	return sb.toString();
     }
 

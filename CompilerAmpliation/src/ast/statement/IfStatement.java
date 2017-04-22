@@ -51,8 +51,8 @@ public class IfStatement implements Statement {
 	if (!elseBody.isEmpty()) {
 	    sb.append("else {\n");
 	    for (int i = 0; i < elseBody.size(); i++)
-		sb.append("\t").append(elseBody.get(i));
-	    sb.append("}\n");
+		sb.append("\t").append(elseBody.get(i)).append("\n");
+	    sb.append("}");
 	}
 	return sb.toString();
     }

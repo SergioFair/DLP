@@ -1,10 +1,13 @@
 #source "myInput.txt"
-#var i:int
+#var a:int
 call main
 halt
 #func main
 main:
-enter 0
+enter 2
+
+#local i:int
+
 
 ' * assignment
 pusha 0
@@ -12,57 +15,51 @@ pushi 0
 storei
 
 
-' * Write
+' * assignment
+pusha bp
+pushi -2
+addi
+pushi 0
+storei
+label1:
+pusha bp
+pushi -2
+addi
+loadi
+pushi 2
+lti
+jz label2
 pusha 0
 pusha 0
 loadi
-pushi 2
+pusha bp
+pushi -2
+addi
+loadi
 addi
 storei
 pusha 0
-loadi
-outi
-
-
-
-' * Write
-pusha 0
 pusha 0
 loadi
-pushi 1
-muli
-storei
-pusha 0
+pusha bp
+pushi -2
+addi
 loadi
-outi
-
-
-
-' * Write
-pusha 0
-pusha 0
-loadi
-pushi 2
-divi
-storei
-pusha 0
-loadi
-outi
-
-
-
-' * Write
-pusha 0
-pusha 0
-loadi
-pushi 1
 subi
 storei
-pusha 0
+pusha bp
+pushi -2
+addi
+pusha bp
+pushi -2
+addi
 loadi
-outi
+pushi 1
+addi
+storei
+jmp label1
+label2:
 
-
-ret 0,0,0
+ret 0,2,0
 
 

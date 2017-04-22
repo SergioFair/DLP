@@ -33,9 +33,9 @@
   20  parameter : built_in_type ID
 
   21  statement : expression ';'
-  22            | assignment ';'
-  23            | read ';'
-  24            | write ';'
+  22            | read ';'
+  23            | write ';'
+  24            | assignment ';'
   25            | if_else
   26            | while
   27            | for
@@ -80,7 +80,7 @@
 
   63  while : WHILE '(' expression ')' if_body
 
-  64  for : FOR '(' expression ';' expression ';' expression ')' if_body
+  64  for : FOR '(' statement expression ';' expression ')' if_body
 
   65  cast : '(' built_in_type ')' expression
 
@@ -694,9 +694,9 @@ state 65
 	function_invocation  goto 83
 	statement  goto 84
 	expression  goto 85
-	assignment  goto 86
-	read  goto 87
-	write  goto 88
+	read  goto 86
+	write  goto 87
+	assignment  goto 88
 	if_else  goto 89
 	while  goto 90
 	for  goto 91
@@ -855,7 +855,7 @@ state 78
 
 
 state 79
-	for : FOR . '(' expression ';' expression ';' expression ')' if_body  (64)
+	for : FOR . '(' statement expression ';' expression ')' if_body  (64)
 
 	'('  shift 104
 	.  error
@@ -984,21 +984,21 @@ state 85
 
 
 state 86
-	statement : assignment . ';'  (22)
+	statement : read . ';'  (22)
 
 	';'  shift 132
 	.  error
 
 
 state 87
-	statement : read . ';'  (23)
+	statement : write . ';'  (23)
 
 	';'  shift 133
 	.  error
 
 
 state 88
-	statement : write . ';'  (24)
+	statement : assignment . ';'  (24)
 
 	';'  shift 134
 	.  error
@@ -1226,19 +1226,33 @@ state 103
 
 
 state 104
-	for : FOR '(' . expression ';' expression ';' expression ')' if_body  (64)
+	for : FOR '(' . statement expression ';' expression ')' if_body  (64)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
+	WRITE  shift 74
+	READ  shift 75
+	IF  shift 76
+	WHILE  shift 77
+	RETURN  shift 78
+	FOR  shift 79
 	'!'  shift 80
 	'-'  shift 81
 	'('  shift 82
 	.  error
 
 	function_invocation  goto 83
-	expression  goto 141
+	statement  goto 141
+	expression  goto 85
+	read  goto 86
+	write  goto 87
+	assignment  goto 88
+	if_else  goto 89
+	while  goto 90
+	for  goto 91
+	return  goto 92
 	cast  goto 93
 	array  goto 94
 
@@ -1782,19 +1796,19 @@ state 131
 
 
 state 132
-	statement : assignment ';' .  (22)
+	statement : read ';' .  (22)
 
 	.  reduce 22
 
 
 state 133
-	statement : read ';' .  (23)
+	statement : write ';' .  (23)
 
 	.  reduce 23
 
 
 state 134
-	statement : write ';' .  (24)
+	statement : assignment ';' .  (24)
 
 	.  reduce 24
 
@@ -1938,52 +1952,21 @@ state 140
 
 
 state 141
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	for : FOR '(' expression . ';' expression ';' expression ')' if_body  (64)
-	array : expression . '[' expression ']'  (73)
+	for : FOR '(' statement . expression ';' expression ')' if_body  (64)
 
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	';'  shift 168
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 80
+	'-'  shift 81
+	'('  shift 82
 	.  error
+
+	function_invocation  goto 83
+	expression  goto 168
+	cast  goto 93
+	array  goto 94
 
 
 state 142
@@ -3097,9 +3080,9 @@ state 166
 	function_invocation  goto 83
 	statement  goto 172
 	expression  goto 85
-	assignment  goto 86
-	read  goto 87
-	write  goto 88
+	read  goto 86
+	write  goto 87
+	assignment  goto 88
 	if_else  goto 89
 	while  goto 90
 	for  goto 91
@@ -3131,9 +3114,9 @@ state 167
 	function_invocation  goto 83
 	statement  goto 172
 	expression  goto 85
-	assignment  goto 86
-	read  goto 87
-	write  goto 88
+	read  goto 86
+	write  goto 87
+	assignment  goto 88
 	if_else  goto 89
 	while  goto 90
 	for  goto 91
@@ -3144,21 +3127,52 @@ state 167
 
 
 state 168
-	for : FOR '(' expression ';' . expression ';' expression ')' if_body  (64)
+	expression : expression . '+' expression  (29)
+	expression : expression . '*' expression  (30)
+	expression : expression . '/' expression  (31)
+	expression : expression . '-' expression  (32)
+	expression : expression . '%' expression  (33)
+	expression : expression . DOUBLEEQUALS expression  (34)
+	expression : expression . '>' expression  (35)
+	expression : expression . GEQ expression  (36)
+	expression : expression . '<' expression  (37)
+	expression : expression . LEQ expression  (38)
+	expression : expression . DIFFERENT expression  (39)
+	expression : expression . AND expression  (40)
+	expression : expression . OR expression  (41)
+	expression : expression . INC  (42)
+	expression : expression . DEC  (43)
+	expression : expression . PLUSEQUALS expression  (44)
+	expression : expression . MINUSEQUALS expression  (45)
+	expression : expression . TIMESEQUALS expression  (46)
+	expression : expression . DIVIDEEQUALS expression  (47)
+	expression : expression . '.' expression  (52)
+	for : FOR '(' statement expression . ';' expression ')' if_body  (64)
+	array : expression . '[' expression ']'  (73)
 
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	LEQ  shift 109
+	GEQ  shift 110
+	DOUBLEEQUALS  shift 111
+	DIFFERENT  shift 112
+	AND  shift 113
+	OR  shift 114
+	INC  shift 115
+	DEC  shift 116
+	DIVIDEEQUALS  shift 117
+	TIMESEQUALS  shift 118
+	MINUSEQUALS  shift 119
+	PLUSEQUALS  shift 120
+	'>'  shift 122
+	'<'  shift 123
+	'+'  shift 124
+	'-'  shift 125
+	'*'  shift 126
+	'/'  shift 127
+	'%'  shift 128
+	'['  shift 129
+	'.'  shift 130
+	';'  shift 175
 	.  error
-
-	function_invocation  goto 83
-	expression  goto 175
-	cast  goto 93
-	array  goto 94
 
 
 state 169
@@ -3262,52 +3276,21 @@ state 174
 
 
 state 175
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	for : FOR '(' expression ';' expression . ';' expression ')' if_body  (64)
-	array : expression . '[' expression ']'  (73)
+	for : FOR '(' statement expression ';' . expression ')' if_body  (64)
 
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	';'  shift 178
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 80
+	'-'  shift 81
+	'('  shift 82
 	.  error
+
+	function_invocation  goto 83
+	expression  goto 178
+	cast  goto 93
+	array  goto 94
 
 
 state 176
@@ -3333,9 +3316,9 @@ state 176
 	function_invocation  goto 83
 	statement  goto 84
 	expression  goto 85
-	assignment  goto 86
-	read  goto 87
-	write  goto 88
+	read  goto 86
+	write  goto 87
+	assignment  goto 88
 	if_else  goto 89
 	while  goto 90
 	for  goto 91
@@ -3366,9 +3349,9 @@ state 177
 	function_invocation  goto 83
 	statement  goto 172
 	expression  goto 85
-	assignment  goto 86
-	read  goto 87
-	write  goto 88
+	read  goto 86
+	write  goto 87
+	assignment  goto 88
 	if_else  goto 89
 	while  goto 90
 	for  goto 91
@@ -3379,36 +3362,6 @@ state 177
 
 
 state 178
-	for : FOR '(' expression ';' expression ';' . expression ')' if_body  (64)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 181
-	cast  goto 93
-	array  goto 94
-
-
-state 179
-	if_body : '{' listOfStatements '}' .  (61)
-
-	.  reduce 61
-
-
-state 180
-	if_else : IF '(' expression ')' if_body ELSE if_body .  (59)
-
-	.  reduce 59
-
-
-state 181
 	expression : expression . '+' expression  (29)
 	expression : expression . '*' expression  (30)
 	expression : expression . '/' expression  (31)
@@ -3429,7 +3382,7 @@ state 181
 	expression : expression . TIMESEQUALS expression  (46)
 	expression : expression . DIVIDEEQUALS expression  (47)
 	expression : expression . '.' expression  (52)
-	for : FOR '(' expression ';' expression ';' expression . ')' if_body  (64)
+	for : FOR '(' statement expression ';' expression . ')' if_body  (64)
 	array : expression . '[' expression ']'  (73)
 
 	LEQ  shift 109
@@ -3453,12 +3406,24 @@ state 181
 	'%'  shift 128
 	'['  shift 129
 	'.'  shift 130
-	')'  shift 182
+	')'  shift 181
 	.  error
 
 
-state 182
-	for : FOR '(' expression ';' expression ';' expression ')' . if_body  (64)
+state 179
+	if_body : '{' listOfStatements '}' .  (61)
+
+	.  reduce 61
+
+
+state 180
+	if_else : IF '(' expression ')' if_body ELSE if_body .  (59)
+
+	.  reduce 59
+
+
+state 181
+	for : FOR '(' statement expression ';' expression ')' . if_body  (64)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
@@ -3479,23 +3444,23 @@ state 182
 	function_invocation  goto 83
 	statement  goto 172
 	expression  goto 85
-	assignment  goto 86
-	read  goto 87
-	write  goto 88
+	read  goto 86
+	write  goto 87
+	assignment  goto 88
 	if_else  goto 89
 	while  goto 90
 	for  goto 91
 	return  goto 92
 	cast  goto 93
 	array  goto 94
-	if_body  goto 183
+	if_body  goto 182
 
 
-state 183
-	for : FOR '(' expression ';' expression ';' expression ')' if_body .  (64)
+state 182
+	for : FOR '(' statement expression ';' expression ')' if_body .  (64)
 
 	.  reduce 64
 
 
 52 terminals, 32 nonterminals
-86 grammar rules, 184 states
+86 grammar rules, 183 states

@@ -40,9 +40,9 @@ public class WhileStatement implements Statement {
     public String toString() {
 	StringBuilder sb = new StringBuilder().append("While: while (").append(condition.toString()).append(") {\n");
 	for (int i = 0; i < whileBody.size(); i++) {
-	    sb.append("\t").append(whileBody.get(i));
+	    sb.append("\t").append(whileBody.get(i)).append("\n");
 	}
-	sb.append("}\n");
+	sb.append("}");
 	return sb.toString();
     }
 

@@ -35,7 +35,7 @@ public class Program implements ASTNode {
     public String toString() {
 	StringBuilder sb = new StringBuilder().append("Program: \n");
 	for (Definition def : getDefinitions()) {
-	    sb.append(def.toString());
+	    sb.append(def.toString()).append("\n\n");
 	}
 	return sb.toString();
     }

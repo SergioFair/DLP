@@ -9,6 +9,7 @@ import ast.program.FunctionDefinition;
 import ast.program.Program;
 import ast.program.VariableDefinition;
 import ast.statement.Assignment;
+import ast.statement.ForStatement;
 import ast.statement.IfStatement;
 import ast.statement.Invocation;
 import ast.statement.Read;
@@ -79,6 +80,21 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	CodeGenerator.getInstance().convertTo(IntType.getInstance(), dec.getType());
 	CodeGenerator.getInstance().sub(dec.getType());
 	CodeGenerator.getInstance().store(dec.getType());
+	return null;
+    }
+    
+    @Override
+    public Object visit(ForStatement forStatement, Object params){
+	int labelNumber = CodeGenerator.getInstance().getLabels(2);
+	forStatement.getInitilization().accept(this, params);
+	CodeGenerator.getInstance().label(labelNumber);
+	forStatement.getCondition().accept(valVisitor, params);
+	CodeGenerator.getInstance().jz(labelNumber+1);
+	for(Statement st : forStatement.getBody())
+	    st.accept(this, params);
+	forStatement.getIncrement().accept(this, params);
+	CodeGenerator.getInstance().jmp(labelNumber);
+	CodeGenerator.getInstance().label(labelNumber+1);
 	return null;
     }
 
@@ -192,10 +208,6 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 
 	// Information
 	CodeGenerator.getInstance().functionDefinition(funcDef.getName());
-	for (Statement st : funcDef.getBody()) {
-	    if (st instanceof VariableDefinition)
-		st.accept(this, params);
-	}
 
 	// Execution
 	CodeGenerator.getInstance().label(funcDef.getName());

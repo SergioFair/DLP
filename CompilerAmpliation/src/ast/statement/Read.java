@@ -38,7 +38,7 @@ public class Read implements Statement {
 	    if (i != expressions.size() - 1)
 		sb.append(",");
 	}
-	sb.append(";\n");
+	sb.append(";");
 	return sb.toString();
     }
 

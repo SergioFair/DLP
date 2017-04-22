@@ -42,7 +42,7 @@ public class FunctionDefinition implements Definition {
 	StringBuilder sb = new StringBuilder().append("Function definition: ").append(getType().toString())
 		.append("{\n");
 	for (Statement stm : getBody()) {
-	    sb.append(stm.toString());
+	    sb.append(stm.toString()).append("\n");
 	}
 	sb.append("}\n");
 	return sb.toString();

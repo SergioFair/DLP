@@ -141,9 +141,9 @@ parameter: built_in_type ID								{ $$ = new VariableDefinition(scanner.getLine
 		 ;
 
 statement: expression ';'								{ $$ = (Expression) $1; }
-		 | assignment ';'								{ $$ = (Assignment) $1; }
 		 | read ';'										{ $$ = (Read) $1; }
 		 | write ';'									{ $$ = (Write) $1; }
+		 | assignment ';'								{ $$ = (Assignment) $1; }
 		 | if_else										{ $$ = (IfStatement) $1; }
 		 | while										{ $$ = (WhileStatement) $1; }
 		 | for											{ $$ = (ForStatement) $1; }
@@ -197,7 +197,7 @@ expression: expression '+' expression					{ $$ = new Arithmetic(scanner.getLine(
           | expression '.' expression					{ $$ = new FieldAccess(scanner.getLine(), scanner.getColumn()
           																, (Expression) $1, ((Variable) $3).getName()); }
           | cast										{ $$ = (Cast) $1; }
-          | array										{ $$ = (Indexing) $1;}
+          | array										{ $$ = (Indexing) $1; }
           | INT_CONSTANT								{ $$ = new IntLiteral(scanner.getLine(), scanner.getColumn()
           																, (Integer) $1); }
           | REAL_CONSTANT								{ $$ = new RealLiteral(scanner.getLine(), scanner.getColumn()
@@ -227,9 +227,9 @@ while: WHILE '(' expression ')' if_body	%prec IFX			{ List<Statement> body = new
 																			, body, (Expression) $3); }
 	 ;
 
-for: FOR '(' expression ';' expression ';' expression ')' if_body %prec IFX { List<Statement> body = new ArrayList<Statement>((List<Statement>)$9);
+for: FOR '(' statement expression ';' expression ')' if_body %prec IFX { List<Statement> body = new ArrayList<Statement>((List<Statement>)$8);
 																			  $$ = new ForStatement(scanner.getLine(), scanner.getColumn()
-																			       , (Expression) $3, (Expression) $5, (Expression) $7, body); }
+																			       , (Statement) $3, (Expression) $4, (Expression) $6, body); }
    ;
 				
           

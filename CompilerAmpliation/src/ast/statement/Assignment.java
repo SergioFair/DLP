@@ -35,8 +35,8 @@ public class Assignment implements Statement {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("Assignment: ").append(getLeft().toString()).append("=")
-		.append(getRight().toString()).append(";\n");
+	StringBuilder sb = new StringBuilder().append("Assignment: ").append(getLeft().toString())
+		.append("=").append(getRight().toString());
 	return sb.toString();
     }
 

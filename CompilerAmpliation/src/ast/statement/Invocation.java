@@ -48,7 +48,7 @@ public class Invocation implements Statement, Expression {
 	    if (i != params.size() - 1)
 		sb.append(",");
 	}
-	sb.append(");\n");
+	sb.append(");");
 	return sb.toString();
     }
 
