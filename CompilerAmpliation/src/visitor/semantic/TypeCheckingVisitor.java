@@ -21,6 +21,7 @@ import ast.expression.UnaryNot;
 import ast.expression.Variable;
 import ast.program.FunctionDefinition;
 import ast.statement.Assignment;
+import ast.statement.ForStatement;
 import ast.statement.IfStatement;
 import ast.statement.Invocation;
 import ast.statement.Read;
@@ -62,14 +63,14 @@ public class TypeCheckingVisitor extends AbstractVisitor {
 	    new ErrorType(ar, "Not valid Arithmetic operation");
 	return null;
     }
-    
+
     @Override
-    public Object visit(ArithmeticAssignment ar, Object params){
+    public Object visit(ArithmeticAssignment ar, Object params) {
 	ar.getLeft().accept(this, params);
 	ar.getRight().accept(this, params);
 	ar.setLValue(false);
 	ar.setType(ar.getLeft().getType().arithmetic(ar.getRight().getType()));
-	if(ar.getType() == null)
+	if (ar.getType() == null)
 	    new ErrorType(ar, "Not valid arithmetic assignment");
 	return null;
     }
@@ -103,7 +104,7 @@ public class TypeCheckingVisitor extends AbstractVisitor {
     public Object visit(Decrement dec, Object params) {
 	dec.getExpression().accept(this, params);
 	dec.setLValue(false);
-	if (dec.getExpression().getLValue()) 
+	if (dec.getExpression().getLValue())
 	    dec.setType(dec.getExpression().getType().increment());
 	if (dec.getType() == null)
 	    new ErrorType(dec, "Not valid decrement");
@@ -124,7 +125,7 @@ public class TypeCheckingVisitor extends AbstractVisitor {
     public Object visit(Increment inc, Object params) {
 	inc.getExpression().accept(this, params);
 	inc.setLValue(false);
-	if (inc.getExpression().getLValue()) 
+	if (inc.getExpression().getLValue())
 	    inc.setType(inc.getExpression().getType().increment());
 	if (inc.getType() == null)
 	    new ErrorType(inc, "Not valid increment");
@@ -188,7 +189,7 @@ public class TypeCheckingVisitor extends AbstractVisitor {
     @Override
     public Object visit(Variable var, Object params) {
 	var.setLValue(true);
-//	var.getDefinition().accept(this, params);
+	// var.getDefinition().accept(this, params);
 	var.setType(var.getDefinition().getType());
 	return null;
     }
@@ -207,6 +208,21 @@ public class TypeCheckingVisitor extends AbstractVisitor {
 	    as.getLeft().setType(as.getRight().getType().promotesTo(as.getLeft().getType()));
 	if (as.getLeft().getType() == null)
 	    new ErrorType(as.getLeft(), "Not valid Assignment");
+	return null;
+    }
+
+    @Override
+    public Object visit(ForStatement forStatement, Object params) {
+	if (!(forStatement.getInitilization() instanceof Assignment))
+	    new ErrorType(forStatement.getInitilization(), "Initialization in For Statement is not correct");
+	forStatement.getInitilization().accept(this, params);
+	forStatement.getCondition().accept(this, params);
+	forStatement.getIncrement().accept(this, params);
+	Expression exp = forStatement.getIncrement();
+	if(!(exp instanceof Increment || exp instanceof ArithmeticAssignment || exp instanceof Decrement))
+	    new ErrorType(forStatement.getIncrement(), "Increment in For Statement is not correct");
+	for (Statement st : forStatement.getBody())
+	    st.accept(this, params);
 	return null;
     }
 

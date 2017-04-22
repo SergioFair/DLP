@@ -1172,7 +1172,7 @@ case 64:
 //#line 230 "../../src/parser/parser.y"
 { List<Statement> body = new ArrayList<Statement>((List<Statement>)val_peek(0));
 																			  yyval = new ForStatement(scanner.getLine(), scanner.getColumn()
-																			       , (Statement) val_peek(5), (Expression) val_peek(4), (Expression) val_peek(2), body); }
+																			       , (Statement) val_peek(5), (Expression) val_peek(4), (Incrementable) val_peek(2), body); }
 break;
 case 65:
 //#line 236 "../../src/parser/parser.y"

@@ -1,10 +1,9 @@
 package ast.expression;
 
-import ast.statement.Statement;
 import ast.type.Type;
 import visitor.Visitor;
 
-public class Decrement implements Expression, Statement {
+public class Decrement implements Incrementable {
 
     public int line, column;
     public Expression expression;

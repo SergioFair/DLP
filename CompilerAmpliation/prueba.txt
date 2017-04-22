@@ -2,28 +2,19 @@
 #var a:int
 call main
 halt
-#func main
-main:
-enter 2
-
-#local i:int
-
-
-' * assignment
-pusha 0
-pushi 0
-storei
-
+#func america
+america:
+enter 0
 
 ' * assignment
 pusha bp
-pushi -2
+pushi 4
 addi
 pushi 0
 storei
 label1:
 pusha bp
-pushi -2
+pushi 4
 addi
 loadi
 pushi 2
@@ -33,7 +24,7 @@ pusha 0
 pusha 0
 loadi
 pusha bp
-pushi -2
+pushi 4
 addi
 loadi
 addi
@@ -42,23 +33,48 @@ pusha 0
 pusha 0
 loadi
 pusha bp
-pushi -2
+pushi 4
 addi
 loadi
 subi
 storei
 pusha bp
-pushi -2
+pushi 4
 addi
 pusha bp
-pushi -2
+pushi 4
 addi
 loadi
-pushi 1
+pushi 2
 addi
 storei
 jmp label1
 label2:
+
+
+
+#func main
+main:
+enter 2
+
+#local i:int
+
+
+' * invocation
+
+#line 12
+pusha bp
+pushi -2
+addi
+loadi
+call america
+popi
+
+
+' * assignment
+pusha 0
+pushi 0
+storei
 
 ret 0,2,0
 

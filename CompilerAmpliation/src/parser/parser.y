@@ -229,7 +229,7 @@ while: WHILE '(' expression ')' if_body	%prec IFX			{ List<Statement> body = new
 
 for: FOR '(' statement expression ';' expression ')' if_body %prec IFX { List<Statement> body = new ArrayList<Statement>((List<Statement>)$8);
 																			  $$ = new ForStatement(scanner.getLine(), scanner.getColumn()
-																			       , (Statement) $3, (Expression) $4, (Expression) $6, body); }
+																			       , (Statement) $3, (Expression) $4, (Incrementable) $6, body); }
    ;
 				
           

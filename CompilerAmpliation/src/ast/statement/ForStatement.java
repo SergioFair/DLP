@@ -3,16 +3,18 @@ package ast.statement;
 import java.util.List;
 
 import ast.expression.Expression;
+import ast.expression.Incrementable;
 import visitor.Visitor;
 
 public class ForStatement implements Statement {
 
     public int line, column;
-    public Expression condition, increment;
+    public Expression condition;
     public Statement initialize;
+    public Incrementable increment;
     public List<Statement> body;
     
-    public ForStatement(int line, int column, Statement first, Expression second, Expression third,
+    public ForStatement(int line, int column, Statement first, Expression second, Incrementable third,
 	    List<Statement> body) {
 	this.line = line;
 	this.column = column;
@@ -46,7 +48,7 @@ public class ForStatement implements Statement {
 	return this.condition;
     }
     
-    public Expression getIncrement() {
+    public Incrementable getIncrement() {
 	return this.increment;
     }
     

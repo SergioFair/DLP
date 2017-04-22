@@ -1,10 +1,9 @@
 package ast.expression;
 
-import ast.statement.Statement;
 import ast.type.Type;
 import visitor.Visitor;
 
-public class ArithmeticAssignment implements Expression, Statement {
+public class ArithmeticAssignment implements Incrementable {
     
     public int line, column;
     public Type type;
