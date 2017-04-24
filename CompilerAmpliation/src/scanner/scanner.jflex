@@ -91,6 +91,8 @@ write				{ yylval = "write";
 					  return Parser.WRITE; }
 for					{ yylval = "for";
 					  return Parser.FOR; }
+do					{ yylval = "do";
+					  return Parser.DO; }
 
 // * Constants
 

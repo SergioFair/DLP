@@ -1,18 +1,19 @@
 package main;
 
+import introspector.model.IntrospectorModel;
+import introspector.view.IntrospectorTree;
+
 import java.io.FileReader;
 import java.io.IOException;
 
-import ast.program.Program;
-import error_handler.ErrorHandler;
-import introspector.model.IntrospectorModel;
-import introspector.view.IntrospectorTree;
 import parser.Parser;
 import scanner.Scanner;
 import visitor.Visitor;
 import visitor.semantic.IdentificationVisitor;
 import visitor.semantic.OffsetVisitor;
 import visitor.semantic.TypeCheckingVisitor;
+import ast.program.Program;
+import error_handler.ErrorHandler;
 
 public class Main {
 

@@ -15,7 +15,7 @@ import error_handler.ErrorHandler;
 import introspector.model.IntrospectorModel;
 import introspector.view.IntrospectorTree;
 
-public class VisitorMain {
+public class CodeGeneratorMain {
 
     public static void main(String args[]) throws IOException {
 	if (args.length < 1) {

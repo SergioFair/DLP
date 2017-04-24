@@ -20,7 +20,7 @@ import java.util.*;
 %token VOID MAIN
 %token WRITE READ
 %token CHAR DOUBLE INT STRUCT
-%token IF ELSE WHILE RETURN FOR
+%token IF ELSE WHILE RETURN FOR DO
 %token INC DEC
 %token DIVIDEEQUALS TIMESEQUALS MINUSEQUALS PLUSEQUALS
 
@@ -147,6 +147,7 @@ statement: expression ';'								{ $$ = (Expression) $1; }
 		 | if_else										{ $$ = (IfStatement) $1; }
 		 | while										{ $$ = (WhileStatement) $1; }
 		 | for											{ $$ = (ForStatement) $1; }
+		 | do_while										{ $$ = (DoWhileStatement) $1; }
 		 | return ';'									{ $$ = (Return) $1; }
 		 ;
 
@@ -225,6 +226,11 @@ if_body : '{'listOfStatements'}'							{$$ = (List<Statement>)$2;}
 while: WHILE '(' expression ')' if_body	%prec IFX			{ List<Statement> body = new ArrayList<Statement>((List<Statement>)$5);
 																	  $$ = new WhileStatement(scanner.getLine(), scanner.getColumn()
 																			, body, (Expression) $3); }
+	 ;
+	 
+do_while: DO if_body %prec IFX WHILE '(' expression ')'			{ List<Statement> body = new ArrayList<Statement>((List<Statement>)$2);
+																	  $$ = new DoWhileStatement(scanner.getLine(), scanner.getColumn()
+																			, body, (Expression) $5); }
 	 ;
 
 for: FOR '(' statement expression ';' expression ')' if_body %prec IFX { List<Statement> body = new ArrayList<Statement>((List<Statement>)$8);

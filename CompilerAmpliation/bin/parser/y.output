@@ -39,82 +39,85 @@
   25            | if_else
   26            | while
   27            | for
-  28            | return ';'
+  28            | do_while
+  29            | return ';'
 
-  29  expression : expression '+' expression
-  30             | expression '*' expression
-  31             | expression '/' expression
-  32             | expression '-' expression
-  33             | expression '%' expression
-  34             | expression DOUBLEEQUALS expression
-  35             | expression '>' expression
-  36             | expression GEQ expression
-  37             | expression '<' expression
-  38             | expression LEQ expression
-  39             | expression DIFFERENT expression
-  40             | expression AND expression
-  41             | expression OR expression
-  42             | expression INC
-  43             | expression DEC
-  44             | expression PLUSEQUALS expression
-  45             | expression MINUSEQUALS expression
-  46             | expression TIMESEQUALS expression
-  47             | expression DIVIDEEQUALS expression
-  48             | '-' expression
-  49             | '!' expression
-  50             | function_invocation
-  51             | '(' expression ')'
-  52             | expression '.' expression
-  53             | cast
-  54             | array
-  55             | INT_CONSTANT
-  56             | REAL_CONSTANT
-  57             | CHAR_CONSTANT
-  58             | ID
+  30  expression : expression '+' expression
+  31             | expression '*' expression
+  32             | expression '/' expression
+  33             | expression '-' expression
+  34             | expression '%' expression
+  35             | expression DOUBLEEQUALS expression
+  36             | expression '>' expression
+  37             | expression GEQ expression
+  38             | expression '<' expression
+  39             | expression LEQ expression
+  40             | expression DIFFERENT expression
+  41             | expression AND expression
+  42             | expression OR expression
+  43             | expression INC
+  44             | expression DEC
+  45             | expression PLUSEQUALS expression
+  46             | expression MINUSEQUALS expression
+  47             | expression TIMESEQUALS expression
+  48             | expression DIVIDEEQUALS expression
+  49             | '-' expression
+  50             | '!' expression
+  51             | function_invocation
+  52             | '(' expression ')'
+  53             | expression '.' expression
+  54             | cast
+  55             | array
+  56             | INT_CONSTANT
+  57             | REAL_CONSTANT
+  58             | CHAR_CONSTANT
+  59             | ID
 
-  59  if_else : IF '(' expression ')' if_body ELSE if_body
-  60          | IF '(' expression ')' if_body
+  60  if_else : IF '(' expression ')' if_body ELSE if_body
+  61          | IF '(' expression ')' if_body
 
-  61  if_body : '{' listOfStatements '}'
-  62          | statement
+  62  if_body : '{' listOfStatements '}'
+  63          | statement
 
-  63  while : WHILE '(' expression ')' if_body
+  64  while : WHILE '(' expression ')' if_body
 
-  64  for : FOR '(' statement expression ';' expression ')' if_body
+  65  do_while : DO if_body WHILE '(' expression ')'
 
-  65  cast : '(' built_in_type ')' expression
+  66  for : FOR '(' statement expression ';' expression ')' if_body
 
-  66  listOfExpressions : listOfExpressions ',' expression
-  67                    | expression
+  67  cast : '(' built_in_type ')' expression
 
-  68  listOfIds : listOfIds ',' ID
-  69            | ID
+  68  listOfExpressions : listOfExpressions ',' expression
+  69                    | expression
 
-  70  built_in_type : CHAR
-  71                | INT
-  72                | DOUBLE
+  70  listOfIds : listOfIds ',' ID
+  71            | ID
 
-  73  array : expression '[' expression ']'
+  72  built_in_type : CHAR
+  73                | INT
+  74                | DOUBLE
 
-  74  array_creation : array_creation '[' INT_CONSTANT ']'
-  75                 | built_in_type '[' INT_CONSTANT ']'
+  75  array : expression '[' expression ']'
 
-  76  variable : built_in_type listOfIds ';'
-  77           | array_creation listOfIds ';'
-  78           | struct listOfIds ';'
+  76  array_creation : array_creation '[' INT_CONSTANT ']'
+  77                 | built_in_type '[' INT_CONSTANT ']'
 
-  79  listOfVariables : listOfVariables variable
-  80                  |
+  78  variable : built_in_type listOfIds ';'
+  79           | array_creation listOfIds ';'
+  80           | struct listOfIds ';'
 
-  81  assignment : expression '=' expression
+  81  listOfVariables : listOfVariables variable
+  82                  |
 
-  82  read : READ listOfExpressions
+  83  assignment : expression '=' expression
 
-  83  write : WRITE listOfExpressions
+  84  read : READ listOfExpressions
 
-  84  struct : STRUCT '{' listOfVariables '}'
+  85  write : WRITE listOfExpressions
 
-  85  return : RETURN expression
+  86  struct : STRUCT '{' listOfVariables '}'
+
+  87  return : RETURN expression
 
 state 0
 	$accept : . final $end  (0)
@@ -172,25 +175,25 @@ state 4
 
 
 state 5
-	built_in_type : CHAR .  (70)
-
-	.  reduce 70
-
-
-state 6
-	built_in_type : DOUBLE .  (72)
+	built_in_type : CHAR .  (72)
 
 	.  reduce 72
 
 
-state 7
-	built_in_type : INT .  (71)
+state 6
+	built_in_type : DOUBLE .  (74)
 
-	.  reduce 71
+	.  reduce 74
+
+
+state 7
+	built_in_type : INT .  (73)
+
+	.  reduce 73
 
 
 state 8
-	struct : STRUCT . '{' listOfVariables '}'  (84)
+	struct : STRUCT . '{' listOfVariables '}'  (86)
 
 	'{'  shift 19
 	.  error
@@ -229,8 +232,8 @@ state 13
 state 14
 	typed_function : built_in_type . ID '(' listOfParameters ')' '{' function_body '}'  (10)
 	typed_function : built_in_type . ID '(' ')' '{' function_body '}'  (11)
-	array_creation : built_in_type . '[' INT_CONSTANT ']'  (75)
-	variable : built_in_type . listOfIds ';'  (76)
+	array_creation : built_in_type . '[' INT_CONSTANT ']'  (77)
+	variable : built_in_type . listOfIds ';'  (78)
 
 	ID  shift 20
 	'['  shift 21
@@ -240,8 +243,8 @@ state 14
 
 
 state 15
-	array_creation : array_creation . '[' INT_CONSTANT ']'  (74)
-	variable : array_creation . listOfIds ';'  (77)
+	array_creation : array_creation . '[' INT_CONSTANT ']'  (76)
+	variable : array_creation . listOfIds ';'  (79)
 
 	ID  shift 23
 	'['  shift 24
@@ -251,7 +254,7 @@ state 15
 
 
 state 16
-	variable : struct . listOfIds ';'  (78)
+	variable : struct . listOfIds ';'  (80)
 
 	ID  shift 23
 	.  error
@@ -275,10 +278,10 @@ state 18
 
 
 state 19
-	struct : STRUCT '{' . listOfVariables '}'  (84)
-	listOfVariables : .  (80)
+	struct : STRUCT '{' . listOfVariables '}'  (86)
+	listOfVariables : .  (82)
 
-	.  reduce 80
+	.  reduce 82
 
 	listOfVariables  goto 29
 
@@ -286,23 +289,23 @@ state 19
 state 20
 	typed_function : built_in_type ID . '(' listOfParameters ')' '{' function_body '}'  (10)
 	typed_function : built_in_type ID . '(' ')' '{' function_body '}'  (11)
-	listOfIds : ID .  (69)
+	listOfIds : ID .  (71)
 
 	'('  shift 30
-	','  reduce 69
-	';'  reduce 69
+	','  reduce 71
+	';'  reduce 71
 
 
 state 21
-	array_creation : built_in_type '[' . INT_CONSTANT ']'  (75)
+	array_creation : built_in_type '[' . INT_CONSTANT ']'  (77)
 
 	INT_CONSTANT  shift 31
 	.  error
 
 
 state 22
-	listOfIds : listOfIds . ',' ID  (68)
-	variable : built_in_type listOfIds . ';'  (76)
+	listOfIds : listOfIds . ',' ID  (70)
+	variable : built_in_type listOfIds . ';'  (78)
 
 	','  shift 32
 	';'  shift 33
@@ -310,21 +313,21 @@ state 22
 
 
 state 23
-	listOfIds : ID .  (69)
+	listOfIds : ID .  (71)
 
-	.  reduce 69
+	.  reduce 71
 
 
 state 24
-	array_creation : array_creation '[' . INT_CONSTANT ']'  (74)
+	array_creation : array_creation '[' . INT_CONSTANT ']'  (76)
 
 	INT_CONSTANT  shift 34
 	.  error
 
 
 state 25
-	listOfIds : listOfIds . ',' ID  (68)
-	variable : array_creation listOfIds . ';'  (77)
+	listOfIds : listOfIds . ',' ID  (70)
+	variable : array_creation listOfIds . ';'  (79)
 
 	','  shift 32
 	';'  shift 35
@@ -332,8 +335,8 @@ state 25
 
 
 state 26
-	listOfIds : listOfIds . ',' ID  (68)
-	variable : struct listOfIds . ';'  (78)
+	listOfIds : listOfIds . ',' ID  (70)
+	variable : struct listOfIds . ';'  (80)
 
 	','  shift 32
 	';'  shift 36
@@ -363,8 +366,8 @@ state 28
 
 
 state 29
-	listOfVariables : listOfVariables . variable  (79)
-	struct : STRUCT '{' listOfVariables . '}'  (84)
+	listOfVariables : listOfVariables . variable  (81)
+	struct : STRUCT '{' listOfVariables . '}'  (86)
 
 	CHAR  shift 5
 	DOUBLE  shift 6
@@ -395,42 +398,42 @@ state 30
 
 
 state 31
-	array_creation : built_in_type '[' INT_CONSTANT . ']'  (75)
+	array_creation : built_in_type '[' INT_CONSTANT . ']'  (77)
 
 	']'  shift 47
 	.  error
 
 
 state 32
-	listOfIds : listOfIds ',' . ID  (68)
+	listOfIds : listOfIds ',' . ID  (70)
 
 	ID  shift 48
 	.  error
 
 
 state 33
-	variable : built_in_type listOfIds ';' .  (76)
+	variable : built_in_type listOfIds ';' .  (78)
 
-	.  reduce 76
+	.  reduce 78
 
 
 state 34
-	array_creation : array_creation '[' INT_CONSTANT . ']'  (74)
+	array_creation : array_creation '[' INT_CONSTANT . ']'  (76)
 
 	']'  shift 49
 	.  error
 
 
 state 35
-	variable : array_creation listOfIds ';' .  (77)
+	variable : array_creation listOfIds ';' .  (79)
 
-	.  reduce 77
+	.  reduce 79
 
 
 state 36
-	variable : struct listOfIds ';' .  (78)
+	variable : struct listOfIds ';' .  (80)
 
-	.  reduce 78
+	.  reduce 80
 
 
 state 37
@@ -470,20 +473,20 @@ state 41
 
 
 state 42
-	struct : STRUCT '{' listOfVariables '}' .  (84)
+	struct : STRUCT '{' listOfVariables '}' .  (86)
 
-	.  reduce 84
+	.  reduce 86
 
 
 state 43
-	listOfVariables : listOfVariables variable .  (79)
+	listOfVariables : listOfVariables variable .  (81)
 
-	.  reduce 79
+	.  reduce 81
 
 
 state 44
-	array_creation : built_in_type . '[' INT_CONSTANT ']'  (75)
-	variable : built_in_type . listOfIds ';'  (76)
+	array_creation : built_in_type . '[' INT_CONSTANT ']'  (77)
+	variable : built_in_type . listOfIds ';'  (78)
 
 	ID  shift 23
 	'['  shift 21
@@ -509,28 +512,28 @@ state 46
 
 
 state 47
-	array_creation : built_in_type '[' INT_CONSTANT ']' .  (75)
+	array_creation : built_in_type '[' INT_CONSTANT ']' .  (77)
 
-	.  reduce 75
+	.  reduce 77
 
 
 state 48
-	listOfIds : listOfIds ',' ID .  (68)
+	listOfIds : listOfIds ',' ID .  (70)
 
-	.  reduce 68
+	.  reduce 70
 
 
 state 49
-	array_creation : array_creation '[' INT_CONSTANT ']' .  (74)
+	array_creation : array_creation '[' INT_CONSTANT ']' .  (76)
 
-	.  reduce 74
+	.  reduce 76
 
 
 state 50
 	void_function : VOID ID '(' ')' '{' . function_body '}'  (13)
-	listOfVariables : .  (80)
+	listOfVariables : .  (82)
 
-	.  reduce 80
+	.  reduce 82
 
 	function_body  goto 57
 	listOfVariables  goto 58
@@ -563,9 +566,9 @@ state 53
 
 state 54
 	main : VOID MAIN '(' ')' '{' . function_body '}'  (14)
-	listOfVariables : .  (80)
+	listOfVariables : .  (82)
 
-	.  reduce 80
+	.  reduce 82
 
 	function_body  goto 61
 	listOfVariables  goto 58
@@ -573,9 +576,9 @@ state 54
 
 state 55
 	typed_function : built_in_type ID '(' ')' '{' . function_body '}'  (11)
-	listOfVariables : .  (80)
+	listOfVariables : .  (82)
 
-	.  reduce 80
+	.  reduce 82
 
 	function_body  goto 62
 	listOfVariables  goto 58
@@ -597,7 +600,7 @@ state 57
 
 state 58
 	function_body : listOfVariables . listOfStatements  (15)
-	listOfVariables : listOfVariables . variable  (79)
+	listOfVariables : listOfVariables . variable  (81)
 	listOfStatements : .  (17)
 
 	CHAR  shift 5
@@ -614,6 +617,7 @@ state 58
 	WHILE  reduce 17
 	RETURN  reduce 17
 	FOR  reduce 17
+	DO  reduce 17
 	'!'  reduce 17
 	'-'  reduce 17
 	'('  reduce 17
@@ -628,9 +632,9 @@ state 58
 
 state 59
 	void_function : VOID ID '(' listOfParameters ')' '{' . function_body '}'  (12)
-	listOfVariables : .  (80)
+	listOfVariables : .  (82)
 
-	.  reduce 80
+	.  reduce 82
 
 	function_body  goto 66
 	listOfVariables  goto 58
@@ -658,9 +662,9 @@ state 62
 
 state 63
 	typed_function : built_in_type ID '(' listOfParameters ')' '{' . function_body '}'  (10)
-	listOfVariables : .  (80)
+	listOfVariables : .  (82)
 
-	.  reduce 80
+	.  reduce 82
 
 	function_body  goto 69
 	listOfVariables  goto 58
@@ -686,29 +690,31 @@ state 65
 	WHILE  shift 77
 	RETURN  shift 78
 	FOR  shift 79
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	DO  shift 80
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	'}'  reduce 15
 
-	function_invocation  goto 83
-	statement  goto 84
-	expression  goto 85
-	read  goto 86
-	write  goto 87
-	assignment  goto 88
-	if_else  goto 89
-	while  goto 90
-	for  goto 91
-	return  goto 92
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	statement  goto 85
+	expression  goto 86
+	read  goto 87
+	write  goto 88
+	assignment  goto 89
+	if_else  goto 90
+	while  goto 91
+	for  goto 92
+	do_while  goto 93
+	return  goto 94
+	cast  goto 95
+	array  goto 96
 
 
 state 66
 	void_function : VOID ID '(' listOfParameters ')' '{' function_body . '}'  (12)
 
-	'}'  shift 95
+	'}'  shift 97
 	.  error
 
 
@@ -727,506 +733,142 @@ state 68
 state 69
 	typed_function : built_in_type ID '(' listOfParameters ')' '{' function_body . '}'  (10)
 
-	'}'  shift 96
+	'}'  shift 98
 	.  error
 
 
 state 70
-	expression : INT_CONSTANT .  (55)
+	expression : INT_CONSTANT .  (56)
 
-	.  reduce 55
+	.  reduce 56
 
 
 state 71
-	expression : CHAR_CONSTANT .  (57)
+	expression : CHAR_CONSTANT .  (58)
 
-	.  reduce 57
+	.  reduce 58
 
 
 state 72
-	expression : REAL_CONSTANT .  (56)
+	expression : REAL_CONSTANT .  (57)
 
-	.  reduce 56
+	.  reduce 57
 
 
 state 73
 	function_invocation : ID . '(' listOfExpressions ')'  (8)
 	function_invocation : ID . '(' ')'  (9)
-	expression : ID .  (58)
+	expression : ID .  (59)
 
-	'('  shift 97
-	LEQ  reduce 58
-	GEQ  reduce 58
-	DOUBLEEQUALS  reduce 58
-	DIFFERENT  reduce 58
-	AND  reduce 58
-	OR  reduce 58
-	INC  reduce 58
-	DEC  reduce 58
-	DIVIDEEQUALS  reduce 58
-	TIMESEQUALS  reduce 58
-	MINUSEQUALS  reduce 58
-	PLUSEQUALS  reduce 58
-	'='  reduce 58
-	'>'  reduce 58
-	'<'  reduce 58
-	'+'  reduce 58
-	'-'  reduce 58
-	'*'  reduce 58
-	'/'  reduce 58
-	'%'  reduce 58
-	'['  reduce 58
-	']'  reduce 58
-	'.'  reduce 58
-	')'  reduce 58
-	','  reduce 58
-	';'  reduce 58
+	'('  shift 99
+	LEQ  reduce 59
+	GEQ  reduce 59
+	DOUBLEEQUALS  reduce 59
+	DIFFERENT  reduce 59
+	AND  reduce 59
+	OR  reduce 59
+	INC  reduce 59
+	DEC  reduce 59
+	DIVIDEEQUALS  reduce 59
+	TIMESEQUALS  reduce 59
+	MINUSEQUALS  reduce 59
+	PLUSEQUALS  reduce 59
+	'='  reduce 59
+	'>'  reduce 59
+	'<'  reduce 59
+	'+'  reduce 59
+	'-'  reduce 59
+	'*'  reduce 59
+	'/'  reduce 59
+	'%'  reduce 59
+	'['  reduce 59
+	']'  reduce 59
+	'.'  reduce 59
+	')'  reduce 59
+	','  reduce 59
+	';'  reduce 59
 
 
 state 74
-	write : WRITE . listOfExpressions  (83)
+	write : WRITE . listOfExpressions  (85)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	listOfExpressions  goto 98
-	expression  goto 99
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	listOfExpressions  goto 100
+	expression  goto 101
+	cast  goto 95
+	array  goto 96
 
 
 state 75
-	read : READ . listOfExpressions  (82)
+	read : READ . listOfExpressions  (84)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	listOfExpressions  goto 100
-	expression  goto 99
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	listOfExpressions  goto 102
+	expression  goto 101
+	cast  goto 95
+	array  goto 96
 
 
 state 76
-	if_else : IF . '(' expression ')' if_body ELSE if_body  (59)
-	if_else : IF . '(' expression ')' if_body  (60)
+	if_else : IF . '(' expression ')' if_body ELSE if_body  (60)
+	if_else : IF . '(' expression ')' if_body  (61)
 
-	'('  shift 101
+	'('  shift 103
 	.  error
 
 
 state 77
-	while : WHILE . '(' expression ')' if_body  (63)
-
-	'('  shift 102
-	.  error
-
-
-state 78
-	return : RETURN . expression  (85)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 103
-	cast  goto 93
-	array  goto 94
-
-
-state 79
-	for : FOR . '(' statement expression ';' expression ')' if_body  (64)
+	while : WHILE . '(' expression ')' if_body  (64)
 
 	'('  shift 104
 	.  error
 
 
-state 80
-	expression : '!' . expression  (49)
+state 78
+	return : RETURN . expression  (87)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
+	function_invocation  goto 84
 	expression  goto 105
-	cast  goto 93
-	array  goto 94
+	cast  goto 95
+	array  goto 96
 
 
-state 81
-	expression : '-' . expression  (48)
+state 79
+	for : FOR . '(' statement expression ';' expression ')' if_body  (66)
 
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 106
-	cast  goto 93
-	array  goto 94
-
-
-state 82
-	expression : '(' . expression ')'  (51)
-	cast : '(' . built_in_type ')' expression  (65)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	CHAR  shift 5
-	DOUBLE  shift 6
-	INT  shift 7
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	built_in_type  goto 107
-	expression  goto 108
-	cast  goto 93
-	array  goto 94
-
-
-state 83
-	expression : function_invocation .  (50)
-
-	.  reduce 50
-
-
-state 84
-	listOfStatements : listOfStatements statement .  (16)
-
-	.  reduce 16
-
-
-state 85
-	statement : expression . ';'  (21)
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-	assignment : expression . '=' expression  (81)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'='  shift 121
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	';'  shift 131
+	'('  shift 106
 	.  error
 
 
-state 86
-	statement : read . ';'  (22)
-
-	';'  shift 132
-	.  error
-
-
-state 87
-	statement : write . ';'  (23)
-
-	';'  shift 133
-	.  error
-
-
-state 88
-	statement : assignment . ';'  (24)
-
-	';'  shift 134
-	.  error
-
-
-state 89
-	statement : if_else .  (25)
-
-	.  reduce 25
-
-
-state 90
-	statement : while .  (26)
-
-	.  reduce 26
-
-
-state 91
-	statement : for .  (27)
-
-	.  reduce 27
-
-
-state 92
-	statement : return . ';'  (28)
-
-	';'  shift 135
-	.  error
-
-
-state 93
-	expression : cast .  (53)
-
-	.  reduce 53
-
-
-state 94
-	expression : array .  (54)
-
-	.  reduce 54
-
-
-state 95
-	void_function : VOID ID '(' listOfParameters ')' '{' function_body '}' .  (12)
-
-	.  reduce 12
-
-
-state 96
-	typed_function : built_in_type ID '(' listOfParameters ')' '{' function_body '}' .  (10)
-
-	.  reduce 10
-
-
-state 97
-	function_invocation : ID '(' . listOfExpressions ')'  (8)
-	function_invocation : ID '(' . ')'  (9)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	')'  shift 136
-	.  error
-
-	function_invocation  goto 83
-	listOfExpressions  goto 137
-	expression  goto 99
-	cast  goto 93
-	array  goto 94
-
-
-state 98
-	listOfExpressions : listOfExpressions . ',' expression  (66)
-	write : WRITE listOfExpressions .  (83)
-
-	','  shift 138
-	';'  reduce 83
-
-
-state 99
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	listOfExpressions : expression .  (67)
-	array : expression . '[' expression ']'  (73)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	')'  reduce 67
-	','  reduce 67
-	';'  reduce 67
-
-
-state 100
-	listOfExpressions : listOfExpressions . ',' expression  (66)
-	read : READ listOfExpressions .  (82)
-
-	','  shift 138
-	';'  reduce 82
-
-
-state 101
-	if_else : IF '(' . expression ')' if_body ELSE if_body  (59)
-	if_else : IF '(' . expression ')' if_body  (60)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 139
-	cast  goto 93
-	array  goto 94
-
-
-state 102
-	while : WHILE '(' . expression ')' if_body  (63)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 140
-	cast  goto 93
-	array  goto 94
-
-
-state 103
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-	return : RETURN expression .  (85)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	';'  reduce 85
-
-
-state 104
-	for : FOR '(' . statement expression ';' expression ')' if_body  (64)
+state 80
+	do_while : DO . if_body WHILE '(' expression ')'  (65)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
@@ -1238,64 +880,539 @@ state 104
 	WHILE  shift 77
 	RETURN  shift 78
 	FOR  shift 79
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	DO  shift 80
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	'{'  shift 107
 	.  error
 
-	function_invocation  goto 83
-	statement  goto 141
-	expression  goto 85
-	read  goto 86
-	write  goto 87
-	assignment  goto 88
-	if_else  goto 89
-	while  goto 90
-	for  goto 91
-	return  goto 92
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	statement  goto 108
+	expression  goto 86
+	read  goto 87
+	write  goto 88
+	assignment  goto 89
+	if_else  goto 90
+	while  goto 91
+	for  goto 92
+	do_while  goto 93
+	return  goto 94
+	cast  goto 95
+	array  goto 96
+	if_body  goto 109
+
+
+state 81
+	expression : '!' . expression  (50)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 110
+	cast  goto 95
+	array  goto 96
+
+
+state 82
+	expression : '-' . expression  (49)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 111
+	cast  goto 95
+	array  goto 96
+
+
+state 83
+	expression : '(' . expression ')'  (52)
+	cast : '(' . built_in_type ')' expression  (67)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	CHAR  shift 5
+	DOUBLE  shift 6
+	INT  shift 7
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	built_in_type  goto 112
+	expression  goto 113
+	cast  goto 95
+	array  goto 96
+
+
+state 84
+	expression : function_invocation .  (51)
+
+	.  reduce 51
+
+
+state 85
+	listOfStatements : listOfStatements statement .  (16)
+
+	.  reduce 16
+
+
+state 86
+	statement : expression . ';'  (21)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+	assignment : expression . '=' expression  (83)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'='  shift 126
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	';'  shift 136
+	.  error
+
+
+state 87
+	statement : read . ';'  (22)
+
+	';'  shift 137
+	.  error
+
+
+state 88
+	statement : write . ';'  (23)
+
+	';'  shift 138
+	.  error
+
+
+state 89
+	statement : assignment . ';'  (24)
+
+	';'  shift 139
+	.  error
+
+
+state 90
+	statement : if_else .  (25)
+
+	.  reduce 25
+
+
+state 91
+	statement : while .  (26)
+
+	.  reduce 26
+
+
+state 92
+	statement : for .  (27)
+
+	.  reduce 27
+
+
+state 93
+	statement : do_while .  (28)
+
+	.  reduce 28
+
+
+state 94
+	statement : return . ';'  (29)
+
+	';'  shift 140
+	.  error
+
+
+state 95
+	expression : cast .  (54)
+
+	.  reduce 54
+
+
+state 96
+	expression : array .  (55)
+
+	.  reduce 55
+
+
+state 97
+	void_function : VOID ID '(' listOfParameters ')' '{' function_body '}' .  (12)
+
+	.  reduce 12
+
+
+state 98
+	typed_function : built_in_type ID '(' listOfParameters ')' '{' function_body '}' .  (10)
+
+	.  reduce 10
+
+
+state 99
+	function_invocation : ID '(' . listOfExpressions ')'  (8)
+	function_invocation : ID '(' . ')'  (9)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	')'  shift 141
+	.  error
+
+	function_invocation  goto 84
+	listOfExpressions  goto 142
+	expression  goto 101
+	cast  goto 95
+	array  goto 96
+
+
+state 100
+	listOfExpressions : listOfExpressions . ',' expression  (68)
+	write : WRITE listOfExpressions .  (85)
+
+	','  shift 143
+	';'  reduce 85
+
+
+state 101
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	listOfExpressions : expression .  (69)
+	array : expression . '[' expression ']'  (75)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	')'  reduce 69
+	','  reduce 69
+	';'  reduce 69
+
+
+state 102
+	listOfExpressions : listOfExpressions . ',' expression  (68)
+	read : READ listOfExpressions .  (84)
+
+	','  shift 143
+	';'  reduce 84
+
+
+state 103
+	if_else : IF '(' . expression ')' if_body ELSE if_body  (60)
+	if_else : IF '(' . expression ')' if_body  (61)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 144
+	cast  goto 95
+	array  goto 96
+
+
+state 104
+	while : WHILE '(' . expression ')' if_body  (64)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 145
+	cast  goto 95
+	array  goto 96
 
 
 state 105
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : '!' expression .  (49)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+	return : RETURN expression .  (87)
 
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	INC  shift 115
-	DEC  shift 116
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	';'  reduce 87
+
+
+state 106
+	for : FOR '(' . statement expression ';' expression ')' if_body  (66)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	WRITE  shift 74
+	READ  shift 75
+	IF  shift 76
+	WHILE  shift 77
+	RETURN  shift 78
+	FOR  shift 79
+	DO  shift 80
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	statement  goto 146
+	expression  goto 86
+	read  goto 87
+	write  goto 88
+	assignment  goto 89
+	if_else  goto 90
+	while  goto 91
+	for  goto 92
+	do_while  goto 93
+	return  goto 94
+	cast  goto 95
+	array  goto 96
+
+
+state 107
+	if_body : '{' . listOfStatements '}'  (62)
+	listOfStatements : .  (17)
+
+	.  reduce 17
+
+	listOfStatements  goto 147
+
+
+state 108
+	if_body : statement .  (63)
+
+	.  reduce 63
+
+
+state 109
+	do_while : DO if_body . WHILE '(' expression ')'  (65)
+
+	WHILE  shift 148
+	.  error
+
+
+state 110
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : '!' expression .  (50)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	INC  shift 120
+	DEC  shift 121
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	AND  reduce 50
+	OR  reduce 50
+	DIVIDEEQUALS  reduce 50
+	TIMESEQUALS  reduce 50
+	MINUSEQUALS  reduce 50
+	PLUSEQUALS  reduce 50
+	'='  reduce 50
+	']'  reduce 50
+	')'  reduce 50
+	','  reduce 50
+	';'  reduce 50
+
+
+state 111
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : '-' expression .  (49)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+
+	INC  shift 120
+	DEC  shift 121
+	'['  shift 134
+	'.'  shift 135
+	LEQ  reduce 49
+	GEQ  reduce 49
+	DOUBLEEQUALS  reduce 49
+	DIFFERENT  reduce 49
 	AND  reduce 49
 	OR  reduce 49
 	DIVIDEEQUALS  reduce 49
@@ -1303,885 +1420,727 @@ state 105
 	MINUSEQUALS  reduce 49
 	PLUSEQUALS  reduce 49
 	'='  reduce 49
+	'>'  reduce 49
+	'<'  reduce 49
+	'+'  reduce 49
+	'-'  reduce 49
+	'*'  reduce 49
+	'/'  reduce 49
+	'%'  reduce 49
 	']'  reduce 49
 	')'  reduce 49
 	','  reduce 49
 	';'  reduce 49
 
 
-state 106
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : '-' expression .  (48)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-
-	INC  shift 115
-	DEC  shift 116
-	'['  shift 129
-	'.'  shift 130
-	LEQ  reduce 48
-	GEQ  reduce 48
-	DOUBLEEQUALS  reduce 48
-	DIFFERENT  reduce 48
-	AND  reduce 48
-	OR  reduce 48
-	DIVIDEEQUALS  reduce 48
-	TIMESEQUALS  reduce 48
-	MINUSEQUALS  reduce 48
-	PLUSEQUALS  reduce 48
-	'='  reduce 48
-	'>'  reduce 48
-	'<'  reduce 48
-	'+'  reduce 48
-	'-'  reduce 48
-	'*'  reduce 48
-	'/'  reduce 48
-	'%'  reduce 48
-	']'  reduce 48
-	')'  reduce 48
-	','  reduce 48
-	';'  reduce 48
-
-
-state 107
-	cast : '(' built_in_type . ')' expression  (65)
-
-	')'  shift 142
-	.  error
-
-
-state 108
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : '(' expression . ')'  (51)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	')'  shift 143
-	.  error
-
-
-state 109
-	expression : expression LEQ . expression  (38)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 144
-	cast  goto 93
-	array  goto 94
-
-
-state 110
-	expression : expression GEQ . expression  (36)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 145
-	cast  goto 93
-	array  goto 94
-
-
-state 111
-	expression : expression DOUBLEEQUALS . expression  (34)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 146
-	cast  goto 93
-	array  goto 94
-
-
 state 112
-	expression : expression DIFFERENT . expression  (39)
+	cast : '(' built_in_type . ')' expression  (67)
 
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	')'  shift 149
 	.  error
-
-	function_invocation  goto 83
-	expression  goto 147
-	cast  goto 93
-	array  goto 94
 
 
 state 113
-	expression : expression AND . expression  (40)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : '(' expression . ')'  (52)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
 
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	')'  shift 150
 	.  error
-
-	function_invocation  goto 83
-	expression  goto 148
-	cast  goto 93
-	array  goto 94
 
 
 state 114
-	expression : expression OR . expression  (41)
+	expression : expression LEQ . expression  (39)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	expression  goto 149
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	expression  goto 151
+	cast  goto 95
+	array  goto 96
 
 
 state 115
-	expression : expression INC .  (42)
+	expression : expression GEQ . expression  (37)
 
-	.  reduce 42
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 152
+	cast  goto 95
+	array  goto 96
 
 
 state 116
-	expression : expression DEC .  (43)
+	expression : expression DOUBLEEQUALS . expression  (35)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 153
+	cast  goto 95
+	array  goto 96
+
+
+state 117
+	expression : expression DIFFERENT . expression  (40)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 154
+	cast  goto 95
+	array  goto 96
+
+
+state 118
+	expression : expression AND . expression  (41)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 155
+	cast  goto 95
+	array  goto 96
+
+
+state 119
+	expression : expression OR . expression  (42)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 156
+	cast  goto 95
+	array  goto 96
+
+
+state 120
+	expression : expression INC .  (43)
 
 	.  reduce 43
 
 
-state 117
-	expression : expression DIVIDEEQUALS . expression  (47)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 150
-	cast  goto 93
-	array  goto 94
-
-
-state 118
-	expression : expression TIMESEQUALS . expression  (46)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 151
-	cast  goto 93
-	array  goto 94
-
-
-state 119
-	expression : expression MINUSEQUALS . expression  (45)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 152
-	cast  goto 93
-	array  goto 94
-
-
-state 120
-	expression : expression PLUSEQUALS . expression  (44)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 153
-	cast  goto 93
-	array  goto 94
-
-
 state 121
-	assignment : expression '=' . expression  (81)
+	expression : expression DEC .  (44)
 
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 154
-	cast  goto 93
-	array  goto 94
+	.  reduce 44
 
 
 state 122
-	expression : expression '>' . expression  (35)
+	expression : expression DIVIDEEQUALS . expression  (48)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	expression  goto 155
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	expression  goto 157
+	cast  goto 95
+	array  goto 96
 
 
 state 123
-	expression : expression '<' . expression  (37)
+	expression : expression TIMESEQUALS . expression  (47)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	expression  goto 156
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	expression  goto 158
+	cast  goto 95
+	array  goto 96
 
 
 state 124
-	expression : expression '+' . expression  (29)
+	expression : expression MINUSEQUALS . expression  (46)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	expression  goto 157
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	expression  goto 159
+	cast  goto 95
+	array  goto 96
 
 
 state 125
-	expression : expression '-' . expression  (32)
+	expression : expression PLUSEQUALS . expression  (45)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	expression  goto 158
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	expression  goto 160
+	cast  goto 95
+	array  goto 96
 
 
 state 126
-	expression : expression '*' . expression  (30)
+	assignment : expression '=' . expression  (83)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	expression  goto 159
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	expression  goto 161
+	cast  goto 95
+	array  goto 96
 
 
 state 127
-	expression : expression '/' . expression  (31)
+	expression : expression '>' . expression  (36)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	expression  goto 160
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	expression  goto 162
+	cast  goto 95
+	array  goto 96
 
 
 state 128
-	expression : expression '%' . expression  (33)
+	expression : expression '<' . expression  (38)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	expression  goto 161
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	expression  goto 163
+	cast  goto 95
+	array  goto 96
 
 
 state 129
-	array : expression '[' . expression ']'  (73)
+	expression : expression '+' . expression  (30)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	expression  goto 162
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	expression  goto 164
+	cast  goto 95
+	array  goto 96
 
 
 state 130
-	expression : expression '.' . expression  (52)
+	expression : expression '-' . expression  (33)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	expression  goto 163
-	cast  goto 93
-	array  goto 94
+	function_invocation  goto 84
+	expression  goto 165
+	cast  goto 95
+	array  goto 96
 
 
 state 131
+	expression : expression '*' . expression  (31)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 166
+	cast  goto 95
+	array  goto 96
+
+
+state 132
+	expression : expression '/' . expression  (32)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 167
+	cast  goto 95
+	array  goto 96
+
+
+state 133
+	expression : expression '%' . expression  (34)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 168
+	cast  goto 95
+	array  goto 96
+
+
+state 134
+	array : expression '[' . expression ']'  (75)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 169
+	cast  goto 95
+	array  goto 96
+
+
+state 135
+	expression : expression '.' . expression  (53)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 170
+	cast  goto 95
+	array  goto 96
+
+
+state 136
 	statement : expression ';' .  (21)
 
 	.  reduce 21
 
 
-state 132
+state 137
 	statement : read ';' .  (22)
 
 	.  reduce 22
 
 
-state 133
+state 138
 	statement : write ';' .  (23)
 
 	.  reduce 23
 
 
-state 134
+state 139
 	statement : assignment ';' .  (24)
 
 	.  reduce 24
 
 
-state 135
-	statement : return ';' .  (28)
+state 140
+	statement : return ';' .  (29)
 
-	.  reduce 28
+	.  reduce 29
 
 
-state 136
+state 141
 	function_invocation : ID '(' ')' .  (9)
 
 	.  reduce 9
 
 
-state 137
-	function_invocation : ID '(' listOfExpressions . ')'  (8)
-	listOfExpressions : listOfExpressions . ',' expression  (66)
-
-	')'  shift 164
-	','  shift 138
-	.  error
-
-
-state 138
-	listOfExpressions : listOfExpressions ',' . expression  (66)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 165
-	cast  goto 93
-	array  goto 94
-
-
-state 139
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	if_else : IF '(' expression . ')' if_body ELSE if_body  (59)
-	if_else : IF '(' expression . ')' if_body  (60)
-	array : expression . '[' expression ']'  (73)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	')'  shift 166
-	.  error
-
-
-state 140
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	while : WHILE '(' expression . ')' if_body  (63)
-	array : expression . '[' expression ']'  (73)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	')'  shift 167
-	.  error
-
-
-state 141
-	for : FOR '(' statement . expression ';' expression ')' if_body  (64)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 168
-	cast  goto 93
-	array  goto 94
-
-
 state 142
-	cast : '(' built_in_type ')' . expression  (65)
+	function_invocation : ID '(' listOfExpressions . ')'  (8)
+	listOfExpressions : listOfExpressions . ',' expression  (68)
 
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
+	')'  shift 171
+	','  shift 143
 	.  error
-
-	function_invocation  goto 83
-	expression  goto 169
-	cast  goto 93
-	array  goto 94
 
 
 state 143
-	expression : '(' expression ')' .  (51)
+	listOfExpressions : listOfExpressions ',' . expression  (68)
 
-	.  reduce 51
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 172
+	cast  goto 95
+	array  goto 96
 
 
 state 144
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression LEQ expression .  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	if_else : IF '(' expression . ')' if_body ELSE if_body  (60)
+	if_else : IF '(' expression . ')' if_body  (61)
+	array : expression . '[' expression ']'  (75)
 
-	INC  shift 115
-	DEC  shift 116
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	LEQ  reduce 38
-	GEQ  reduce 38
-	DOUBLEEQUALS  reduce 38
-	DIFFERENT  reduce 38
-	AND  reduce 38
-	OR  reduce 38
-	DIVIDEEQUALS  reduce 38
-	TIMESEQUALS  reduce 38
-	MINUSEQUALS  reduce 38
-	PLUSEQUALS  reduce 38
-	'='  reduce 38
-	'>'  reduce 38
-	'<'  reduce 38
-	']'  reduce 38
-	')'  reduce 38
-	','  reduce 38
-	';'  reduce 38
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	')'  shift 173
+	.  error
 
 
 state 145
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression GEQ expression .  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	while : WHILE '(' expression . ')' if_body  (64)
+	array : expression . '[' expression ']'  (75)
 
-	INC  shift 115
-	DEC  shift 116
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	LEQ  reduce 36
-	GEQ  reduce 36
-	DOUBLEEQUALS  reduce 36
-	DIFFERENT  reduce 36
-	AND  reduce 36
-	OR  reduce 36
-	DIVIDEEQUALS  reduce 36
-	TIMESEQUALS  reduce 36
-	MINUSEQUALS  reduce 36
-	PLUSEQUALS  reduce 36
-	'='  reduce 36
-	'>'  reduce 36
-	'<'  reduce 36
-	']'  reduce 36
-	')'  reduce 36
-	','  reduce 36
-	';'  reduce 36
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	')'  shift 174
+	.  error
 
 
 state 146
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression DOUBLEEQUALS expression .  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
+	for : FOR '(' statement . expression ';' expression ')' if_body  (66)
 
-	INC  shift 115
-	DEC  shift 116
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	LEQ  reduce 34
-	GEQ  reduce 34
-	DOUBLEEQUALS  reduce 34
-	DIFFERENT  reduce 34
-	AND  reduce 34
-	OR  reduce 34
-	DIVIDEEQUALS  reduce 34
-	TIMESEQUALS  reduce 34
-	MINUSEQUALS  reduce 34
-	PLUSEQUALS  reduce 34
-	'='  reduce 34
-	'>'  reduce 34
-	'<'  reduce 34
-	']'  reduce 34
-	')'  reduce 34
-	','  reduce 34
-	';'  reduce 34
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 175
+	cast  goto 95
+	array  goto 96
 
 
 state 147
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression DIFFERENT expression .  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
+	listOfStatements : listOfStatements . statement  (16)
+	if_body : '{' listOfStatements . '}'  (62)
 
-	INC  shift 115
-	DEC  shift 116
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	WRITE  shift 74
+	READ  shift 75
+	IF  shift 76
+	WHILE  shift 77
+	RETURN  shift 78
+	FOR  shift 79
+	DO  shift 80
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	'}'  shift 176
+	.  error
+
+	function_invocation  goto 84
+	statement  goto 85
+	expression  goto 86
+	read  goto 87
+	write  goto 88
+	assignment  goto 89
+	if_else  goto 90
+	while  goto 91
+	for  goto 92
+	do_while  goto 93
+	return  goto 94
+	cast  goto 95
+	array  goto 96
+
+
+state 148
+	do_while : DO if_body WHILE . '(' expression ')'  (65)
+
+	'('  shift 177
+	.  error
+
+
+state 149
+	cast : '(' built_in_type ')' . expression  (67)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 178
+	cast  goto 95
+	array  goto 96
+
+
+state 150
+	expression : '(' expression ')' .  (52)
+
+	.  reduce 52
+
+
+state 151
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression LEQ expression .  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+
+	INC  shift 120
+	DEC  shift 121
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
 	LEQ  reduce 39
 	GEQ  reduce 39
 	DOUBLEEQUALS  reduce 39
@@ -2201,451 +2160,39 @@ state 147
 	';'  reduce 39
 
 
-state 148
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression AND expression .  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	INC  shift 115
-	DEC  shift 116
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	AND  reduce 40
-	OR  reduce 40
-	DIVIDEEQUALS  reduce 40
-	TIMESEQUALS  reduce 40
-	MINUSEQUALS  reduce 40
-	PLUSEQUALS  reduce 40
-	'='  reduce 40
-	']'  reduce 40
-	')'  reduce 40
-	','  reduce 40
-	';'  reduce 40
-
-
-state 149
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression OR expression .  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	INC  shift 115
-	DEC  shift 116
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	AND  reduce 41
-	OR  reduce 41
-	DIVIDEEQUALS  reduce 41
-	TIMESEQUALS  reduce 41
-	MINUSEQUALS  reduce 41
-	PLUSEQUALS  reduce 41
-	'='  reduce 41
-	']'  reduce 41
-	')'  reduce 41
-	','  reduce 41
-	';'  reduce 41
-
-
-state 150
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression DIVIDEEQUALS expression .  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	'='  reduce 47
-	']'  reduce 47
-	')'  reduce 47
-	','  reduce 47
-	';'  reduce 47
-
-
-state 151
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression TIMESEQUALS expression .  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	'='  reduce 46
-	']'  reduce 46
-	')'  reduce 46
-	','  reduce 46
-	';'  reduce 46
-
-
 state 152
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression MINUSEQUALS expression .  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression GEQ expression .  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
 
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	'='  reduce 45
-	']'  reduce 45
-	')'  reduce 45
-	','  reduce 45
-	';'  reduce 45
-
-
-state 153
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression PLUSEQUALS expression .  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	'='  reduce 44
-	']'  reduce 44
-	')'  reduce 44
-	','  reduce 44
-	';'  reduce 44
-
-
-state 154
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-	assignment : expression '=' expression .  (81)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	';'  reduce 81
-
-
-state 155
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression '>' expression .  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-
-	INC  shift 115
-	DEC  shift 116
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	LEQ  reduce 35
-	GEQ  reduce 35
-	DOUBLEEQUALS  reduce 35
-	DIFFERENT  reduce 35
-	AND  reduce 35
-	OR  reduce 35
-	DIVIDEEQUALS  reduce 35
-	TIMESEQUALS  reduce 35
-	MINUSEQUALS  reduce 35
-	PLUSEQUALS  reduce 35
-	'='  reduce 35
-	'>'  reduce 35
-	'<'  reduce 35
-	']'  reduce 35
-	')'  reduce 35
-	','  reduce 35
-	';'  reduce 35
-
-
-state 156
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression '<' expression .  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-
-	INC  shift 115
-	DEC  shift 116
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
+	INC  shift 120
+	DEC  shift 121
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
 	LEQ  reduce 37
 	GEQ  reduce 37
 	DOUBLEEQUALS  reduce 37
@@ -2665,138 +2212,605 @@ state 156
 	';'  reduce 37
 
 
-state 157
-	expression : expression . '+' expression  (29)
-	expression : expression '+' expression .  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
+state 153
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression DOUBLEEQUALS expression .  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
 
-	INC  shift 115
-	DEC  shift 116
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	LEQ  reduce 29
-	GEQ  reduce 29
-	DOUBLEEQUALS  reduce 29
-	DIFFERENT  reduce 29
-	AND  reduce 29
-	OR  reduce 29
-	DIVIDEEQUALS  reduce 29
-	TIMESEQUALS  reduce 29
-	MINUSEQUALS  reduce 29
-	PLUSEQUALS  reduce 29
-	'='  reduce 29
-	'>'  reduce 29
-	'<'  reduce 29
-	'+'  reduce 29
-	'-'  reduce 29
-	']'  reduce 29
-	')'  reduce 29
-	','  reduce 29
-	';'  reduce 29
+	INC  shift 120
+	DEC  shift 121
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	LEQ  reduce 35
+	GEQ  reduce 35
+	DOUBLEEQUALS  reduce 35
+	DIFFERENT  reduce 35
+	AND  reduce 35
+	OR  reduce 35
+	DIVIDEEQUALS  reduce 35
+	TIMESEQUALS  reduce 35
+	MINUSEQUALS  reduce 35
+	PLUSEQUALS  reduce 35
+	'='  reduce 35
+	'>'  reduce 35
+	'<'  reduce 35
+	']'  reduce 35
+	')'  reduce 35
+	','  reduce 35
+	';'  reduce 35
+
+
+state 154
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression DIFFERENT expression .  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+
+	INC  shift 120
+	DEC  shift 121
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	LEQ  reduce 40
+	GEQ  reduce 40
+	DOUBLEEQUALS  reduce 40
+	DIFFERENT  reduce 40
+	AND  reduce 40
+	OR  reduce 40
+	DIVIDEEQUALS  reduce 40
+	TIMESEQUALS  reduce 40
+	MINUSEQUALS  reduce 40
+	PLUSEQUALS  reduce 40
+	'='  reduce 40
+	'>'  reduce 40
+	'<'  reduce 40
+	']'  reduce 40
+	')'  reduce 40
+	','  reduce 40
+	';'  reduce 40
+
+
+state 155
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression AND expression .  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	INC  shift 120
+	DEC  shift 121
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	AND  reduce 41
+	OR  reduce 41
+	DIVIDEEQUALS  reduce 41
+	TIMESEQUALS  reduce 41
+	MINUSEQUALS  reduce 41
+	PLUSEQUALS  reduce 41
+	'='  reduce 41
+	']'  reduce 41
+	')'  reduce 41
+	','  reduce 41
+	';'  reduce 41
+
+
+state 156
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression OR expression .  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	INC  shift 120
+	DEC  shift 121
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	AND  reduce 42
+	OR  reduce 42
+	DIVIDEEQUALS  reduce 42
+	TIMESEQUALS  reduce 42
+	MINUSEQUALS  reduce 42
+	PLUSEQUALS  reduce 42
+	'='  reduce 42
+	']'  reduce 42
+	')'  reduce 42
+	','  reduce 42
+	';'  reduce 42
+
+
+state 157
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression DIVIDEEQUALS expression .  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	'='  reduce 48
+	']'  reduce 48
+	')'  reduce 48
+	','  reduce 48
+	';'  reduce 48
 
 
 state 158
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression '-' expression .  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression TIMESEQUALS expression .  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
 
-	INC  shift 115
-	DEC  shift 116
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	LEQ  reduce 32
-	GEQ  reduce 32
-	DOUBLEEQUALS  reduce 32
-	DIFFERENT  reduce 32
-	AND  reduce 32
-	OR  reduce 32
-	DIVIDEEQUALS  reduce 32
-	TIMESEQUALS  reduce 32
-	MINUSEQUALS  reduce 32
-	PLUSEQUALS  reduce 32
-	'='  reduce 32
-	'>'  reduce 32
-	'<'  reduce 32
-	'+'  reduce 32
-	'-'  reduce 32
-	']'  reduce 32
-	')'  reduce 32
-	','  reduce 32
-	';'  reduce 32
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	'='  reduce 47
+	']'  reduce 47
+	')'  reduce 47
+	','  reduce 47
+	';'  reduce 47
 
 
 state 159
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression '*' expression .  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression MINUSEQUALS expression .  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
 
-	INC  shift 115
-	DEC  shift 116
-	'['  shift 129
-	'.'  shift 130
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	'='  reduce 46
+	']'  reduce 46
+	')'  reduce 46
+	','  reduce 46
+	';'  reduce 46
+
+
+state 160
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression PLUSEQUALS expression .  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	'='  reduce 45
+	']'  reduce 45
+	')'  reduce 45
+	','  reduce 45
+	';'  reduce 45
+
+
+state 161
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+	assignment : expression '=' expression .  (83)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	';'  reduce 83
+
+
+state 162
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression '>' expression .  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+
+	INC  shift 120
+	DEC  shift 121
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	LEQ  reduce 36
+	GEQ  reduce 36
+	DOUBLEEQUALS  reduce 36
+	DIFFERENT  reduce 36
+	AND  reduce 36
+	OR  reduce 36
+	DIVIDEEQUALS  reduce 36
+	TIMESEQUALS  reduce 36
+	MINUSEQUALS  reduce 36
+	PLUSEQUALS  reduce 36
+	'='  reduce 36
+	'>'  reduce 36
+	'<'  reduce 36
+	']'  reduce 36
+	')'  reduce 36
+	','  reduce 36
+	';'  reduce 36
+
+
+state 163
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression '<' expression .  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+
+	INC  shift 120
+	DEC  shift 121
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	LEQ  reduce 38
+	GEQ  reduce 38
+	DOUBLEEQUALS  reduce 38
+	DIFFERENT  reduce 38
+	AND  reduce 38
+	OR  reduce 38
+	DIVIDEEQUALS  reduce 38
+	TIMESEQUALS  reduce 38
+	MINUSEQUALS  reduce 38
+	PLUSEQUALS  reduce 38
+	'='  reduce 38
+	'>'  reduce 38
+	'<'  reduce 38
+	']'  reduce 38
+	')'  reduce 38
+	','  reduce 38
+	';'  reduce 38
+
+
+state 164
+	expression : expression . '+' expression  (30)
+	expression : expression '+' expression .  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+
+	INC  shift 120
+	DEC  shift 121
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
 	LEQ  reduce 30
 	GEQ  reduce 30
 	DOUBLEEQUALS  reduce 30
@@ -2812,43 +2826,92 @@ state 159
 	'<'  reduce 30
 	'+'  reduce 30
 	'-'  reduce 30
-	'*'  reduce 30
-	'/'  reduce 30
-	'%'  reduce 30
 	']'  reduce 30
 	')'  reduce 30
 	','  reduce 30
 	';'  reduce 30
 
 
-state 160
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression '/' expression .  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
+state 165
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression '-' expression .  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
 
-	INC  shift 115
-	DEC  shift 116
-	'['  shift 129
-	'.'  shift 130
+	INC  shift 120
+	DEC  shift 121
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	LEQ  reduce 33
+	GEQ  reduce 33
+	DOUBLEEQUALS  reduce 33
+	DIFFERENT  reduce 33
+	AND  reduce 33
+	OR  reduce 33
+	DIVIDEEQUALS  reduce 33
+	TIMESEQUALS  reduce 33
+	MINUSEQUALS  reduce 33
+	PLUSEQUALS  reduce 33
+	'='  reduce 33
+	'>'  reduce 33
+	'<'  reduce 33
+	'+'  reduce 33
+	'-'  reduce 33
+	']'  reduce 33
+	')'  reduce 33
+	','  reduce 33
+	';'  reduce 33
+
+
+state 166
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression '*' expression .  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+
+	INC  shift 120
+	DEC  shift 121
+	'['  shift 134
+	'.'  shift 135
 	LEQ  reduce 31
 	GEQ  reduce 31
 	DOUBLEEQUALS  reduce 31
@@ -2873,594 +2936,679 @@ state 160
 	';'  reduce 31
 
 
-state 161
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression '%' expression .  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
+state 167
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression '/' expression .  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
 
-	INC  shift 115
-	DEC  shift 116
-	'['  shift 129
-	'.'  shift 130
-	LEQ  reduce 33
-	GEQ  reduce 33
-	DOUBLEEQUALS  reduce 33
-	DIFFERENT  reduce 33
-	AND  reduce 33
-	OR  reduce 33
-	DIVIDEEQUALS  reduce 33
-	TIMESEQUALS  reduce 33
-	MINUSEQUALS  reduce 33
-	PLUSEQUALS  reduce 33
-	'='  reduce 33
-	'>'  reduce 33
-	'<'  reduce 33
-	'+'  reduce 33
-	'-'  reduce 33
-	'*'  reduce 33
-	'/'  reduce 33
-	'%'  reduce 33
-	']'  reduce 33
-	')'  reduce 33
-	','  reduce 33
-	';'  reduce 33
+	INC  shift 120
+	DEC  shift 121
+	'['  shift 134
+	'.'  shift 135
+	LEQ  reduce 32
+	GEQ  reduce 32
+	DOUBLEEQUALS  reduce 32
+	DIFFERENT  reduce 32
+	AND  reduce 32
+	OR  reduce 32
+	DIVIDEEQUALS  reduce 32
+	TIMESEQUALS  reduce 32
+	MINUSEQUALS  reduce 32
+	PLUSEQUALS  reduce 32
+	'='  reduce 32
+	'>'  reduce 32
+	'<'  reduce 32
+	'+'  reduce 32
+	'-'  reduce 32
+	'*'  reduce 32
+	'/'  reduce 32
+	'%'  reduce 32
+	']'  reduce 32
+	')'  reduce 32
+	','  reduce 32
+	';'  reduce 32
 
 
-state 162
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	array : expression . '[' expression ']'  (73)
-	array : expression '[' expression . ']'  (73)
+state 168
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression '%' expression .  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
 
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	']'  shift 170
-	'.'  shift 130
+	INC  shift 120
+	DEC  shift 121
+	'['  shift 134
+	'.'  shift 135
+	LEQ  reduce 34
+	GEQ  reduce 34
+	DOUBLEEQUALS  reduce 34
+	DIFFERENT  reduce 34
+	AND  reduce 34
+	OR  reduce 34
+	DIVIDEEQUALS  reduce 34
+	TIMESEQUALS  reduce 34
+	MINUSEQUALS  reduce 34
+	PLUSEQUALS  reduce 34
+	'='  reduce 34
+	'>'  reduce 34
+	'<'  reduce 34
+	'+'  reduce 34
+	'-'  reduce 34
+	'*'  reduce 34
+	'/'  reduce 34
+	'%'  reduce 34
+	']'  reduce 34
+	')'  reduce 34
+	','  reduce 34
+	';'  reduce 34
+
+
+state 169
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	array : expression . '[' expression ']'  (75)
+	array : expression '[' expression . ']'  (75)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	']'  shift 179
+	'.'  shift 135
 	.  error
 
 
-state 163
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	expression : expression '.' expression .  (52)
-	array : expression . '[' expression ']'  (73)
+state 170
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	expression : expression '.' expression .  (53)
+	array : expression . '[' expression ']'  (75)
 
-	.  reduce 52
+	.  reduce 53
 
 
-state 164
+state 171
 	function_invocation : ID '(' listOfExpressions ')' .  (8)
 
 	.  reduce 8
 
 
-state 165
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	listOfExpressions : listOfExpressions ',' expression .  (66)
-	array : expression . '[' expression ']'  (73)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	')'  reduce 66
-	','  reduce 66
-	';'  reduce 66
-
-
-state 166
-	if_else : IF '(' expression ')' . if_body ELSE if_body  (59)
-	if_else : IF '(' expression ')' . if_body  (60)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	WRITE  shift 74
-	READ  shift 75
-	IF  shift 76
-	WHILE  shift 77
-	RETURN  shift 78
-	FOR  shift 79
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	'{'  shift 171
-	.  error
-
-	function_invocation  goto 83
-	statement  goto 172
-	expression  goto 85
-	read  goto 86
-	write  goto 87
-	assignment  goto 88
-	if_else  goto 89
-	while  goto 90
-	for  goto 91
-	return  goto 92
-	cast  goto 93
-	array  goto 94
-	if_body  goto 173
-
-
-state 167
-	while : WHILE '(' expression ')' . if_body  (63)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	WRITE  shift 74
-	READ  shift 75
-	IF  shift 76
-	WHILE  shift 77
-	RETURN  shift 78
-	FOR  shift 79
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	'{'  shift 171
-	.  error
-
-	function_invocation  goto 83
-	statement  goto 172
-	expression  goto 85
-	read  goto 86
-	write  goto 87
-	assignment  goto 88
-	if_else  goto 89
-	while  goto 90
-	for  goto 91
-	return  goto 92
-	cast  goto 93
-	array  goto 94
-	if_body  goto 174
-
-
-state 168
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	for : FOR '(' statement expression . ';' expression ')' if_body  (64)
-	array : expression . '[' expression ']'  (73)
-
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	';'  shift 175
-	.  error
-
-
-state 169
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	cast : '(' built_in_type ')' expression .  (65)
-	array : expression . '[' expression ']'  (73)
-
-	'['  shift 129
-	'.'  shift 130
-	LEQ  reduce 65
-	GEQ  reduce 65
-	DOUBLEEQUALS  reduce 65
-	DIFFERENT  reduce 65
-	AND  reduce 65
-	OR  reduce 65
-	INC  reduce 65
-	DEC  reduce 65
-	DIVIDEEQUALS  reduce 65
-	TIMESEQUALS  reduce 65
-	MINUSEQUALS  reduce 65
-	PLUSEQUALS  reduce 65
-	'='  reduce 65
-	'>'  reduce 65
-	'<'  reduce 65
-	'+'  reduce 65
-	'-'  reduce 65
-	'*'  reduce 65
-	'/'  reduce 65
-	'%'  reduce 65
-	']'  reduce 65
-	')'  reduce 65
-	','  reduce 65
-	';'  reduce 65
-
-
-state 170
-	array : expression '[' expression ']' .  (73)
-
-	.  reduce 73
-
-
-state 171
-	if_body : '{' . listOfStatements '}'  (61)
-	listOfStatements : .  (17)
-
-	.  reduce 17
-
-	listOfStatements  goto 176
-
-
 state 172
-	if_body : statement .  (62)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	listOfExpressions : listOfExpressions ',' expression .  (68)
+	array : expression . '[' expression ']'  (75)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	')'  reduce 68
+	','  reduce 68
+	';'  reduce 68
+
+
+state 173
+	if_else : IF '(' expression ')' . if_body ELSE if_body  (60)
+	if_else : IF '(' expression ')' . if_body  (61)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	WRITE  shift 74
+	READ  shift 75
+	IF  shift 76
+	WHILE  shift 77
+	RETURN  shift 78
+	FOR  shift 79
+	DO  shift 80
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	'{'  shift 107
+	.  error
+
+	function_invocation  goto 84
+	statement  goto 108
+	expression  goto 86
+	read  goto 87
+	write  goto 88
+	assignment  goto 89
+	if_else  goto 90
+	while  goto 91
+	for  goto 92
+	do_while  goto 93
+	return  goto 94
+	cast  goto 95
+	array  goto 96
+	if_body  goto 180
+
+
+state 174
+	while : WHILE '(' expression ')' . if_body  (64)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	WRITE  shift 74
+	READ  shift 75
+	IF  shift 76
+	WHILE  shift 77
+	RETURN  shift 78
+	FOR  shift 79
+	DO  shift 80
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	'{'  shift 107
+	.  error
+
+	function_invocation  goto 84
+	statement  goto 108
+	expression  goto 86
+	read  goto 87
+	write  goto 88
+	assignment  goto 89
+	if_else  goto 90
+	while  goto 91
+	for  goto 92
+	do_while  goto 93
+	return  goto 94
+	cast  goto 95
+	array  goto 96
+	if_body  goto 181
+
+
+state 175
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	for : FOR '(' statement expression . ';' expression ')' if_body  (66)
+	array : expression . '[' expression ']'  (75)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	';'  shift 182
+	.  error
+
+
+state 176
+	if_body : '{' listOfStatements '}' .  (62)
 
 	.  reduce 62
 
 
-state 173
-	if_else : IF '(' expression ')' if_body . ELSE if_body  (59)
-	if_else : IF '(' expression ')' if_body .  (60)
-
-	ELSE  shift 177
-	INT_CONSTANT  reduce 60
-	CHAR_CONSTANT  reduce 60
-	REAL_CONSTANT  reduce 60
-	ID  reduce 60
-	WRITE  reduce 60
-	READ  reduce 60
-	IF  reduce 60
-	WHILE  reduce 60
-	RETURN  reduce 60
-	FOR  reduce 60
-	'!'  reduce 60
-	'-'  reduce 60
-	'('  reduce 60
-	'}'  reduce 60
-
-
-state 174
-	while : WHILE '(' expression ')' if_body .  (63)
-
-	.  reduce 63
-
-
-state 175
-	for : FOR '(' statement expression ';' . expression ')' if_body  (64)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	.  error
-
-	function_invocation  goto 83
-	expression  goto 178
-	cast  goto 93
-	array  goto 94
-
-
-state 176
-	listOfStatements : listOfStatements . statement  (16)
-	if_body : '{' listOfStatements . '}'  (61)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	WRITE  shift 74
-	READ  shift 75
-	IF  shift 76
-	WHILE  shift 77
-	RETURN  shift 78
-	FOR  shift 79
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	'}'  shift 179
-	.  error
-
-	function_invocation  goto 83
-	statement  goto 84
-	expression  goto 85
-	read  goto 86
-	write  goto 87
-	assignment  goto 88
-	if_else  goto 89
-	while  goto 90
-	for  goto 91
-	return  goto 92
-	cast  goto 93
-	array  goto 94
-
-
 state 177
-	if_else : IF '(' expression ')' if_body ELSE . if_body  (59)
+	do_while : DO if_body WHILE '(' . expression ')'  (65)
 
 	INT_CONSTANT  shift 70
 	CHAR_CONSTANT  shift 71
 	REAL_CONSTANT  shift 72
 	ID  shift 73
-	WRITE  shift 74
-	READ  shift 75
-	IF  shift 76
-	WHILE  shift 77
-	RETURN  shift 78
-	FOR  shift 79
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	'{'  shift 171
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
 	.  error
 
-	function_invocation  goto 83
-	statement  goto 172
-	expression  goto 85
-	read  goto 86
-	write  goto 87
-	assignment  goto 88
-	if_else  goto 89
-	while  goto 90
-	for  goto 91
-	return  goto 92
-	cast  goto 93
-	array  goto 94
-	if_body  goto 180
+	function_invocation  goto 84
+	expression  goto 183
+	cast  goto 95
+	array  goto 96
 
 
 state 178
-	expression : expression . '+' expression  (29)
-	expression : expression . '*' expression  (30)
-	expression : expression . '/' expression  (31)
-	expression : expression . '-' expression  (32)
-	expression : expression . '%' expression  (33)
-	expression : expression . DOUBLEEQUALS expression  (34)
-	expression : expression . '>' expression  (35)
-	expression : expression . GEQ expression  (36)
-	expression : expression . '<' expression  (37)
-	expression : expression . LEQ expression  (38)
-	expression : expression . DIFFERENT expression  (39)
-	expression : expression . AND expression  (40)
-	expression : expression . OR expression  (41)
-	expression : expression . INC  (42)
-	expression : expression . DEC  (43)
-	expression : expression . PLUSEQUALS expression  (44)
-	expression : expression . MINUSEQUALS expression  (45)
-	expression : expression . TIMESEQUALS expression  (46)
-	expression : expression . DIVIDEEQUALS expression  (47)
-	expression : expression . '.' expression  (52)
-	for : FOR '(' statement expression ';' expression . ')' if_body  (64)
-	array : expression . '[' expression ']'  (73)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	cast : '(' built_in_type ')' expression .  (67)
+	array : expression . '[' expression ']'  (75)
 
-	LEQ  shift 109
-	GEQ  shift 110
-	DOUBLEEQUALS  shift 111
-	DIFFERENT  shift 112
-	AND  shift 113
-	OR  shift 114
-	INC  shift 115
-	DEC  shift 116
-	DIVIDEEQUALS  shift 117
-	TIMESEQUALS  shift 118
-	MINUSEQUALS  shift 119
-	PLUSEQUALS  shift 120
-	'>'  shift 122
-	'<'  shift 123
-	'+'  shift 124
-	'-'  shift 125
-	'*'  shift 126
-	'/'  shift 127
-	'%'  shift 128
-	'['  shift 129
-	'.'  shift 130
-	')'  shift 181
-	.  error
+	'['  shift 134
+	'.'  shift 135
+	LEQ  reduce 67
+	GEQ  reduce 67
+	DOUBLEEQUALS  reduce 67
+	DIFFERENT  reduce 67
+	AND  reduce 67
+	OR  reduce 67
+	INC  reduce 67
+	DEC  reduce 67
+	DIVIDEEQUALS  reduce 67
+	TIMESEQUALS  reduce 67
+	MINUSEQUALS  reduce 67
+	PLUSEQUALS  reduce 67
+	'='  reduce 67
+	'>'  reduce 67
+	'<'  reduce 67
+	'+'  reduce 67
+	'-'  reduce 67
+	'*'  reduce 67
+	'/'  reduce 67
+	'%'  reduce 67
+	']'  reduce 67
+	')'  reduce 67
+	','  reduce 67
+	';'  reduce 67
 
 
 state 179
-	if_body : '{' listOfStatements '}' .  (61)
+	array : expression '[' expression ']' .  (75)
 
-	.  reduce 61
+	.  reduce 75
 
 
 state 180
-	if_else : IF '(' expression ')' if_body ELSE if_body .  (59)
+	if_else : IF '(' expression ')' if_body . ELSE if_body  (60)
+	if_else : IF '(' expression ')' if_body .  (61)
 
-	.  reduce 59
+	ELSE  shift 184
+	INT_CONSTANT  reduce 61
+	CHAR_CONSTANT  reduce 61
+	REAL_CONSTANT  reduce 61
+	ID  reduce 61
+	WRITE  reduce 61
+	READ  reduce 61
+	IF  reduce 61
+	WHILE  reduce 61
+	RETURN  reduce 61
+	FOR  reduce 61
+	DO  reduce 61
+	'!'  reduce 61
+	'-'  reduce 61
+	'('  reduce 61
+	'}'  reduce 61
 
 
 state 181
-	for : FOR '(' statement expression ';' expression ')' . if_body  (64)
-
-	INT_CONSTANT  shift 70
-	CHAR_CONSTANT  shift 71
-	REAL_CONSTANT  shift 72
-	ID  shift 73
-	WRITE  shift 74
-	READ  shift 75
-	IF  shift 76
-	WHILE  shift 77
-	RETURN  shift 78
-	FOR  shift 79
-	'!'  shift 80
-	'-'  shift 81
-	'('  shift 82
-	'{'  shift 171
-	.  error
-
-	function_invocation  goto 83
-	statement  goto 172
-	expression  goto 85
-	read  goto 86
-	write  goto 87
-	assignment  goto 88
-	if_else  goto 89
-	while  goto 90
-	for  goto 91
-	return  goto 92
-	cast  goto 93
-	array  goto 94
-	if_body  goto 182
-
-
-state 182
-	for : FOR '(' statement expression ';' expression ')' if_body .  (64)
+	while : WHILE '(' expression ')' if_body .  (64)
 
 	.  reduce 64
 
 
-52 terminals, 32 nonterminals
-86 grammar rules, 183 states
+state 182
+	for : FOR '(' statement expression ';' . expression ')' if_body  (66)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	.  error
+
+	function_invocation  goto 84
+	expression  goto 185
+	cast  goto 95
+	array  goto 96
+
+
+state 183
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	do_while : DO if_body WHILE '(' expression . ')'  (65)
+	array : expression . '[' expression ']'  (75)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	')'  shift 186
+	.  error
+
+
+state 184
+	if_else : IF '(' expression ')' if_body ELSE . if_body  (60)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	WRITE  shift 74
+	READ  shift 75
+	IF  shift 76
+	WHILE  shift 77
+	RETURN  shift 78
+	FOR  shift 79
+	DO  shift 80
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	'{'  shift 107
+	.  error
+
+	function_invocation  goto 84
+	statement  goto 108
+	expression  goto 86
+	read  goto 87
+	write  goto 88
+	assignment  goto 89
+	if_else  goto 90
+	while  goto 91
+	for  goto 92
+	do_while  goto 93
+	return  goto 94
+	cast  goto 95
+	array  goto 96
+	if_body  goto 187
+
+
+state 185
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . DOUBLEEQUALS expression  (35)
+	expression : expression . '>' expression  (36)
+	expression : expression . GEQ expression  (37)
+	expression : expression . '<' expression  (38)
+	expression : expression . LEQ expression  (39)
+	expression : expression . DIFFERENT expression  (40)
+	expression : expression . AND expression  (41)
+	expression : expression . OR expression  (42)
+	expression : expression . INC  (43)
+	expression : expression . DEC  (44)
+	expression : expression . PLUSEQUALS expression  (45)
+	expression : expression . MINUSEQUALS expression  (46)
+	expression : expression . TIMESEQUALS expression  (47)
+	expression : expression . DIVIDEEQUALS expression  (48)
+	expression : expression . '.' expression  (53)
+	for : FOR '(' statement expression ';' expression . ')' if_body  (66)
+	array : expression . '[' expression ']'  (75)
+
+	LEQ  shift 114
+	GEQ  shift 115
+	DOUBLEEQUALS  shift 116
+	DIFFERENT  shift 117
+	AND  shift 118
+	OR  shift 119
+	INC  shift 120
+	DEC  shift 121
+	DIVIDEEQUALS  shift 122
+	TIMESEQUALS  shift 123
+	MINUSEQUALS  shift 124
+	PLUSEQUALS  shift 125
+	'>'  shift 127
+	'<'  shift 128
+	'+'  shift 129
+	'-'  shift 130
+	'*'  shift 131
+	'/'  shift 132
+	'%'  shift 133
+	'['  shift 134
+	'.'  shift 135
+	')'  shift 188
+	.  error
+
+
+state 186
+	do_while : DO if_body WHILE '(' expression ')' .  (65)
+
+	.  reduce 65
+
+
+state 187
+	if_else : IF '(' expression ')' if_body ELSE if_body .  (60)
+
+	.  reduce 60
+
+
+state 188
+	for : FOR '(' statement expression ';' expression ')' . if_body  (66)
+
+	INT_CONSTANT  shift 70
+	CHAR_CONSTANT  shift 71
+	REAL_CONSTANT  shift 72
+	ID  shift 73
+	WRITE  shift 74
+	READ  shift 75
+	IF  shift 76
+	WHILE  shift 77
+	RETURN  shift 78
+	FOR  shift 79
+	DO  shift 80
+	'!'  shift 81
+	'-'  shift 82
+	'('  shift 83
+	'{'  shift 107
+	.  error
+
+	function_invocation  goto 84
+	statement  goto 108
+	expression  goto 86
+	read  goto 87
+	write  goto 88
+	assignment  goto 89
+	if_else  goto 90
+	while  goto 91
+	for  goto 92
+	do_while  goto 93
+	return  goto 94
+	cast  goto 95
+	array  goto 96
+	if_body  goto 189
+
+
+state 189
+	for : FOR '(' statement expression ';' expression ')' if_body .  (66)
+
+	.  reduce 66
+
+
+53 terminals, 33 nonterminals
+88 grammar rules, 190 states

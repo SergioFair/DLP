@@ -1,16 +1,10 @@
 int a;
 
-int cipote(){}
-
-int america(int i){
-	for(i=0;i<2;cipote()){
-		a+=i;
-		a-=i;
-	}
-}
-
 void main(){
 	int i;
-	america(i);
+	i=0;
+	do {
+		i++;
+	} while(i<2)
 	a = 0;
 }
