@@ -1,4 +1,8 @@
 # DLP
+
+## To repair:
+- Indexing with field access
+
 ## Ampliations:
 - Increment
 - Decrement
@@ -10,6 +14,7 @@
 1) **Parameter passing as reference.**
 2) **Switch case.**
 3) **Potential operator.**
+4) **Multiple comparison (<< or >>)**
 
 1. I need a new class (Reference) that implements Expression and also stores an Expression which has to be lvalue (be careful with indexing). It cannot be called outside of an invocation. I have to change the parser also to allow the passed parameters to be instances of Reference class.
 2. The Switch class needs an Expression that has to be lvalue, then a List of Cases (this is an approach of the Composite desing pattern), and an optional last one (default, have to think about it). Each Case needs an expression and a set of statements being the last of them "break".
