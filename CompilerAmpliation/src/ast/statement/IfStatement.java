@@ -43,15 +43,15 @@ public class IfStatement implements Statement {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("IfStatement: if(").append(condition.toString()).append(") {\n");
+	StringBuilder sb = new StringBuilder().append("if (").append(condition.toString()).append(") {\n");
 	for (int i = 0; i < ifBody.size(); i++) {
-	    sb.append("\t").append(ifBody.get(i));
+	    sb.append("  ").append(ifBody.get(i).toString()).append(";\n");
 	}
 	sb.append("}\n");
 	if (!elseBody.isEmpty()) {
 	    sb.append("else {\n");
 	    for (int i = 0; i < elseBody.size(); i++)
-		sb.append("\t").append(elseBody.get(i)).append("\n");
+		sb.append("\t").append(elseBody.get(i).toString()).append(";\n");
 	    sb.append("}");
 	}
 	return sb.toString();

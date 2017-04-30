@@ -39,7 +39,7 @@ public class VariableDefinition implements Definition, Statement {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("Variable definition:").append(type.toString()).append(" ")
+	StringBuilder sb = new StringBuilder(type.toString()).append(" ")
 		.append(getName()).append(";");
 	return sb.toString();
     }

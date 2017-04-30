@@ -34,7 +34,7 @@ public class IntLiteral implements Expression {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder("Int_Literal: ").append(getValue());
+	StringBuilder sb = new StringBuilder().append(getValue());
 	return sb.toString();
     }
 

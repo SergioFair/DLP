@@ -14,7 +14,7 @@ public class IntType extends AbstractType {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("IntType: ").append("int");
+	StringBuilder sb = new StringBuilder("int");
 	return sb.toString();
     }
 
@@ -83,11 +83,6 @@ public class IntType extends AbstractType {
     @Override
     public Type comparison(Type type){
 	return higherThan(type);
-    }
-    
-    @Override
-    public Type increment() {
-	return this;
     }
 
 }

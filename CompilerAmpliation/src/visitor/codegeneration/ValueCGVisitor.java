@@ -1,14 +1,11 @@
 package visitor.codegeneration;
 
 import ast.expression.Arithmetic;
-import ast.expression.ArithmeticAssignment;
 import ast.expression.Cast;
 import ast.expression.CharLiteral;
 import ast.expression.Comparison;
-import ast.expression.Decrement;
 import ast.expression.Expression;
 import ast.expression.FieldAccess;
-import ast.expression.Increment;
 import ast.expression.Indexing;
 import ast.expression.IntLiteral;
 import ast.expression.Logical;
@@ -22,7 +19,7 @@ import visitor.Visitor;
 
 public class ValueCGVisitor extends AbstractCGVisitor {
 
-    private Visitor addrVisitor, execVisitor;
+    private Visitor addrVisitor;
 
     @Override
     public Object visit(Arithmetic ar, Object params) {
@@ -30,15 +27,7 @@ public class ValueCGVisitor extends AbstractCGVisitor {
 	CodeGenerator.getInstance().convertTo(ar.getLeft().getType(), ar.getType());
 	ar.getRight().accept(this, params);
 	CodeGenerator.getInstance().convertTo(ar.getRight().getType(), ar.getType());
-	CodeGenerator.getInstance().arithmetic(ar.getOperator(), ar.getType());
-	return null;
-    }
-    
-    @Override
-    public Object visit(ArithmeticAssignment ar, Object params){
-	ar.accept(execVisitor, params);
-	ar.getLeft().accept(addrVisitor, params);
-	CodeGenerator.getInstance().load(ar.getType());
+	CodeGenerator.getInstance().arithmetic(ar);
 	return null;
     }
 
@@ -64,27 +53,11 @@ public class ValueCGVisitor extends AbstractCGVisitor {
 	CodeGenerator.getInstance().comparison(compar.getType(), compar.getOperator());
 	return null;
     }
-    
-    @Override
-    public Object visit(Decrement dec, Object params) {
-	dec.accept(execVisitor, params);
-	dec.getExpression().accept(addrVisitor, params);
-	CodeGenerator.getInstance().load(dec.getType());
-	return null;
-    }
 
     @Override
     public Object visit(FieldAccess field, Object params) {
 	field.accept(addrVisitor, params);
 	CodeGenerator.getInstance().load(field.getType());
-	return null;
-    }
-    
-    @Override
-    public Object visit(Increment inc, Object params) {
-	inc.accept(execVisitor, params);
-	inc.getExpression().accept(addrVisitor, params);
-	CodeGenerator.getInstance().load(inc.getType());
 	return null;
     }
 
@@ -118,6 +91,12 @@ public class ValueCGVisitor extends AbstractCGVisitor {
 	CodeGenerator.getInstance().logical(log.getOperator());
 	return null;
     }
+    
+//    @Override
+//    public Object visit(Power pow, Object params) {
+//	pow.getLeft().accept(this, params);
+//	return null;
+//    }
 
     @Override
     public Object visit(RealLiteral real, Object params) {
@@ -150,9 +129,5 @@ public class ValueCGVisitor extends AbstractCGVisitor {
 
     void setAddressVisitor(AddressCGVisitor visitor) {
 	this.addrVisitor = visitor;
-    }
-    
-    void setExecuteVisitor(ExecuteCGVisitor visitor) {
-	this.execVisitor = visitor;
     }
 }

@@ -38,7 +38,7 @@ public class FieldAccess implements Expression {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder("Field access: ").append(left.toString()).append(".").append(name);
+	StringBuilder sb = new StringBuilder(left.toString()).append(".").append(name);
 	return sb.toString();
     }
 

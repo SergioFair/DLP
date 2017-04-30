@@ -9,7 +9,8 @@ public class RecordField extends AbstractType {
     public Type type;
 
     public RecordField(int line, int column, Type type, String name) {
-	super(line, column);
+	this.line = line;
+	this.column = column;
 	this.name = name;
 	this.type = type;
     }
@@ -24,8 +25,7 @@ public class RecordField extends AbstractType {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("RecordField: ").append(type.toString()).append(" ")
-		.append(getName());
+	StringBuilder sb = new StringBuilder(type.toString()).append(" ").append(getName());
 	return sb.toString();
     }
 
@@ -44,23 +44,23 @@ public class RecordField extends AbstractType {
 	v.visit(this, params);
 	return null;
     }
-    
+
     @Override
-    public int numberOfBytes(){
+    public int numberOfBytes() {
 	return getType().numberOfBytes();
     }
-    
-    public int getOffset(){
+
+    public int getOffset() {
 	return this.offset;
     }
-    
-    public void setOffset(int offset){
+
+    public void setOffset(int offset) {
 	this.offset = offset;
     }
-    
+
     @Override
-    public String toInstruction(){
-	return getName()+":"+getType().toInstruction()+"\n";
+    public String toInstruction() {
+	return getName() + ":" + getType().toInstruction() + "\n";
     }
 
 }

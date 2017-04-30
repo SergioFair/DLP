@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import ast.expression.Arithmetic;
 import ast.program.VariableDefinition;
 import ast.type.ArrayType;
 import ast.type.CharType;
@@ -398,6 +399,10 @@ public class CodeGenerator {
 	    if (current instanceof CharType) {
 		if (next instanceof IntType)
 		    b2i();
+		else if(next instanceof RealType){
+		    b2i();
+		    i2f();
+		}
 		else
 		    throw new IllegalStateException("Code generation was not possible");
 	    } else if (current instanceof IntType) {
@@ -410,6 +415,10 @@ public class CodeGenerator {
 	    } else if (current instanceof RealType) {
 		if (next instanceof IntType)
 		    f2i();
+		else if(next instanceof CharType) {
+		    f2i();
+		    i2b();
+		}
 		else
 		    throw new IllegalStateException("Code generation was not possible");
 	    } else if (current instanceof ArrayType) {
@@ -437,19 +446,19 @@ public class CodeGenerator {
 	}
     }
 
-    public void arithmetic(String operator, Type type) {
-	switch (operator) {
+    public void arithmetic(Arithmetic ar) {
+	switch (ar.getOperator()) {
 	case "+":
-	    add(type);
+	    add(ar.getType());
 	    break;
 	case "-":
-	    sub(type);
+	    sub(ar.getType());
 	    break;
 	case "*":
-	    mul(type);
+	    mul(ar.getType());
 	    break;
 	case "/":
-	    div(type);
+	    div(ar.getType());
 	    break;
 	case "%":
 	    mod();

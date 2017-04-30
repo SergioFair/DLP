@@ -34,8 +34,7 @@ public class Variable implements Expression {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder("Variable: ").append(getName());
-	return sb.toString();
+	return getName();
     }
 
     @Override

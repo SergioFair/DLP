@@ -33,7 +33,7 @@ public class Cast implements Expression {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("Cast: (").append(type.toString()).append(")")
+	StringBuilder sb = new StringBuilder().append("(").append(type.toString()).append(")")
 		.append(expression.toString());
 	return sb.toString();
     }

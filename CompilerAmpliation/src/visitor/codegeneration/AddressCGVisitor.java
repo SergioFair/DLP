@@ -30,7 +30,7 @@ public class AddressCGVisitor extends AbstractCGVisitor {
 	field.getLeft().accept(this, params);
 	CodeGenerator.getInstance().push(IntType.getInstance(),
 		field.getLeft().getType().getField(field.getName()).getOffset());
-	CodeGenerator.getInstance().add(field.getType());
+	CodeGenerator.getInstance().add(IntType.getInstance());
 	return null;
     }
 

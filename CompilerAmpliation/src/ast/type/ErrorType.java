@@ -10,7 +10,8 @@ public class ErrorType extends AbstractType {
     public String message;
 
     public ErrorType(int line, int column, String message) {
-	super(line, column);
+	this.line = line;
+	this.column = column;
 	this.message = message;
 	ErrorHandler.getInstance().addError(this);
     }
@@ -34,6 +35,16 @@ public class ErrorType extends AbstractType {
     public Object accept(Visitor v, Object params) {
 	v.visit(this, params);
 	return null;
+    }
+    
+    @Override
+    public int getLine(){
+	return this.line;
+    }
+    
+    @Override
+    public int getColumn(){
+	return this.column;
     }
 
 }

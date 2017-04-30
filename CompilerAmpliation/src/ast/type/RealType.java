@@ -14,7 +14,7 @@ public class RealType extends AbstractType {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("RealType: ").append("double");
+	StringBuilder sb = new StringBuilder("double");
 	return sb.toString();
     }
 
@@ -64,11 +64,6 @@ public class RealType extends AbstractType {
 	    return this;
 	else
 	    return null;
-    }
-    
-    @Override
-    public Type increment() {
-	return this;
     }
 
 }

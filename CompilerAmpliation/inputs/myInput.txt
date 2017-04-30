@@ -1,10 +1,8 @@
-int a;
+struct{
+	struct{int b;} [4] a;
+} [5] dates;
 
 void main(){
-	int i;
-	i=0;
-	do {
-		i++;
-	} while(i<2)
-	a = 0;
+	dates[1].a[1].b = 5;
+	write dates[1].a[1].b;
 }

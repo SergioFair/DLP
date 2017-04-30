@@ -39,10 +39,10 @@ public class FunctionDefinition implements Definition {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("Function definition: ").append(getType().toString())
-		.append("{\n");
+	StringBuilder sb = new StringBuilder().append(getType().toString())
+		.append(" {\n");
 	for (Statement stm : getBody()) {
-	    sb.append(stm.toString()).append("\n");
+	    sb.append("  ").append(stm.toString()).append("\n");
 	}
 	sb.append("}\n");
 	return sb.toString();

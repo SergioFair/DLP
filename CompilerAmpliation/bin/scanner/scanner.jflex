@@ -155,6 +155,8 @@ do					{ yylval = "do";
 					  return Parser.TIMESEQUALS; }
 "/="				{ this.yylval = yytext();
 					  return Parser.DIVIDEEQUALS; }
+"**"|"^"			{ this.yylval = yytext();
+					  return Parser.POTENTIAL; }
 					
 // * Dot
 					  

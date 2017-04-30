@@ -3,17 +3,18 @@ package ast.expression;
 import ast.type.Type;
 import visitor.Visitor;
 
-public class Increment implements Incrementable {
-
+public class Power implements Expression {
+    
     public int line, column;
-    public Expression expression;
+    public boolean lval;
     public Type type;
-    public boolean lvalue;
-
-    public Increment(int line, int column, Expression exp) {
+    public Expression right, left;
+    
+    public Power(int line, int column, Expression left, Expression right){
 	this.line = line;
 	this.column = column;
-	this.expression = exp;
+	this.left = left;
+	this.right = right;
     }
 
     @Override
@@ -28,18 +29,17 @@ public class Increment implements Incrementable {
 
     @Override
     public Object accept(Visitor v, Object params) {
-	v.visit(this, params);
-	return null;
+	return v.visit(this, params);
     }
 
     @Override
     public boolean getLValue() {
-	return this.lvalue;
+	return this.lval;
     }
 
     @Override
     public void setLValue(boolean lval) {
-	this.lvalue = lval;
+	this.lval = lval;
     }
 
     @Override
@@ -51,15 +51,13 @@ public class Increment implements Incrementable {
     public Type getType() {
 	return this.type;
     }
-
-    public Expression getExpression() {
-	return this.expression;
+    
+    public Expression getLeft(){
+	return this.left;
     }
-
-    @Override
-    public String toString() {
-	StringBuilder sb = new StringBuilder("Increment: ").append(expression.toString()).append("++");
-	return sb.toString();
+    
+    public Expression getRight(){
+	return this.right;
     }
 
 }

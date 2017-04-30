@@ -110,11 +110,4 @@ public interface Type extends ASTNode {
      */
     public String toInstruction();
 
-    /**
-     * Checks wheter a type can be incremented/decremented
-     * or not.
-     * @return the type, or null.
-     */
-    public Type increment();
-
 }

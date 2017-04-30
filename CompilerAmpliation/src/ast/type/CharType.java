@@ -15,7 +15,7 @@ public class CharType extends AbstractType {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("CharType: ").append("char");
+	StringBuilder sb = new StringBuilder("char");
 	return sb.toString();
     }
 

@@ -9,7 +9,8 @@ public class ArrayType extends AbstractType {
     public int line, column;
 
     public ArrayType(int line, int column, Type type, int size) {
-    	super(line, column);
+	this.line = line;
+	this.column = column;
 	this.of = type;
 	this.size = size;
     }
@@ -24,8 +25,7 @@ public class ArrayType extends AbstractType {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("ArrayType: ").append(getOf().toString()).append("[")
-		.append(getSize()).append("]");
+	StringBuilder sb = new StringBuilder(getOf().toString()).append("[").append(getSize()).append("]");
 	return sb.toString();
     }
 
@@ -40,10 +40,9 @@ public class ArrayType extends AbstractType {
     }
 
     public static ArrayType orderArray(int line, int column, Type type, int size) {
-	if (!(type instanceof ArrayType)){
+	if (!(type instanceof ArrayType)) {
 	    return new ArrayType(line, column, type, size);
-	}
-	else {
+	} else {
 	    ArrayType oType = (ArrayType) type;
 	    ArrayType apuntador = oType;
 	    Type apuntado = apuntador.of;
@@ -61,31 +60,31 @@ public class ArrayType extends AbstractType {
 	v.visit(this, params);
 	return null;
     }
-    
+
     @Override
-    public Type squareBrackets(Type type){
-	if(!(type instanceof IntType))
+    public Type squareBrackets(Type type) {
+	if (!(type instanceof IntType))
 	    return null;
 	return this.of;
     }
-    
+
     @Override
-    public int numberOfBytes(){
-	return getOf().numberOfBytes()*getSize();
+    public int numberOfBytes() {
+	return getOf().numberOfBytes() * getSize();
     }
-    
+
     @Override
-    public String toInstruction(){
-	return getSize()+"*"+getOf().toInstruction();
+    public String toInstruction() {
+	return getSize() + "*" + getOf().toInstruction();
     }
-    
+
     @Override
-    public String suffix(){
+    public String suffix() {
 	return of.suffix();
     }
-    
+
     @Override
-    public Type promotesTo(Type type){
+    public Type promotesTo(Type type) {
 	return of.promotesTo(type);
     }
 }

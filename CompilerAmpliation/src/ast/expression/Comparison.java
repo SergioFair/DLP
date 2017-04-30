@@ -43,8 +43,7 @@ public class Comparison implements Expression {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder("Comparison: ").append(left.toString()).append(operator)
-		.append(right.toString());
+	StringBuilder sb = new StringBuilder(left.toString()).append(operator).append(right.toString());
 	return sb.toString();
     }
 

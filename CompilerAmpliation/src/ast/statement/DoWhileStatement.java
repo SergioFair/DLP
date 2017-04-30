@@ -45,11 +45,10 @@ public class DoWhileStatement implements Statement {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder("Do while: do ");
-		sb.append(" {\n");
+		StringBuilder sb = new StringBuilder("do {\n");
 		for (Statement st : getBody())
-			sb.append("\t").append(st.toString()).append("\n");
-		sb.append("}");
+			sb.append("  ").append(st.toString()).append(";\n");
+		sb.append("} while (").append(getCondition().toString()).append(")");
 
 		return sb.toString();
 	}

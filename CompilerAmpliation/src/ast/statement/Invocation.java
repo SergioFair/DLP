@@ -42,13 +42,13 @@ public class Invocation implements Statement, Expression {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder("Invocation: ").append(var.getName()).append("(");
+	StringBuilder sb = new StringBuilder(var.getName()).append("(");
 	for (int i = 0; i < params.size(); i++) {
 	    sb.append(params.get(i).toString());
 	    if (i != params.size() - 1)
-		sb.append(",");
+		sb.append(", ");
 	}
-	sb.append(");");
+	sb.append(")");
 	return sb.toString();
     }
 

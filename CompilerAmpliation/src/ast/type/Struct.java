@@ -11,7 +11,8 @@ public class Struct extends AbstractType {
     public int line, column;
 
     public Struct(int line, int column, List<RecordField> records) {
-	super(line, column);
+	this.line = line;
+	this.column = column;
 	this.records = records;
     }
 
@@ -21,8 +22,7 @@ public class Struct extends AbstractType {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder("Struct: ");
-	sb.append("{\n");
+	StringBuilder sb = new StringBuilder("struct {\n");
 	for (RecordField record : records) {
 	    sb.append("\t").append(record.toString()).append(";\n");
 	}

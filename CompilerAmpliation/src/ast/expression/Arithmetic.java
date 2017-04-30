@@ -43,8 +43,7 @@ public class Arithmetic implements Expression {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder("Arithmetic: ");
-	sb.append(left.toString()).append(operator).append(right.toString());
+	StringBuilder sb = new StringBuilder(left.toString()).append(operator).append(right.toString());
 	return sb.toString();
     }
 

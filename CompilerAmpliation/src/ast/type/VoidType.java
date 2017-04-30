@@ -4,26 +4,18 @@ import visitor.Visitor;
 
 public class VoidType extends AbstractType {
 
-    public int line, column;
-
-    public VoidType(int line, int column) {
-	super(line, column);
+    private static VoidType instance = new VoidType();
+    
+    private VoidType() {}
+    
+    public static VoidType getInstance(){
+	return instance;
     }
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("VoidType: void");
+	StringBuilder sb = new StringBuilder("void");
 	return sb.toString();
-    }
-
-    @Override
-    public int getLine() {
-	return this.line;
-    }
-
-    @Override
-    public int getColumn() {
-	return this.column;
     }
 
     @Override

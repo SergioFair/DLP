@@ -59,11 +59,6 @@ public abstract class AbstractType implements Type {
     }
     
     @Override
-    public Type increment() {
-	return null;
-    }
-    
-    @Override
     public int getLine(){
 	return this.line;
     }

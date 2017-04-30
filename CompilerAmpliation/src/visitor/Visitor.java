@@ -1,16 +1,14 @@
 package visitor;
 
 import ast.expression.Arithmetic;
-import ast.expression.ArithmeticAssignment;
 import ast.expression.Cast;
 import ast.expression.CharLiteral;
 import ast.expression.Comparison;
-import ast.expression.Decrement;
 import ast.expression.FieldAccess;
-import ast.expression.Increment;
 import ast.expression.Indexing;
 import ast.expression.IntLiteral;
 import ast.expression.Logical;
+import ast.expression.Power;
 import ast.expression.RealLiteral;
 import ast.expression.UnaryMinus;
 import ast.expression.UnaryNot;
@@ -109,13 +107,9 @@ public interface Visitor {
 
     public Object visit(VoidType vt, Object params);
 
-    public Object visit(Increment increment, Object params);
-
-    public Object visit(Decrement decrement, Object params);
-
-    public Object visit(ArithmeticAssignment arithmeticAssignment, Object params);
-
     public Object visit(ForStatement forStatement, Object params);
 
-	public Object visit(DoWhileStatement doWhileStatement, Object params);
+    public Object visit(DoWhileStatement doWhileStatement, Object params);
+
+    public Object visit(Power power, Object params);
 }

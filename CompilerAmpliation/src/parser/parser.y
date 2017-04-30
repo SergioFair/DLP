@@ -33,6 +33,7 @@ import java.util.*;
 %left '>' GEQ '<' LEQ DIFFERENT DOUBLEEQUALS
 %left '+' '-'
 %left '*' '/' '%'
+%left POTENTIAL
 %right 'unary_minus'
 %nonassoc INC
 %nonassoc DEC
@@ -93,22 +94,19 @@ typed_function: built_in_type ID '(' listOfParameters ')' '{' function_body '}'	
 void_function: VOID ID '(' listOfParameters ')' '{' function_body '}'		{ $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn()
 																			  , new FunctionType(scanner.getLine()
 																			  , scanner.getColumn(), (String) $2,
-																			  (List<VariableDefinition>) $4, new VoidType(
-																			  scanner.getLine(), scanner.getColumn()))
+																			  (List<VariableDefinition>) $4, VoidType.getInstance())
 			 																  , (List<Statement>) $7); }
 			 | VOID ID '(' ')' '{' function_body '}'						{ $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn()
 																			  , new FunctionType(scanner.getLine()
 																			  , scanner.getColumn(), (String) $2,
-																			  new ArrayList<VariableDefinition>(), new VoidType(
-																			  scanner.getLine(), scanner.getColumn()))
+																			  new ArrayList<VariableDefinition>(), VoidType.getInstance())
 			 																  , (List<Statement>) $6); }
 			 ;
 		
 main: VOID MAIN '(' ')' '{' function_body '}'								{ $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn()
 																			  , new FunctionType(scanner.getLine()
 																			  , scanner.getColumn(), (String) $2,
-																			  new ArrayList<VariableDefinition>(), new VoidType(
-																			  scanner.getLine(), scanner.getColumn()))
+																			  new ArrayList<VariableDefinition>(), VoidType.getInstance())
 			 																  , (List<Statement>) $6); }
 	;
 		
@@ -142,6 +140,7 @@ parameter: built_in_type ID								{ $$ = new VariableDefinition(scanner.getLine
 
 statement: expression ';'								{ $$ = (Expression) $1; }
 		 | read ';'										{ $$ = (Read) $1; }
+		 | increment ';'								{ $$ = (Assignment) $1; }
 		 | write ';'									{ $$ = (Write) $1; }
 		 | assignment ';'								{ $$ = (Assignment) $1; }
 		 | if_else										{ $$ = (IfStatement) $1; }
@@ -161,6 +160,8 @@ expression: expression '+' expression					{ $$ = new Arithmetic(scanner.getLine(
           																,(Expression) $1,"-",(Expression) $3); }
           | expression '%' expression					{ $$ = new Arithmetic(scanner.getLine(), scanner.getColumn()
           																,(Expression) $1,"%",(Expression) $3); }
+          | expression POTENTIAL expression				{ $$ = new Power(scanner.getLine(), scanner.getColumn()
+          																,(Expression) $1, (Expression) $3); }
           | expression DOUBLEEQUALS expression			{ $$ = new Comparison(scanner.getLine(), scanner.getColumn()
           																,(Expression) $1,"==",(Expression) $3); }
 		  | expression '>' expression					{ $$ = new Comparison(scanner.getLine(), scanner.getColumn()
@@ -176,19 +177,7 @@ expression: expression '+' expression					{ $$ = new Arithmetic(scanner.getLine(
           | expression AND expression					{ $$ = new Logical(scanner.getLine(), scanner.getColumn()
           																,(Expression) $1,"&&",(Expression) $3); }
           | expression OR expression					{ $$ = new Logical(scanner.getLine(), scanner.getColumn()
-          																,(Expression) $1,"||",(Expression) $3); }
-          | expression INC								{ $$ = new Increment(scanner.getLine(), scanner.getColumn()
-          																,(Expression) $1); }
-          | expression DEC								{ $$ = new Decrement(scanner.getLine(), scanner.getColumn()
-          																,(Expression) $1); }
-          | expression PLUSEQUALS expression			{ $$ = new ArithmeticAssignment(scanner.getLine(), scanner.getColumn()
-          																,(Expression) $1, (String) $2, (Expression) $3); }
-          | expression MINUSEQUALS expression			{ $$ = new ArithmeticAssignment(scanner.getLine(), scanner.getColumn()
-          																,(Expression) $1, (String) $2, (Expression) $3); }
-          | expression TIMESEQUALS expression			{ $$ = new ArithmeticAssignment(scanner.getLine(), scanner.getColumn()
-          																,(Expression) $1, (String) $2, (Expression) $3); }
-          | expression DIVIDEEQUALS expression			{ $$ = new ArithmeticAssignment(scanner.getLine(), scanner.getColumn()
-          																,(Expression) $1, (String) $2, (Expression) $3); }																
+          																,(Expression) $1,"||",(Expression) $3); }															
 		  | '-' expression %prec 'unary_minus'			{ $$ = new UnaryMinus(scanner.getLine(), scanner.getColumn()
           																,(Expression) $2); }
 		  | '!' expression								{ $$ = new UnaryNot(scanner.getLine(), scanner.getColumn()
@@ -209,33 +198,55 @@ expression: expression '+' expression					{ $$ = new Arithmetic(scanner.getLine(
           																, (String) $1); }
           ;
           
-if_else: IF '(' expression ')' if_body ELSE if_body				{ $$ = new IfStatement(scanner.getLine(), scanner.getColumn()
+increment : | expression INC								{ $$ = new Assignment(scanner.getLine(), scanner.getColumn()
+          																,(Expression) $1, new Arithmetic(scanner.getLine()
+          																,scanner.getColumn(),(Expression)$1,"+"
+          																,new IntLiteral(scanner.getLine(),scanner.getColumn(),1))); }
+          	| expression DEC								{ $$ = new Assignment(scanner.getLine(), scanner.getColumn()
+          																,(Expression) $1, new Arithmetic(scanner.getLine()
+          																,scanner.getColumn(),(Expression)$1,"-"
+          																,new IntLiteral(scanner.getLine(),scanner.getColumn(),1))); }
+          	| expression PLUSEQUALS expression				{ $$ = new Assignment(scanner.getLine(), scanner.getColumn()
+          																,(Expression) $1, new Arithmetic(scanner.getLine()
+          																,scanner.getColumn(),(Expression)$1,"+",(Expression)$3)); }
+          	| expression MINUSEQUALS expression				{ $$ = new Assignment(scanner.getLine(), scanner.getColumn()
+          																,(Expression) $1, new Arithmetic(scanner.getLine()
+          																,scanner.getColumn(),(Expression)$1,"-",(Expression)$3)); }
+          	| expression TIMESEQUALS expression				{ $$ = new Assignment(scanner.getLine(), scanner.getColumn()
+          																,(Expression) $1, new Arithmetic(scanner.getLine()
+          																,scanner.getColumn(),(Expression)$1,"*",(Expression)$3)); }
+          	| expression DIVIDEEQUALS expression			{ $$ = new Assignment(scanner.getLine(), scanner.getColumn()
+          																,(Expression) $1, new Arithmetic(scanner.getLine()
+          																,scanner.getColumn(),(Expression)$1,"/",(Expression)$3)); }
+          	;
+          
+if_else: IF '(' expression ')' body ELSE body				{ $$ = new IfStatement(scanner.getLine(), scanner.getColumn()
 																		, (List<Statement>) $5, (List<Statement>) $7
 																		, (Expression) $3); }
-	   | IF '(' expression ')' if_body	%prec IFX				{ $$ = new IfStatement(scanner.getLine(), scanner.getColumn()
+	   | IF '(' expression ')' body	%prec IFX				{ $$ = new IfStatement(scanner.getLine(), scanner.getColumn()
 																		, (List<Statement>) $5, new ArrayList<Statement>()
 																		, (Expression) $3); }
 	   ;
 	   
-if_body : '{'listOfStatements'}'							{$$ = (List<Statement>)$2;}
+body : '{'listOfStatements'}'							{$$ = (List<Statement>)$2;}
 		| statement											{ List<Statement> list = new ArrayList<Statement>();
 															  list.add((Statement)$1);
 															  $$ = list;}
 		;
 	   
-while: WHILE '(' expression ')' if_body	%prec IFX			{ List<Statement> body = new ArrayList<Statement>((List<Statement>)$5);
+while: WHILE '(' expression ')' body	%prec IFX			{ List<Statement> body = new ArrayList<Statement>((List<Statement>)$5);
 																	  $$ = new WhileStatement(scanner.getLine(), scanner.getColumn()
 																			, body, (Expression) $3); }
 	 ;
 	 
-do_while: DO if_body %prec IFX WHILE '(' expression ')'			{ List<Statement> body = new ArrayList<Statement>((List<Statement>)$2);
+do_while: DO body %prec IFX WHILE '(' expression ')'			{ List<Statement> body = new ArrayList<Statement>((List<Statement>)$2);
 																	  $$ = new DoWhileStatement(scanner.getLine(), scanner.getColumn()
 																			, body, (Expression) $5); }
 	 ;
 
-for: FOR '(' statement expression ';' expression ')' if_body %prec IFX { List<Statement> body = new ArrayList<Statement>((List<Statement>)$8);
+for: FOR '(' statement expression ';' increment ')' body %prec IFX { List<Statement> body = new ArrayList<Statement>((List<Statement>)$8);
 																			  $$ = new ForStatement(scanner.getLine(), scanner.getColumn()
-																			       , (Statement) $3, (Expression) $4, (Incrementable) $6, body); }
+																			       , (Statement) $3, (Expression) $4, (Assignment) $6, body); }
    ;
 				
           
@@ -275,11 +286,12 @@ array: expression '[' expression ']'						{$$ = new Indexing(scanner.getLine()
 	 
 array_creation: array_creation '[' INT_CONSTANT ']'			{ ArrayType array = ArrayType.orderArray(scanner.getLine(), scanner.getColumn()
 															  , (Type) $1, (Integer) $3);
-															  array.getOf();
 															  $$ = array; }
 	 		  | built_in_type '[' INT_CONSTANT ']'			{ ArrayType array = ArrayType.orderArray(scanner.getLine(), scanner.getColumn()
 															  , (Type) $1, (Integer) $3);
-															  array.getOf();
+															  $$ = array; }
+			  | struct '[' INT_CONSTANT ']'					{ ArrayType array = ArrayType.orderArray(scanner.getLine(), scanner.getColumn()
+															  , (Type) $1, (Integer) $3);
 															  $$ = array; }
 	 		  ;
 
@@ -294,7 +306,7 @@ variable: built_in_type listOfIds ';'					{ List<VariableDefinition> variables =
 																, str, (Type)$1));
 															$$ = variables; }
 		| struct listOfIds ';'							{ List<VariableDefinition> variables = new ArrayList<>();
-															for(String str : (List<String>)$2)
+															for(String str : (List<String>)$2) 
 																variables.add(new VariableDefinition(scanner.getLine(), scanner.getColumn()
 																, str, (Type)$1));
 															$$ = variables; }

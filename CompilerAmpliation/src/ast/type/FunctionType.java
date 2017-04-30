@@ -9,10 +9,12 @@ public class FunctionType extends AbstractType {
 
     public String name;
     public List<VariableDefinition> params;
+    public int line, column;
     public Type returnType;
 
     public FunctionType(int line, int column, String name, List<VariableDefinition> params, Type returnType) {
-	super(line, column);
+	this.line = line;
+	this.column = column;
 	this.name = name;
 	this.params = params;
 	this.returnType = returnType;
@@ -32,8 +34,8 @@ public class FunctionType extends AbstractType {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("FunctionType: ").append(getReturnType().toString()).append(" ")
-		.append(getName()).append("(");
+	StringBuilder sb = new StringBuilder(getReturnType().toString()).append(" ")
+		.append(getName()).append(" (");
 	for (int i = 0; i < params.size(); i++) {
 	    sb.append(params.get(i).toString());
 	    if (i != params.size() - 1)
@@ -69,5 +71,15 @@ public class FunctionType extends AbstractType {
 	for(VariableDefinition varDef : params)
 	    total+=varDef.getType().numberOfBytes();
 	return total;
+    }
+    
+    @Override
+    public int getLine(){
+	return this.line;
+    }
+    
+    @Override
+    public int getColumn(){
+	return this.column;
     }
 }

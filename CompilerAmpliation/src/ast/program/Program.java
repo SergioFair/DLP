@@ -33,9 +33,9 @@ public class Program implements ASTNode {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append("Program: \n");
+	StringBuilder sb = new StringBuilder();
 	for (Definition def : getDefinitions()) {
-	    sb.append(def.toString()).append("\n\n");
+	    sb.append(def.toString()).append("\n");
 	}
 	return sb.toString();
     }
