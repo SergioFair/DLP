@@ -26,7 +26,7 @@ public class Struct extends AbstractType {
 	for (RecordField record : records) {
 	    sb.append("\t").append(record.toString()).append(";\n");
 	}
-	sb.append("}");
+	sb.append("}\n");
 	return sb.toString();
     }
 
@@ -73,11 +73,13 @@ public class Struct extends AbstractType {
     }
     
     public String toInstruction(){
-	StringBuilder sb = new StringBuilder();
-	for(RecordField rf : getRecords()){
-	    sb.append("\t");
-	    sb.append(rf.toInstruction());
+	StringBuilder sb = new StringBuilder("record(");
+	for(int i=0;i<getRecords().size();i++){
+	    sb.append(getRecords().get(i).toInstruction());
+	    if(i<getRecords().size()-1)
+		sb.append("x");
 	}
+	sb.append(")");
 	return sb.toString();
     }
 

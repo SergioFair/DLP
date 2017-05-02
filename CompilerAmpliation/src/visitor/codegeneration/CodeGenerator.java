@@ -5,12 +5,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import ast.expression.Arithmetic;
+import ast.program.FunctionDefinition;
 import ast.program.VariableDefinition;
+import ast.statement.Statement;
 import ast.type.ArrayType;
 import ast.type.CharType;
+import ast.type.FunctionType;
 import ast.type.IntType;
 import ast.type.RealType;
-import ast.type.Struct;
 import ast.type.Type;
 
 public class CodeGenerator {
@@ -399,11 +401,10 @@ public class CodeGenerator {
 	    if (current instanceof CharType) {
 		if (next instanceof IntType)
 		    b2i();
-		else if(next instanceof RealType){
+		else if (next instanceof RealType) {
 		    b2i();
 		    i2f();
-		}
-		else
+		} else
 		    throw new IllegalStateException("Code generation was not possible");
 	    } else if (current instanceof IntType) {
 		if (next instanceof CharType)
@@ -415,11 +416,10 @@ public class CodeGenerator {
 	    } else if (current instanceof RealType) {
 		if (next instanceof IntType)
 		    f2i();
-		else if(next instanceof CharType) {
+		else if (next instanceof CharType) {
 		    f2i();
 		    i2b();
-		}
-		else
+		} else
 		    throw new IllegalStateException("Code generation was not possible");
 	    } else if (current instanceof ArrayType) {
 		convertTo(((ArrayType) current).getOf(), next);
@@ -506,43 +506,11 @@ public class CodeGenerator {
 	}
     }
 
-    public void globalVar(VariableDefinition var) {
+    public void varDefinition(VariableDefinition var) {
 	try {
-	    if (!(var.getType() instanceof Struct)) {
-		output.write("#var " + var.getName() + ":" + var.getType().toInstruction() + "\n");
-		output.flush();
-	    } else {
-		output.write("#type " + var.getName() + ": {\n" + ((Struct) var.getType()).toInstruction() + "}\n");
-		output.flush();
-	    }
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
-    }
-
-    public void parameter(VariableDefinition var) {
-	try {
-	    if (!(var.getType() instanceof Struct)) {
-		output.write("#param " + var.getName() + ":" + var.getType().toInstruction() + "\n");
-		output.flush();
-	    } else {
-		output.write("#type " + var.getName() + ": {\n" + ((Struct) var.getType()).toInstruction() + "}\n");
-		output.flush();
-	    }
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
-    }
-
-    public void localVar(VariableDefinition var) {
-	try {
-	    if (!(var.getType() instanceof Struct)) {
-		output.write("#local " + var.getName() + ":" + var.getType().toInstruction() + "\n");
-		output.flush();
-	    } else {
-		output.write("#type " + var.getName() + ": {\n" + ((Struct) var.getType()).toInstruction() + "}\n");
-		output.flush();
-	    }
+	    output.write("\t' * " + var.getType().toInstruction() + " " + var.getName() + "(offset " + var.getOffset()
+		    + ")\n");
+	    output.flush();
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -575,9 +543,16 @@ public class CodeGenerator {
 	}
     }
 
-    public void functionDefinition(String string) {
+    public void functionDefinition(FunctionDefinition funcDef) {
 	try {
-	    output.write("#func " + string + "\n");
+	    output.write(funcDef.getName() + ":\n");
+	    output.write("\t' * Parameters\n");
+	    for(VariableDefinition var : ((FunctionType)funcDef.getType()).getParams())
+		varDefinition(var);
+	    output.write("\t' * Local variables\n");
+	    for(Statement st : funcDef.getBody())
+		if(st instanceof VariableDefinition)
+		    varDefinition((VariableDefinition)st);
 	    output.flush();
 	} catch (IOException e) {
 	    e.printStackTrace();

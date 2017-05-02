@@ -75,7 +75,7 @@ public class ArrayType extends AbstractType {
 
     @Override
     public String toInstruction() {
-	return getSize() + "*" + getOf().toInstruction();
+	return "["+getSize() + "," + getOf().toInstruction()+"]";
     }
 
     @Override

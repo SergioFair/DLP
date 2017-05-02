@@ -1,31 +1,30 @@
 #source "big-input.txt"
-#type pair: {
-	integer:int
-	character:byte
-}
-#var acme:2*	employees:2*	age:int
-
-
-#var fibonacci:8*3*int
+	' * record((integer x int)x(character x byte)) pair(offset 0)
+	' * [2,record((employees x [2,record((age x int))]))] acme(offset 3)
+	' * [8,[3,int]] fibonacci(offset 11)
 call main
 halt
-#func p
 p:
+	' * Parameters
+	' * Local variables
 enter 0
 ret 0,0,0
 
 
-#func f
 f:
+	' * Parameters
+	' * float r(offset 6)
+	' * int e(offset 4)
+	' * Local variables
+	' * float real(offset -4)
+	' * byte c(offset -5)
+	' * int result(offset -7)
 enter 7
 
-#local real:float
 
 
-#local c:byte
 
 
-#local result:int
 
 
 ' * assignment
@@ -114,11 +113,12 @@ ret 2,7,6
 
 
 
-#func initialize
 initialize:
+	' * Parameters
+	' * Local variables
+	' * int i(offset -2)
 enter 2
 
-#local i:int
 
 
 ' * assignment
@@ -300,14 +300,15 @@ label4:
 ret 0,2,0
 
 
-#func main
 main:
+	' * Parameters
+	' * Local variables
+	' * int i(offset -2)
+	' * int j(offset -4)
 enter 4
 
-#local i:int
 
 
-#local j:int
 
 
 ' * invocation

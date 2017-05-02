@@ -60,7 +60,7 @@ public class RecordField extends AbstractType {
 
     @Override
     public String toInstruction() {
-	return getName() + ":" + getType().toInstruction() + "\n";
+	return "("+getName() + " x " + getType().toInstruction() + ")";
     }
 
 }

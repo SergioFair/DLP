@@ -170,12 +170,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 
     @Override
     public Object visit(VariableDefinition var, Object params) {
-	if (var.getScope() == 0)
-	    CodeGenerator.getInstance().globalVar(var);
-	else if (var.getOffset() > 4)
-	    CodeGenerator.getInstance().parameter(var);
-	else if (var.getOffset() < 0)
-	    CodeGenerator.getInstance().localVar(var);
+	if(var.getScope()==0)
+	    CodeGenerator.getInstance().varDefinition(var);
 	return null;
     }
 
@@ -183,10 +179,9 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
     public Object visit(FunctionDefinition funcDef, Object params) {
 
 	// Information
-	CodeGenerator.getInstance().functionDefinition(funcDef.getName());
+	CodeGenerator.getInstance().functionDefinition(funcDef);
 
 	// Execution
-	CodeGenerator.getInstance().label(funcDef.getName());
 	CodeGenerator.getInstance().enter(funcDef.calculateLocalsBytes());
 	params = funcDef;
 	for (Statement st : funcDef.getBody()) {
