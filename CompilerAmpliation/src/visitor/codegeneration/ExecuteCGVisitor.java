@@ -97,7 +97,12 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	// If part
 	CodeGenerator.getInstance().writeLine(ifst.getLine());
 	CodeGenerator.getInstance().comment("if");
-	int labelNumber = CodeGenerator.getInstance().getLabels(2);
+	int labelNumber;
+	if(ifst.getElseBody().isEmpty()){
+	    labelNumber = CodeGenerator.getInstance().getLabels(1);
+	} else{
+	    labelNumber = CodeGenerator.getInstance().getLabels(2);
+	}
 	ifst.getCondition().accept(valVisitor, params);
 	CodeGenerator.getInstance().jz(labelNumber);
 	for (Statement st : ifst.getIfBody()) {
@@ -118,6 +123,7 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	    }
 	    CodeGenerator.getInstance().label(labelNumber + 1);
 	}
+	CodeGenerator.getInstance().label(labelNumber);
 	CodeGenerator.getInstance().newLine();
 	return null;
     }

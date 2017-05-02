@@ -43,7 +43,8 @@ public class Logical implements Expression {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder(left.toString()).append(operator).append(right.toString());
+	StringBuilder sb = new StringBuilder(left.toString()).append(" ")
+		.append(operator).append(" ").append(right.toString());
 	return sb.toString();
     }
 

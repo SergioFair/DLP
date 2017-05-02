@@ -121,19 +121,19 @@ public class TypeCheckingVisitor extends AbstractVisitor {
 	log.getLeft().accept(this, params);
 	log.getRight().accept(this, params);
 	log.setLValue(false);
-	log.setType(log.getLeft().getType().comparison(log.getRight().getType()));
+	log.setType(log.getLeft().getType().logical(log.getRight().getType()));
 	if (log.getType() == null)
 	    new ErrorType(log, "Not valid Logical construction");
 	return null;
     }
-    
+
     @Override
     public Object visit(Power pow, Object params) {
 	pow.getLeft().accept(this, params);
 	pow.getRight().accept(this, params);
 	pow.setLValue(false);
 	pow.setType(pow.getLeft().getType().arithmetic(pow.getRight().getType().promotesTo(IntType.getInstance())));
-	if(pow.getType() == null)
+	if (pow.getType() == null)
 	    new ErrorType(pow, "Power operation not valid");
 	return null;
     }

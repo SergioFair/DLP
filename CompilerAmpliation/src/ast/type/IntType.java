@@ -82,7 +82,7 @@ public class IntType extends AbstractType {
     
     @Override
     public Type comparison(Type type){
-	return higherThan(type);
+	return higherThan(type)==null?null:IntType.getInstance();
     }
 
 }

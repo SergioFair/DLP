@@ -157,7 +157,11 @@ do					{ yylval = "do";
 					  return Parser.DIVIDEEQUALS; }
 "**"|"^"			{ this.yylval = yytext();
 					  return Parser.POTENTIAL; }
-					
+">>"				{ this.yylval = yytext();
+					  return Parser.SHIFTRIGHT; }
+"<<"				{ this.yylval = yytext();
+					  return Parser.SHIFTLEFT; }
+					  
 // * Dot
 					  
 .					{ System.err.println("Lexical error with element "+yytext()+" in line "+getLine()+" and column "+getColumn()); }

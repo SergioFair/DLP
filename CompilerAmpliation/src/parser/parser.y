@@ -13,7 +13,7 @@ import java.util.*;
 // * Yacc declarations
 //   Token definition
 %token INT_CONSTANT CHAR_CONSTANT REAL_CONSTANT
-%token LEQ GEQ DOUBLEEQUALS DIFFERENT
+%token LEQ GEQ DOUBLEEQUALS DIFFERENT SHIFTLEFT SHIFTRIGHT
 %token AND OR
 %token ID
 %token WRITE READ
@@ -35,8 +35,7 @@ import java.util.*;
 %left '*' '/' '%'
 %left POTENTIAL
 %right 'unary_minus'
-%nonassoc INC
-%nonassoc DEC
+%nonassoc INC DEC
 %left CAST
 %nonassoc '[' ']'
 %left '.'

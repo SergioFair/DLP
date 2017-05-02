@@ -38,7 +38,7 @@ public class ValueCGVisitor extends AbstractCGVisitor {
 	CodeGenerator.getInstance().load(as.getLeft().getType());
 	return null;
     }
-    
+
     @Override
     public Object visit(Cast cast, Object params) {
 	cast.getExpression().accept(this, params);
@@ -58,7 +58,10 @@ public class ValueCGVisitor extends AbstractCGVisitor {
 	CodeGenerator.getInstance().convertTo(compar.getLeft().getType(),
 		compar.getLeft().getType().higherThan(compar.getRight().getType()));
 	compar.getRight().accept(this, params);
-	CodeGenerator.getInstance().comparison(compar.getType(), compar.getOperator());
+	CodeGenerator.getInstance().convertTo(compar.getRight().getType(),
+		compar.getLeft().getType().higherThan(compar.getRight().getType()));
+	CodeGenerator.getInstance().comparison(compar.getLeft().getType().higherThan(compar.getRight().getType()),
+		compar.getOperator());
 	return null;
     }
 
@@ -99,12 +102,12 @@ public class ValueCGVisitor extends AbstractCGVisitor {
 	CodeGenerator.getInstance().logical(log.getOperator());
 	return null;
     }
-    
-//    @Override
-//    public Object visit(Power pow, Object params) {
-//	pow.getLeft().accept(this, params);
-//	return null;
-//    }
+
+    // @Override
+    // public Object visit(Power pow, Object params) {
+    // pow.getLeft().accept(this, params);
+    // return null;
+    // }
 
     @Override
     public Object visit(RealLiteral real, Object params) {

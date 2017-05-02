@@ -1,7 +1,6 @@
 #source "myInput.txt"
 	' * int a(offset 0)
 	' * int b(offset 2)
-	' * int c(offset 4)
 call main
 halt
 main:
@@ -13,33 +12,36 @@ enter 0
 #line 4
 ' * assignment
 pusha 0
-
-#line 4
-' * assignment
-pusha 2
-
-#line 4
-' * assignment
-pusha 4
-pushi 4
+pushi 5
 storei
-pusha 4
+
+
+
+#line 7
+' * if
+pusha 0
 loadi
-storei
-pusha 2
+i2f
+pushf 5.5
+gtf
+pusha 0
 loadi
-storei
+pushb 97
+b2i
+lti
+and
+jz label1
 
+#line 6
 
-
-#line 5
+#line 6
 ' * write
 pusha 0
 loadi
 outi
-pusha 2
-loadi
-outi
+
+
+label1:
 
 
 ret 0,0,0
