@@ -36,18 +36,18 @@
   22            | read ';'
   23            | increment ';'
   24            | write ';'
-  25            | assignment ';'
-  26            | if_else
-  27            | while
-  28            | for
-  29            | do_while
-  30            | return ';'
+  25            | if_else
+  26            | while
+  27            | for
+  28            | do_while
+  29            | return ';'
 
-  31  expression : expression '+' expression
-  32             | expression '*' expression
-  33             | expression '/' expression
-  34             | expression '-' expression
-  35             | expression '%' expression
+  30  expression : expression '+' expression
+  31             | expression '*' expression
+  32             | expression '/' expression
+  33             | expression '-' expression
+  34             | expression '%' expression
+  35             | assignment
   36             | expression POTENTIAL expression
   37             | expression DOUBLEEQUALS expression
   38             | expression '>' expression
@@ -732,12 +732,12 @@ state 68
 	read  goto 90
 	increment  goto 91
 	write  goto 92
-	assignment  goto 93
-	if_else  goto 94
-	while  goto 95
-	for  goto 96
-	do_while  goto 97
-	return  goto 98
+	if_else  goto 93
+	while  goto 94
+	for  goto 95
+	do_while  goto 96
+	return  goto 97
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -836,6 +836,7 @@ state 77
 	function_invocation  goto 87
 	listOfExpressions  goto 104
 	expression  goto 105
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -855,6 +856,7 @@ state 78
 	function_invocation  goto 87
 	listOfExpressions  goto 106
 	expression  goto 105
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -888,6 +890,7 @@ state 81
 
 	function_invocation  goto 87
 	expression  goto 109
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -926,12 +929,12 @@ state 83
 	read  goto 90
 	increment  goto 91
 	write  goto 92
-	assignment  goto 93
-	if_else  goto 94
-	while  goto 95
-	for  goto 96
-	do_while  goto 97
-	return  goto 98
+	if_else  goto 93
+	while  goto 94
+	for  goto 95
+	do_while  goto 96
+	return  goto 97
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 	body  goto 113
@@ -951,6 +954,7 @@ state 84
 
 	function_invocation  goto 87
 	expression  goto 114
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -969,6 +973,7 @@ state 85
 
 	function_invocation  goto 87
 	expression  goto 115
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -992,6 +997,7 @@ state 86
 	function_invocation  goto 87
 	built_in_type  goto 116
 	expression  goto 117
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1010,11 +1016,11 @@ state 88
 
 state 89
 	statement : expression . ';'  (21)
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -1083,41 +1089,40 @@ state 92
 
 
 state 93
-	statement : assignment . ';'  (25)
+	statement : if_else .  (25)
 
-	';'  shift 145
-	.  error
+	.  reduce 25
 
 
 state 94
-	statement : if_else .  (26)
+	statement : while .  (26)
 
 	.  reduce 26
 
 
 state 95
-	statement : while .  (27)
+	statement : for .  (27)
 
 	.  reduce 27
 
 
 state 96
-	statement : for .  (28)
+	statement : do_while .  (28)
 
 	.  reduce 28
 
 
 state 97
-	statement : do_while .  (29)
+	statement : return . ';'  (29)
 
-	.  reduce 29
+	';'  shift 145
+	.  error
 
 
 state 98
-	statement : return . ';'  (30)
+	expression : assignment .  (35)
 
-	';'  shift 146
-	.  error
+	.  reduce 35
 
 
 state 99
@@ -1155,12 +1160,13 @@ state 103
 	'!'  shift 84
 	'-'  shift 85
 	'('  shift 86
-	')'  shift 147
+	')'  shift 146
 	.  error
 
 	function_invocation  goto 87
-	listOfExpressions  goto 148
+	listOfExpressions  goto 147
 	expression  goto 105
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1169,16 +1175,16 @@ state 104
 	listOfExpressions : listOfExpressions . ',' expression  (71)
 	write : WRITE listOfExpressions .  (89)
 
-	','  shift 149
+	','  shift 148
 	';'  reduce 89
 
 
 state 105
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -1191,6 +1197,7 @@ state 105
 	expression : expression . '.' expression  (49)
 	listOfExpressions : expression .  (72)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -1198,6 +1205,7 @@ state 105
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -1217,7 +1225,7 @@ state 106
 	listOfExpressions : listOfExpressions . ',' expression  (71)
 	read : READ listOfExpressions .  (88)
 
-	','  shift 149
+	','  shift 148
 	';'  reduce 88
 
 
@@ -1235,7 +1243,8 @@ state 107
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 150
+	expression  goto 149
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1253,17 +1262,18 @@ state 108
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 151
+	expression  goto 150
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
 
 state 109
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -1275,6 +1285,7 @@ state 109
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 	return : RETURN expression .  (91)
 
 	LEQ  shift 118
@@ -1283,6 +1294,7 @@ state 109
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -1317,17 +1329,17 @@ state 110
 	';'  reduce 56
 
 	function_invocation  goto 87
-	statement  goto 152
+	statement  goto 151
 	expression  goto 89
 	read  goto 90
 	increment  goto 91
 	write  goto 92
-	assignment  goto 93
-	if_else  goto 94
-	while  goto 95
-	for  goto 96
-	do_while  goto 97
-	return  goto 98
+	if_else  goto 93
+	while  goto 94
+	for  goto 95
+	do_while  goto 96
+	return  goto 97
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1338,7 +1350,7 @@ state 111
 
 	.  reduce 17
 
-	listOfStatements  goto 153
+	listOfStatements  goto 152
 
 
 state 112
@@ -1350,16 +1362,16 @@ state 112
 state 113
 	do_while : DO body . WHILE '(' expression ')'  (68)
 
-	WHILE  shift 154
+	WHILE  shift 153
 	.  error
 
 
 state 114
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -1372,6 +1384,7 @@ state 114
 	expression : '!' expression .  (46)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -1403,11 +1416,11 @@ state 114
 
 
 state 115
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -1420,6 +1433,7 @@ state 115
 	expression : '-' expression .  (45)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	'['  shift 139
 	'.'  shift 140
@@ -1453,16 +1467,16 @@ state 115
 state 116
 	cast : '(' built_in_type . ')' expression  (70)
 
-	')'  shift 155
+	')'  shift 154
 	.  error
 
 
 state 117
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -1475,6 +1489,7 @@ state 117
 	expression : '(' expression . ')'  (48)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -1482,6 +1497,7 @@ state 117
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -1492,7 +1508,7 @@ state 117
 	POTENTIAL  shift 138
 	'['  shift 139
 	'.'  shift 140
-	')'  shift 156
+	')'  shift 155
 	.  error
 
 
@@ -1509,7 +1525,8 @@ state 118
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 157
+	expression  goto 156
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1527,7 +1544,8 @@ state 119
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 158
+	expression  goto 157
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1545,7 +1563,8 @@ state 120
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 159
+	expression  goto 158
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1563,7 +1582,8 @@ state 121
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 160
+	expression  goto 159
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1581,7 +1601,8 @@ state 122
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 161
+	expression  goto 160
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1599,7 +1620,8 @@ state 123
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 162
+	expression  goto 161
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1629,7 +1651,8 @@ state 126
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 163
+	expression  goto 162
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1647,7 +1670,8 @@ state 127
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 164
+	expression  goto 163
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1665,7 +1689,8 @@ state 128
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 165
+	expression  goto 164
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1683,7 +1708,8 @@ state 129
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 166
+	expression  goto 165
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1701,7 +1727,8 @@ state 130
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 167
+	expression  goto 166
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1719,7 +1746,8 @@ state 131
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 168
+	expression  goto 167
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1737,13 +1765,33 @@ state 132
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 169
+	expression  goto 168
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
 
 state 133
-	expression : expression '+' . expression  (31)
+	expression : expression '+' . expression  (30)
+
+	INT_CONSTANT  shift 73
+	CHAR_CONSTANT  shift 74
+	REAL_CONSTANT  shift 75
+	ID  shift 76
+	'!'  shift 84
+	'-'  shift 85
+	'('  shift 86
+	.  error
+
+	function_invocation  goto 87
+	expression  goto 169
+	assignment  goto 98
+	cast  goto 99
+	array  goto 100
+
+
+state 134
+	expression : expression '-' . expression  (33)
 
 	INT_CONSTANT  shift 73
 	CHAR_CONSTANT  shift 74
@@ -1756,12 +1804,13 @@ state 133
 
 	function_invocation  goto 87
 	expression  goto 170
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
 
-state 134
-	expression : expression '-' . expression  (34)
+state 135
+	expression : expression '*' . expression  (31)
 
 	INT_CONSTANT  shift 73
 	CHAR_CONSTANT  shift 74
@@ -1774,12 +1823,13 @@ state 134
 
 	function_invocation  goto 87
 	expression  goto 171
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
 
-state 135
-	expression : expression '*' . expression  (32)
+state 136
+	expression : expression '/' . expression  (32)
 
 	INT_CONSTANT  shift 73
 	CHAR_CONSTANT  shift 74
@@ -1792,12 +1842,13 @@ state 135
 
 	function_invocation  goto 87
 	expression  goto 172
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
 
-state 136
-	expression : expression '/' . expression  (33)
+state 137
+	expression : expression '%' . expression  (34)
 
 	INT_CONSTANT  shift 73
 	CHAR_CONSTANT  shift 74
@@ -1810,24 +1861,7 @@ state 136
 
 	function_invocation  goto 87
 	expression  goto 173
-	cast  goto 99
-	array  goto 100
-
-
-state 137
-	expression : expression '%' . expression  (35)
-
-	INT_CONSTANT  shift 73
-	CHAR_CONSTANT  shift 74
-	REAL_CONSTANT  shift 75
-	ID  shift 76
-	'!'  shift 84
-	'-'  shift 85
-	'('  shift 86
-	.  error
-
-	function_invocation  goto 87
-	expression  goto 174
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1845,7 +1879,8 @@ state 138
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 175
+	expression  goto 174
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1863,7 +1898,8 @@ state 139
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 176
+	expression  goto 175
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1881,7 +1917,8 @@ state 140
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 177
+	expression  goto 176
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
@@ -1911,33 +1948,27 @@ state 144
 
 
 state 145
-	statement : assignment ';' .  (25)
+	statement : return ';' .  (29)
 
-	.  reduce 25
+	.  reduce 29
 
 
 state 146
-	statement : return ';' .  (30)
-
-	.  reduce 30
-
-
-state 147
 	function_invocation : ID '(' ')' .  (9)
 
 	.  reduce 9
 
 
-state 148
+state 147
 	function_invocation : ID '(' listOfExpressions . ')'  (8)
 	listOfExpressions : listOfExpressions . ',' expression  (71)
 
-	')'  shift 178
-	','  shift 149
+	')'  shift 177
+	','  shift 148
 	.  error
 
 
-state 149
+state 148
 	listOfExpressions : listOfExpressions ',' . expression  (71)
 
 	INT_CONSTANT  shift 73
@@ -1950,17 +1981,18 @@ state 149
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 179
+	expression  goto 178
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
 
-state 150
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 149
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -1974,6 +2006,7 @@ state 150
 	if_else : IF '(' expression . ')' body ELSE body  (63)
 	if_else : IF '(' expression . ')' body  (64)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -1981,6 +2014,48 @@ state 150
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
+	'>'  shift 131
+	'<'  shift 132
+	'+'  shift 133
+	'-'  shift 134
+	'*'  shift 135
+	'/'  shift 136
+	'%'  shift 137
+	POTENTIAL  shift 138
+	'['  shift 139
+	'.'  shift 140
+	')'  shift 179
+	.  error
+
+
+state 150
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . POTENTIAL expression  (36)
+	expression : expression . DOUBLEEQUALS expression  (37)
+	expression : expression . '>' expression  (38)
+	expression : expression . GEQ expression  (39)
+	expression : expression . '<' expression  (40)
+	expression : expression . LEQ expression  (41)
+	expression : expression . DIFFERENT expression  (42)
+	expression : expression . AND expression  (43)
+	expression : expression . OR expression  (44)
+	expression : expression . '.' expression  (49)
+	while : WHILE '(' expression . ')' body  (67)
+	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
+
+	LEQ  shift 118
+	GEQ  shift 119
+	DOUBLEEQUALS  shift 120
+	DIFFERENT  shift 121
+	AND  shift 122
+	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -1996,45 +2071,6 @@ state 150
 
 
 state 151
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
-	expression : expression . POTENTIAL expression  (36)
-	expression : expression . DOUBLEEQUALS expression  (37)
-	expression : expression . '>' expression  (38)
-	expression : expression . GEQ expression  (39)
-	expression : expression . '<' expression  (40)
-	expression : expression . LEQ expression  (41)
-	expression : expression . DIFFERENT expression  (42)
-	expression : expression . AND expression  (43)
-	expression : expression . OR expression  (44)
-	expression : expression . '.' expression  (49)
-	while : WHILE '(' expression . ')' body  (67)
-	array : expression . '[' expression ']'  (78)
-
-	LEQ  shift 118
-	GEQ  shift 119
-	DOUBLEEQUALS  shift 120
-	DIFFERENT  shift 121
-	AND  shift 122
-	OR  shift 123
-	'>'  shift 131
-	'<'  shift 132
-	'+'  shift 133
-	'-'  shift 134
-	'*'  shift 135
-	'/'  shift 136
-	'%'  shift 137
-	POTENTIAL  shift 138
-	'['  shift 139
-	'.'  shift 140
-	')'  shift 181
-	.  error
-
-
-state 152
 	for : FOR '(' statement . expression ';' increment ')' body  (69)
 
 	INT_CONSTANT  shift 73
@@ -2047,12 +2083,13 @@ state 152
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 182
+	expression  goto 181
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
 
-state 153
+state 152
 	listOfStatements : listOfStatements . statement  (16)
 	body : '{' listOfStatements . '}'  (65)
 	increment : .  (56)
@@ -2071,7 +2108,7 @@ state 153
 	'!'  shift 84
 	'-'  shift 85
 	'('  shift 86
-	'}'  shift 183
+	'}'  shift 182
 	';'  reduce 56
 
 	function_invocation  goto 87
@@ -2080,24 +2117,24 @@ state 153
 	read  goto 90
 	increment  goto 91
 	write  goto 92
-	assignment  goto 93
-	if_else  goto 94
-	while  goto 95
-	for  goto 96
-	do_while  goto 97
-	return  goto 98
+	if_else  goto 93
+	while  goto 94
+	for  goto 95
+	do_while  goto 96
+	return  goto 97
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
 
-state 154
+state 153
 	do_while : DO body WHILE . '(' expression ')'  (68)
 
-	'('  shift 184
+	'('  shift 183
 	.  error
 
 
-state 155
+state 154
 	cast : '(' built_in_type ')' . expression  (70)
 
 	INT_CONSTANT  shift 73
@@ -2110,23 +2147,24 @@ state 155
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 185
+	expression  goto 184
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
 
-state 156
+state 155
 	expression : '(' expression ')' .  (48)
 
 	.  reduce 48
 
 
-state 157
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 156
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2139,6 +2177,7 @@ state 157
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	'+'  shift 133
 	'-'  shift 134
@@ -2169,12 +2208,12 @@ state 157
 	';'  reduce 41
 
 
-state 158
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 157
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2187,6 +2226,7 @@ state 158
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	'+'  shift 133
 	'-'  shift 134
@@ -2217,12 +2257,12 @@ state 158
 	';'  reduce 39
 
 
-state 159
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 158
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression DOUBLEEQUALS expression .  (37)
@@ -2235,6 +2275,7 @@ state 159
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	'+'  shift 133
 	'-'  shift 134
@@ -2265,12 +2306,12 @@ state 159
 	';'  reduce 37
 
 
-state 160
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 159
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2283,6 +2324,7 @@ state 160
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	'+'  shift 133
 	'-'  shift 134
@@ -2313,12 +2355,12 @@ state 160
 	';'  reduce 42
 
 
-state 161
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 160
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2331,6 +2373,7 @@ state 161
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -2361,12 +2404,12 @@ state 161
 	';'  reduce 43
 
 
-state 162
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 161
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2379,6 +2422,7 @@ state 162
 	expression : expression OR expression .  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -2409,12 +2453,12 @@ state 162
 	';'  reduce 44
 
 
-state 163
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 162
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2427,6 +2471,7 @@ state 163
 	expression : expression . '.' expression  (49)
 	increment : expression DIVIDEEQUALS expression .  (62)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -2434,6 +2479,7 @@ state 163
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -2448,12 +2494,12 @@ state 163
 	';'  reduce 62
 
 
-state 164
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 163
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2466,6 +2512,7 @@ state 164
 	expression : expression . '.' expression  (49)
 	increment : expression TIMESEQUALS expression .  (61)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -2473,6 +2520,7 @@ state 164
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -2487,12 +2535,12 @@ state 164
 	';'  reduce 61
 
 
-state 165
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 164
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2505,6 +2553,7 @@ state 165
 	expression : expression . '.' expression  (49)
 	increment : expression MINUSEQUALS expression .  (60)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -2512,6 +2561,7 @@ state 165
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -2526,12 +2576,12 @@ state 165
 	';'  reduce 60
 
 
-state 166
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 165
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2544,6 +2594,7 @@ state 166
 	expression : expression . '.' expression  (49)
 	increment : expression PLUSEQUALS expression .  (59)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -2551,6 +2602,7 @@ state 166
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -2565,12 +2617,12 @@ state 166
 	';'  reduce 59
 
 
-state 167
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 166
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2582,6 +2634,7 @@ state 167
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 	assignment : expression '=' expression .  (87)
 
 	LEQ  shift 118
@@ -2590,6 +2643,7 @@ state 167
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -2600,15 +2654,24 @@ state 167
 	POTENTIAL  shift 138
 	'['  shift 139
 	'.'  shift 140
+	INC  reduce 87
+	DEC  reduce 87
+	DIVIDEEQUALS  reduce 87
+	TIMESEQUALS  reduce 87
+	MINUSEQUALS  reduce 87
+	PLUSEQUALS  reduce 87
+	']'  reduce 87
+	')'  reduce 87
+	','  reduce 87
 	';'  reduce 87
 
 
-state 168
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 167
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2621,6 +2684,7 @@ state 168
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	'+'  shift 133
 	'-'  shift 134
@@ -2651,12 +2715,12 @@ state 168
 	';'  reduce 38
 
 
-state 169
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 168
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2669,6 +2733,7 @@ state 169
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	'+'  shift 133
 	'-'  shift 134
@@ -2699,13 +2764,13 @@ state 169
 	';'  reduce 40
 
 
-state 170
-	expression : expression . '+' expression  (31)
-	expression : expression '+' expression .  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 169
+	expression : expression . '+' expression  (30)
+	expression : expression '+' expression .  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2717,10 +2782,106 @@ state 170
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	'*'  shift 135
 	'/'  shift 136
 	'%'  shift 137
+	POTENTIAL  shift 138
+	'['  shift 139
+	'.'  shift 140
+	LEQ  reduce 30
+	GEQ  reduce 30
+	DOUBLEEQUALS  reduce 30
+	DIFFERENT  reduce 30
+	AND  reduce 30
+	OR  reduce 30
+	INC  reduce 30
+	DEC  reduce 30
+	DIVIDEEQUALS  reduce 30
+	TIMESEQUALS  reduce 30
+	MINUSEQUALS  reduce 30
+	PLUSEQUALS  reduce 30
+	'='  reduce 30
+	'>'  reduce 30
+	'<'  reduce 30
+	'+'  reduce 30
+	'-'  reduce 30
+	']'  reduce 30
+	')'  reduce 30
+	','  reduce 30
+	';'  reduce 30
+
+
+state 170
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression '-' expression .  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . POTENTIAL expression  (36)
+	expression : expression . DOUBLEEQUALS expression  (37)
+	expression : expression . '>' expression  (38)
+	expression : expression . GEQ expression  (39)
+	expression : expression . '<' expression  (40)
+	expression : expression . LEQ expression  (41)
+	expression : expression . DIFFERENT expression  (42)
+	expression : expression . AND expression  (43)
+	expression : expression . OR expression  (44)
+	expression : expression . '.' expression  (49)
+	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
+
+	'*'  shift 135
+	'/'  shift 136
+	'%'  shift 137
+	POTENTIAL  shift 138
+	'['  shift 139
+	'.'  shift 140
+	LEQ  reduce 33
+	GEQ  reduce 33
+	DOUBLEEQUALS  reduce 33
+	DIFFERENT  reduce 33
+	AND  reduce 33
+	OR  reduce 33
+	INC  reduce 33
+	DEC  reduce 33
+	DIVIDEEQUALS  reduce 33
+	TIMESEQUALS  reduce 33
+	MINUSEQUALS  reduce 33
+	PLUSEQUALS  reduce 33
+	'='  reduce 33
+	'>'  reduce 33
+	'<'  reduce 33
+	'+'  reduce 33
+	'-'  reduce 33
+	']'  reduce 33
+	')'  reduce 33
+	','  reduce 33
+	';'  reduce 33
+
+
+state 171
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression '*' expression .  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression . POTENTIAL expression  (36)
+	expression : expression . DOUBLEEQUALS expression  (37)
+	expression : expression . '>' expression  (38)
+	expression : expression . GEQ expression  (39)
+	expression : expression . '<' expression  (40)
+	expression : expression . LEQ expression  (41)
+	expression : expression . DIFFERENT expression  (42)
+	expression : expression . AND expression  (43)
+	expression : expression . OR expression  (44)
+	expression : expression . '.' expression  (49)
+	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
+
 	POTENTIAL  shift 138
 	'['  shift 139
 	'.'  shift 140
@@ -2741,67 +2902,22 @@ state 170
 	'<'  reduce 31
 	'+'  reduce 31
 	'-'  reduce 31
+	'*'  reduce 31
+	'/'  reduce 31
+	'%'  reduce 31
 	']'  reduce 31
 	')'  reduce 31
 	','  reduce 31
 	';'  reduce 31
 
 
-state 171
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression '-' expression .  (34)
-	expression : expression . '%' expression  (35)
-	expression : expression . POTENTIAL expression  (36)
-	expression : expression . DOUBLEEQUALS expression  (37)
-	expression : expression . '>' expression  (38)
-	expression : expression . GEQ expression  (39)
-	expression : expression . '<' expression  (40)
-	expression : expression . LEQ expression  (41)
-	expression : expression . DIFFERENT expression  (42)
-	expression : expression . AND expression  (43)
-	expression : expression . OR expression  (44)
-	expression : expression . '.' expression  (49)
-	array : expression . '[' expression ']'  (78)
-
-	'*'  shift 135
-	'/'  shift 136
-	'%'  shift 137
-	POTENTIAL  shift 138
-	'['  shift 139
-	'.'  shift 140
-	LEQ  reduce 34
-	GEQ  reduce 34
-	DOUBLEEQUALS  reduce 34
-	DIFFERENT  reduce 34
-	AND  reduce 34
-	OR  reduce 34
-	INC  reduce 34
-	DEC  reduce 34
-	DIVIDEEQUALS  reduce 34
-	TIMESEQUALS  reduce 34
-	MINUSEQUALS  reduce 34
-	PLUSEQUALS  reduce 34
-	'='  reduce 34
-	'>'  reduce 34
-	'<'  reduce 34
-	'+'  reduce 34
-	'-'  reduce 34
-	']'  reduce 34
-	')'  reduce 34
-	','  reduce 34
-	';'  reduce 34
-
-
 state 172
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression '*' expression .  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression '/' expression .  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2813,6 +2929,7 @@ state 172
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	POTENTIAL  shift 138
 	'['  shift 139
@@ -2844,12 +2961,12 @@ state 172
 
 
 state 173
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression '/' expression .  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
+	expression : expression '%' expression .  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -2861,90 +2978,43 @@ state 173
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	POTENTIAL  shift 138
 	'['  shift 139
 	'.'  shift 140
-	LEQ  reduce 33
-	GEQ  reduce 33
-	DOUBLEEQUALS  reduce 33
-	DIFFERENT  reduce 33
-	AND  reduce 33
-	OR  reduce 33
-	INC  reduce 33
-	DEC  reduce 33
-	DIVIDEEQUALS  reduce 33
-	TIMESEQUALS  reduce 33
-	MINUSEQUALS  reduce 33
-	PLUSEQUALS  reduce 33
-	'='  reduce 33
-	'>'  reduce 33
-	'<'  reduce 33
-	'+'  reduce 33
-	'-'  reduce 33
-	'*'  reduce 33
-	'/'  reduce 33
-	'%'  reduce 33
-	']'  reduce 33
-	')'  reduce 33
-	','  reduce 33
-	';'  reduce 33
+	LEQ  reduce 34
+	GEQ  reduce 34
+	DOUBLEEQUALS  reduce 34
+	DIFFERENT  reduce 34
+	AND  reduce 34
+	OR  reduce 34
+	INC  reduce 34
+	DEC  reduce 34
+	DIVIDEEQUALS  reduce 34
+	TIMESEQUALS  reduce 34
+	MINUSEQUALS  reduce 34
+	PLUSEQUALS  reduce 34
+	'='  reduce 34
+	'>'  reduce 34
+	'<'  reduce 34
+	'+'  reduce 34
+	'-'  reduce 34
+	'*'  reduce 34
+	'/'  reduce 34
+	'%'  reduce 34
+	']'  reduce 34
+	')'  reduce 34
+	','  reduce 34
+	';'  reduce 34
 
 
 state 174
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
-	expression : expression '%' expression .  (35)
-	expression : expression . POTENTIAL expression  (36)
-	expression : expression . DOUBLEEQUALS expression  (37)
-	expression : expression . '>' expression  (38)
-	expression : expression . GEQ expression  (39)
-	expression : expression . '<' expression  (40)
-	expression : expression . LEQ expression  (41)
-	expression : expression . DIFFERENT expression  (42)
-	expression : expression . AND expression  (43)
-	expression : expression . OR expression  (44)
-	expression : expression . '.' expression  (49)
-	array : expression . '[' expression ']'  (78)
-
-	POTENTIAL  shift 138
-	'['  shift 139
-	'.'  shift 140
-	LEQ  reduce 35
-	GEQ  reduce 35
-	DOUBLEEQUALS  reduce 35
-	DIFFERENT  reduce 35
-	AND  reduce 35
-	OR  reduce 35
-	INC  reduce 35
-	DEC  reduce 35
-	DIVIDEEQUALS  reduce 35
-	TIMESEQUALS  reduce 35
-	MINUSEQUALS  reduce 35
-	PLUSEQUALS  reduce 35
-	'='  reduce 35
-	'>'  reduce 35
-	'<'  reduce 35
-	'+'  reduce 35
-	'-'  reduce 35
-	'*'  reduce 35
-	'/'  reduce 35
-	'%'  reduce 35
-	']'  reduce 35
-	')'  reduce 35
-	','  reduce 35
-	';'  reduce 35
-
-
-state 175
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression POTENTIAL expression .  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
@@ -2957,6 +3027,7 @@ state 175
 	expression : expression . OR expression  (44)
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	'['  shift 139
 	'.'  shift 140
@@ -2987,12 +3058,12 @@ state 175
 	';'  reduce 36
 
 
-state 176
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 175
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -3005,6 +3076,7 @@ state 176
 	expression : expression . '.' expression  (49)
 	array : expression . '[' expression ']'  (78)
 	array : expression '[' expression . ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -3012,6 +3084,7 @@ state 176
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -3021,17 +3094,17 @@ state 176
 	'%'  shift 137
 	POTENTIAL  shift 138
 	'['  shift 139
-	']'  shift 186
+	']'  shift 185
 	'.'  shift 140
 	.  error
 
 
-state 177
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 176
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -3044,22 +3117,23 @@ state 177
 	expression : expression . '.' expression  (49)
 	expression : expression '.' expression .  (49)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	.  reduce 49
 
 
-state 178
+state 177
 	function_invocation : ID '(' listOfExpressions ')' .  (8)
 
 	.  reduce 8
 
 
-state 179
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 178
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -3072,6 +3146,7 @@ state 179
 	expression : expression . '.' expression  (49)
 	listOfExpressions : listOfExpressions ',' expression .  (71)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -3079,6 +3154,7 @@ state 179
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -3094,7 +3170,7 @@ state 179
 	';'  reduce 71
 
 
-state 180
+state 179
 	if_else : IF '(' expression ')' . body ELSE body  (63)
 	if_else : IF '(' expression ')' . body  (64)
 	increment : .  (56)
@@ -3122,18 +3198,18 @@ state 180
 	read  goto 90
 	increment  goto 91
 	write  goto 92
-	assignment  goto 93
-	if_else  goto 94
-	while  goto 95
-	for  goto 96
-	do_while  goto 97
-	return  goto 98
+	if_else  goto 93
+	while  goto 94
+	for  goto 95
+	do_while  goto 96
+	return  goto 97
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
-	body  goto 187
+	body  goto 186
 
 
-state 181
+state 180
 	while : WHILE '(' expression ')' . body  (67)
 	increment : .  (56)
 
@@ -3160,23 +3236,23 @@ state 181
 	read  goto 90
 	increment  goto 91
 	write  goto 92
-	assignment  goto 93
-	if_else  goto 94
-	while  goto 95
-	for  goto 96
-	do_while  goto 97
-	return  goto 98
+	if_else  goto 93
+	while  goto 94
+	for  goto 95
+	do_while  goto 96
+	return  goto 97
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
-	body  goto 188
+	body  goto 187
 
 
-state 182
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 181
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -3189,6 +3265,7 @@ state 182
 	expression : expression . '.' expression  (49)
 	for : FOR '(' statement expression . ';' increment ')' body  (69)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -3196,6 +3273,7 @@ state 182
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -3206,17 +3284,17 @@ state 182
 	POTENTIAL  shift 138
 	'['  shift 139
 	'.'  shift 140
-	';'  shift 189
+	';'  shift 188
 	.  error
 
 
-state 183
+state 182
 	body : '{' listOfStatements '}' .  (65)
 
 	.  reduce 65
 
 
-state 184
+state 183
 	do_while : DO body WHILE '(' . expression ')'  (68)
 
 	INT_CONSTANT  shift 73
@@ -3229,17 +3307,18 @@ state 184
 	.  error
 
 	function_invocation  goto 87
-	expression  goto 190
+	expression  goto 189
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
 
-state 185
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 184
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -3252,6 +3331,7 @@ state 185
 	expression : expression . '.' expression  (49)
 	cast : '(' built_in_type ')' expression .  (70)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	'['  shift 139
 	'.'  shift 140
@@ -3282,17 +3362,17 @@ state 185
 	';'  reduce 70
 
 
-state 186
+state 185
 	array : expression '[' expression ']' .  (78)
 
 	.  reduce 78
 
 
-state 187
+state 186
 	if_else : IF '(' expression ')' body . ELSE body  (63)
 	if_else : IF '(' expression ')' body .  (64)
 
-	ELSE  shift 191
+	ELSE  shift 190
 	INT_CONSTANT  reduce 64
 	CHAR_CONSTANT  reduce 64
 	REAL_CONSTANT  reduce 64
@@ -3311,13 +3391,13 @@ state 187
 	';'  reduce 64
 
 
-state 188
+state 187
 	while : WHILE '(' expression ')' body .  (67)
 
 	.  reduce 67
 
 
-state 189
+state 188
 	for : FOR '(' statement expression ';' . increment ')' body  (69)
 	increment : .  (56)
 
@@ -3331,18 +3411,19 @@ state 189
 	')'  reduce 56
 
 	function_invocation  goto 87
-	expression  goto 192
-	increment  goto 193
+	expression  goto 191
+	increment  goto 192
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
 
 
-state 190
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 189
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -3355,6 +3436,7 @@ state 190
 	expression : expression . '.' expression  (49)
 	do_while : DO body WHILE '(' expression . ')'  (68)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -3362,6 +3444,7 @@ state 190
 	DIFFERENT  shift 121
 	AND  shift 122
 	OR  shift 123
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -3372,11 +3455,11 @@ state 190
 	POTENTIAL  shift 138
 	'['  shift 139
 	'.'  shift 140
-	')'  shift 194
+	')'  shift 193
 	.  error
 
 
-state 191
+state 190
 	if_else : IF '(' expression ')' body ELSE . body  (63)
 	increment : .  (56)
 
@@ -3403,23 +3486,23 @@ state 191
 	read  goto 90
 	increment  goto 91
 	write  goto 92
-	assignment  goto 93
-	if_else  goto 94
-	while  goto 95
-	for  goto 96
-	do_while  goto 97
-	return  goto 98
+	if_else  goto 93
+	while  goto 94
+	for  goto 95
+	do_while  goto 96
+	return  goto 97
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
-	body  goto 195
+	body  goto 194
 
 
-state 192
-	expression : expression . '+' expression  (31)
-	expression : expression . '*' expression  (32)
-	expression : expression . '/' expression  (33)
-	expression : expression . '-' expression  (34)
-	expression : expression . '%' expression  (35)
+state 191
+	expression : expression . '+' expression  (30)
+	expression : expression . '*' expression  (31)
+	expression : expression . '/' expression  (32)
+	expression : expression . '-' expression  (33)
+	expression : expression . '%' expression  (34)
 	expression : expression . POTENTIAL expression  (36)
 	expression : expression . DOUBLEEQUALS expression  (37)
 	expression : expression . '>' expression  (38)
@@ -3437,6 +3520,7 @@ state 192
 	increment : expression . TIMESEQUALS expression  (61)
 	increment : expression . DIVIDEEQUALS expression  (62)
 	array : expression . '[' expression ']'  (78)
+	assignment : expression . '=' expression  (87)
 
 	LEQ  shift 118
 	GEQ  shift 119
@@ -3450,6 +3534,7 @@ state 192
 	TIMESEQUALS  shift 127
 	MINUSEQUALS  shift 128
 	PLUSEQUALS  shift 129
+	'='  shift 130
 	'>'  shift 131
 	'<'  shift 132
 	'+'  shift 133
@@ -3463,26 +3548,26 @@ state 192
 	.  error
 
 
-state 193
+state 192
 	for : FOR '(' statement expression ';' increment . ')' body  (69)
 
-	')'  shift 196
+	')'  shift 195
 	.  error
 
 
-state 194
+state 193
 	do_while : DO body WHILE '(' expression ')' .  (68)
 
 	.  reduce 68
 
 
-state 195
+state 194
 	if_else : IF '(' expression ')' body ELSE body .  (63)
 
 	.  reduce 63
 
 
-state 196
+state 195
 	for : FOR '(' statement expression ';' increment ')' . body  (69)
 	increment : .  (56)
 
@@ -3509,22 +3594,22 @@ state 196
 	read  goto 90
 	increment  goto 91
 	write  goto 92
-	assignment  goto 93
-	if_else  goto 94
-	while  goto 95
-	for  goto 96
-	do_while  goto 97
-	return  goto 98
+	if_else  goto 93
+	while  goto 94
+	for  goto 95
+	do_while  goto 96
+	return  goto 97
+	assignment  goto 98
 	cast  goto 99
 	array  goto 100
-	body  goto 197
+	body  goto 196
 
 
-state 197
+state 196
 	for : FOR '(' statement expression ';' increment ')' body .  (69)
 
 	.  reduce 69
 
 
 54 terminals, 34 nonterminals
-92 grammar rules, 198 states
+92 grammar rules, 197 states

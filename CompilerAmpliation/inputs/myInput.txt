@@ -1,8 +1,6 @@
-struct {
-  struct { int age; } [2] employees;
-} [2] acme;
+int a, b, c;
 
 void main(){
-	acme[1].employees[1].age = 5;
-	write acme[1].employees[1].age;
+	a = b = c = 4;
+	write a, b;
 }

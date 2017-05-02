@@ -180,12 +180,14 @@ public class TypeCheckingVisitor extends AbstractVisitor {
 	as.getRight().accept(this, params);
 	if (!as.getLeft().getLValue())
 	    new ErrorType(as, "LValue expected for Assignment");
+	as.setLValue(as.getLeft().getLValue());
 	if (as.getLeft().getType() instanceof ArrayType)
 	    as.getLeft().setType(as.getRight().getType().promotesTo(((ArrayType) as.getLeft().getType()).getOf()));
 	else
 	    as.getLeft().setType(as.getRight().getType().promotesTo(as.getLeft().getType()));
 	if (as.getLeft().getType() == null)
 	    new ErrorType(as.getLeft(), "Not valid Assignment");
+	as.setType(as.getLeft().getType());
 	return null;
     }
 

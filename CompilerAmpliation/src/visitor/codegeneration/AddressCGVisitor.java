@@ -1,27 +1,22 @@
 package visitor.codegeneration;
 
-import visitor.Visitor;
 import ast.expression.FieldAccess;
 import ast.expression.Indexing;
 import ast.expression.Variable;
 import ast.program.VariableDefinition;
+import ast.statement.Assignment;
 import ast.type.ArrayType;
 import ast.type.IntType;
+import visitor.Visitor;
 
 public class AddressCGVisitor extends AbstractCGVisitor {
 
-    private Visitor valueVisitor;
+    private Visitor valueVisitor, execVisitor;
 
     @Override
-    public Object visit(Variable var, Object params) {
-	VariableDefinition def = (VariableDefinition) var.getDefinition();
-	if (def.getScope() == 0)
-	    CodeGenerator.getInstance().pusha(def.getOffset());
-	else {
-	    CodeGenerator.getInstance().pushabp();
-	    CodeGenerator.getInstance().push(IntType.getInstance(), def.getOffset());
-	    CodeGenerator.getInstance().add(IntType.getInstance());
-	}
+    public Object visit(Assignment as, Object params) {
+	as.accept(execVisitor, params);
+	as.getLeft().accept(this, params);
 	return null;
     }
 
@@ -46,8 +41,25 @@ public class AddressCGVisitor extends AbstractCGVisitor {
 	return null;
     }
 
-    void setVisitor(Visitor visitor) {
+    @Override
+    public Object visit(Variable var, Object params) {
+	VariableDefinition def = (VariableDefinition) var.getDefinition();
+	if (def.getScope() == 0)
+	    CodeGenerator.getInstance().pusha(def.getOffset());
+	else {
+	    CodeGenerator.getInstance().pushabp();
+	    CodeGenerator.getInstance().push(IntType.getInstance(), def.getOffset());
+	    CodeGenerator.getInstance().add(IntType.getInstance());
+	}
+	return null;
+    }
+
+    void setValueVisitor(Visitor visitor) {
 	this.valueVisitor = visitor;
+    }
+    
+    void setExecuteVisitor(Visitor visitor) {
+	this.execVisitor = visitor;
     }
 
 }

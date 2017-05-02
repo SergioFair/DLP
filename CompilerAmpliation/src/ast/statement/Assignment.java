@@ -1,12 +1,15 @@
 package ast.statement;
 
 import ast.expression.Expression;
+import ast.type.Type;
 import visitor.Visitor;
 
-public class Assignment implements Statement {
+public class Assignment implements Statement, Expression {
 
     public Expression left, right;
     public int line, column;
+    public Type type;
+    public boolean lvalue;
 
     public Assignment(int line, int column, Expression left, Expression right) {
 	this.line = line;
@@ -43,6 +46,26 @@ public class Assignment implements Statement {
     public Object accept(Visitor v, Object params) {
 	v.visit(this, params);
 	return null;
+    }
+
+    @Override
+    public boolean getLValue() {
+	return this.lvalue;
+    }
+
+    @Override
+    public void setLValue(boolean lval) {
+	this.lvalue = lval;
+    }
+
+    @Override
+    public void setType(Type type) {
+	this.type = type;
+    }
+
+    @Override
+    public Type getType() {
+	return this.type;
     }
 
 }

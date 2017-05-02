@@ -1,2 +1,4 @@
 /visitor/
 /ast/
+/parser/
+/scanner/

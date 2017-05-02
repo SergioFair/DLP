@@ -30,7 +30,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	this.valVisitor = new ValueCGVisitor();
 	this.addrVisitor = new AddressCGVisitor();
 	this.valVisitor.setAddressVisitor(this.addrVisitor);
-	this.addrVisitor.setVisitor(this.valVisitor);
+	this.addrVisitor.setValueVisitor(this.valVisitor);
+	this.addrVisitor.setExecuteVisitor(this);
     }
 
     @Override
@@ -51,6 +52,7 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 
     @Override
     public Object visit(Assignment as, Object params) {
+	CodeGenerator.getInstance().writeLine(as.getLine());
 	CodeGenerator.getInstance().comment("assignment");
 	as.getLeft().accept(addrVisitor, params);
 	as.getRight().accept(valVisitor, params);
@@ -61,6 +63,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 
     @Override
     public Object visit(DoWhileStatement dow, Object params) {
+	CodeGenerator.getInstance().writeLine(dow.getLine());
+	CodeGenerator.getInstance().comment("do while");
 	int labels = CodeGenerator.getInstance().getLabels(1);
 	CodeGenerator.getInstance().label(labels);
 	for (Statement st : dow.getBody())
@@ -72,6 +76,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 
     @Override
     public Object visit(ForStatement forStatement, Object params) {
+	CodeGenerator.getInstance().writeLine(forStatement.getCondition().getLine());
+	CodeGenerator.getInstance().comment("for statement");
 	int labelNumber = CodeGenerator.getInstance().getLabels(2);
 	forStatement.getInitilization().accept(this, params);
 	CodeGenerator.getInstance().label(labelNumber);
@@ -89,6 +95,7 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
     public Object visit(IfStatement ifst, Object params) {
 
 	// If part
+	CodeGenerator.getInstance().writeLine(ifst.getLine());
 	CodeGenerator.getInstance().comment("if");
 	int labelNumber = CodeGenerator.getInstance().getLabels(2);
 	ifst.getCondition().accept(valVisitor, params);
@@ -117,8 +124,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 
     @Override
     public Object visit(Invocation inv, Object params) {
-	CodeGenerator.getInstance().comment("invocation");
 	CodeGenerator.getInstance().writeLine(inv.getLine());
+	CodeGenerator.getInstance().comment("invocation");
 	for (Expression exp : inv.getParams())
 	    exp.accept(valVisitor, params);
 	CodeGenerator.getInstance().call(inv.getVar().getName());
@@ -142,6 +149,7 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 
     @Override
     public Object visit(WhileStatement whst, Object params) {
+	CodeGenerator.getInstance().writeLine(whst.getLine());
 	CodeGenerator.getInstance().comment("while");
 	int labelNumber = CodeGenerator.getInstance().getLabels(2);
 	CodeGenerator.getInstance().label(labelNumber);
@@ -159,7 +167,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 
     @Override
     public Object visit(Write wr, Object params) {
-	CodeGenerator.getInstance().comment("Write");
+	CodeGenerator.getInstance().writeLine(wr.getLine());
+	CodeGenerator.getInstance().comment("write");
 	for (Expression exp : wr.expressions) {
 	    exp.accept(valVisitor, params);
 	    CodeGenerator.getInstance().out(exp.getType());
@@ -199,6 +208,7 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
     @Override
     public Object visit(Return ret, Object params) {
 	CodeGenerator.getInstance().writeLine(ret.getLine());
+	CodeGenerator.getInstance().comment("return");
 	ret.getExpression().accept(valVisitor, params);
 	FunctionDefinition funcDef = (FunctionDefinition) params;
 	CodeGenerator.getInstance().ret(funcDef.calculateReturnBytes(), funcDef.calculateLocalsBytes(),

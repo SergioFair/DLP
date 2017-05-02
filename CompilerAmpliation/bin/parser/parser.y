@@ -142,7 +142,6 @@ statement: expression ';'								{ $$ = (Expression) $1; }
 		 | read ';'										{ $$ = (Read) $1; }
 		 | increment ';'								{ $$ = (Assignment) $1; }
 		 | write ';'									{ $$ = (Write) $1; }
-		 | assignment ';'								{ $$ = (Assignment) $1; }
 		 | if_else										{ $$ = (IfStatement) $1; }
 		 | while										{ $$ = (WhileStatement) $1; }
 		 | for											{ $$ = (ForStatement) $1; }
@@ -160,6 +159,8 @@ expression: expression '+' expression					{ $$ = new Arithmetic(scanner.getLine(
           																,(Expression) $1,"-",(Expression) $3); }
           | expression '%' expression					{ $$ = new Arithmetic(scanner.getLine(), scanner.getColumn()
           																,(Expression) $1,"%",(Expression) $3); }
+          | assignment									{ $$ = (Assignment)$1; }
+          
           | expression POTENTIAL expression				{ $$ = new Power(scanner.getLine(), scanner.getColumn()
           																,(Expression) $1, (Expression) $3); }
           | expression DOUBLEEQUALS expression			{ $$ = new Comparison(scanner.getLine(), scanner.getColumn()

@@ -13,6 +13,7 @@ import ast.expression.RealLiteral;
 import ast.expression.UnaryMinus;
 import ast.expression.UnaryNot;
 import ast.expression.Variable;
+import ast.statement.Assignment;
 import ast.statement.Invocation;
 import ast.type.IntType;
 import visitor.Visitor;
@@ -31,6 +32,13 @@ public class ValueCGVisitor extends AbstractCGVisitor {
 	return null;
     }
 
+    @Override
+    public Object visit(Assignment as, Object params) {
+	as.accept(addrVisitor, params);
+	CodeGenerator.getInstance().load(as.getLeft().getType());
+	return null;
+    }
+    
     @Override
     public Object visit(Cast cast, Object params) {
 	cast.getExpression().accept(this, params);
