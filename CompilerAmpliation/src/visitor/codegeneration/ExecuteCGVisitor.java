@@ -123,7 +123,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	    }
 	    CodeGenerator.getInstance().label(labelNumber + 1);
 	}
-	CodeGenerator.getInstance().label(labelNumber);
+	else
+	    CodeGenerator.getInstance().label(labelNumber);
 	CodeGenerator.getInstance().newLine();
 	return null;
     }
