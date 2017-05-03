@@ -218,6 +218,7 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	CodeGenerator.getInstance().comment("return");
 	ret.getExpression().accept(valVisitor, params);
 	FunctionDefinition funcDef = (FunctionDefinition) params;
+	CodeGenerator.getInstance().convertTo(ret.getExpression().getType(), ((FunctionType)funcDef.getType()).getReturnType());
 	CodeGenerator.getInstance().ret(funcDef.calculateReturnBytes(), funcDef.calculateLocalsBytes(),
 		funcDef.calculateParamsBytes());
 	CodeGenerator.getInstance().newLine();

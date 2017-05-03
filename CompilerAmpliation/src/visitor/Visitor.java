@@ -10,6 +10,7 @@ import ast.expression.IntLiteral;
 import ast.expression.Logical;
 import ast.expression.Power;
 import ast.expression.RealLiteral;
+import ast.expression.Ternary;
 import ast.expression.UnaryMinus;
 import ast.expression.UnaryNot;
 import ast.expression.Variable;
@@ -112,4 +113,6 @@ public interface Visitor {
     public Object visit(DoWhileStatement doWhileStatement, Object params);
 
     public Object visit(Power power, Object params);
+
+    public Object visit(Ternary ternary, Object params);
 }

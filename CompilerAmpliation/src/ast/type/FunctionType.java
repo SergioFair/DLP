@@ -54,7 +54,7 @@ public class FunctionType extends AbstractType {
     @Override
     public Type parenthesis(List<Type> list) {
 	if(list.size()!=this.params.size()){
-	    new ErrorType(params.get(0), "Incorrect number of parameters");
+	    new ErrorType(this, "Incorrect number of parameters");
 	    return null;
 	}
 	else{

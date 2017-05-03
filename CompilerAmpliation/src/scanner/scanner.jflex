@@ -126,8 +126,8 @@ do					{ yylval = "do";
 
 // * Operators of length 1
 
-("+"|"-"|"/"|"*"|"%"|">"|"<"|"="|"("|")"|"!"|"["|"]"|","|";"|"{"|"}"|".")		{ this.yylval = yytext();
-															  		  		  return (int) yytext().charAt(0); }
+("+"|"-"|"/"|"*"|"%"|">"|"<"|"="|"("|")"|"!"|"["|"]"|","|";"|"{"|"}"|"."|"?"|":")		{ this.yylval = yytext();
+															  		  		  			  return (int) yytext().charAt(0); }
 
 // * Operators of length 2
 

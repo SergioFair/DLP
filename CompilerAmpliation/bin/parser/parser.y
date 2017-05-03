@@ -29,6 +29,7 @@ import java.util.*;
 %nonassoc IFX
 %nonassoc ELSE
 %right '=' DIVIDEEQUALS TIMESEQUALS MINUSEQUALS PLUSEQUALS
+%right '?' ':'
 %left AND OR '!'
 %left '>' GEQ '<' LEQ DIFFERENT DOUBLEEQUALS
 %left '+' '-'
@@ -160,6 +161,8 @@ expression: expression '+' expression					{ $$ = new Arithmetic(scanner.getLine(
           																,(Expression) $1,"%",(Expression) $3); }
           | assignment									{ $$ = (Assignment)$1; }
           
+          | ternary 									{ $$ = (Ternary) $1; }
+          
           | expression POTENTIAL expression				{ $$ = new Power(scanner.getLine(), scanner.getColumn()
           																,(Expression) $1, (Expression) $3); }
           | expression DOUBLEEQUALS expression			{ $$ = new Comparison(scanner.getLine(), scanner.getColumn()
@@ -225,13 +228,16 @@ if_else: IF '(' expression ')' body ELSE body				{ $$ = new IfStatement(scanner.
 																		, (Expression) $3); }
 	   | IF '(' expression ')' body	%prec IFX				{ $$ = new IfStatement(scanner.getLine(), scanner.getColumn()
 																		, (List<Statement>) $5, new ArrayList<Statement>()
-																		, (Expression) $3); }
+																		, (Expression) $3); } 
 	   ;
 	   
-body : '{'listOfStatements'}'							{$$ = (List<Statement>)$2;}
+ternary: expression '?' expression ':' expression			{ $$ = new Ternary(scanner.getLine(), scanner.getColumn()
+																		,(Expression) $1, (Expression) $3, (Expression) $5); }
+	   
+body : '{'listOfStatements'}'								{ $$ = (List<Statement>)$2; }
 		| statement											{ List<Statement> list = new ArrayList<Statement>();
 															  list.add((Statement)$1);
-															  $$ = list;}
+															  $$ = list; }
 		;
 	   
 while: WHILE '(' expression ')' body	%prec IFX			{ List<Statement> body = new ArrayList<Statement>((List<Statement>)$5);

@@ -14,6 +14,7 @@ import ast.expression.IntLiteral;
 import ast.expression.Logical;
 import ast.expression.Power;
 import ast.expression.RealLiteral;
+import ast.expression.Ternary;
 import ast.expression.UnaryMinus;
 import ast.expression.UnaryNot;
 import ast.expression.Variable;
@@ -145,6 +146,18 @@ public class TypeCheckingVisitor extends AbstractVisitor {
     }
 
     @Override
+    public Object visit(Ternary ter, Object params) {
+	ter.getCondition().accept(this, params);
+	if (!ter.getCondition().getType().isLogical())
+	    new ErrorType(ter.getCondition(), "Not valid condition for Ternary operator");
+	ter.getFirst().accept(this, params);
+	ter.getSecond().accept(this, params);
+	ter.setType(ter.getFirst().getType().higherThan(ter.getSecond().getType()));
+	ter.setLValue(false);
+	return null;
+    }
+
+    @Override
     public Object visit(UnaryMinus minus, Object params) {
 	minus.getExpression().accept(this, params);
 	minus.setLValue(false);
@@ -263,7 +276,8 @@ public class TypeCheckingVisitor extends AbstractVisitor {
     @Override
     public Object visit(Return ret, Object params) {
 	ret.getExpression().accept(this, params);
-	if (ret.getExpression().getType().promotesTo(((FunctionType) params).getReturnType()) == null)
+	ret.getExpression().setType(ret.getExpression().getType().promotesTo(((FunctionType) params).getReturnType()));
+	if (ret.getExpression().getType() == null)
 	    new ErrorType(ret, "Not valid return type");
 	return null;
     }

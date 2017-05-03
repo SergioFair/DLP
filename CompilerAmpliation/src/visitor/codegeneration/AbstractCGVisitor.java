@@ -10,6 +10,7 @@ import ast.expression.IntLiteral;
 import ast.expression.Logical;
 import ast.expression.Power;
 import ast.expression.RealLiteral;
+import ast.expression.Ternary;
 import ast.expression.UnaryMinus;
 import ast.expression.UnaryNot;
 import ast.expression.Variable;
@@ -49,7 +50,7 @@ public abstract class AbstractCGVisitor implements Visitor {
     public Object visit(Program program, Object params) {
 	throw new IllegalArgumentException("Code generation was not possible");
     }
-    
+
     @Override
     public Object visit(VariableDefinition var, Object params) {
 	throw new IllegalArgumentException("Code generation was not possible");
@@ -96,7 +97,7 @@ public abstract class AbstractCGVisitor implements Visitor {
     public Object visit(Logical log, Object params) {
 	throw new IllegalArgumentException("Code generation was not possible");
     }
-    
+
     @Override
     public Object visit(Power pow, Object params) {
 	throw new IllegalArgumentException("Code generation was not possible");
@@ -104,6 +105,11 @@ public abstract class AbstractCGVisitor implements Visitor {
 
     @Override
     public Object visit(RealLiteral real, Object params) {
+	throw new IllegalArgumentException("Code generation was not possible");
+    }
+
+    @Override
+    public Object visit(Ternary ter, Object params) {
 	throw new IllegalArgumentException("Code generation was not possible");
     }
 

@@ -11,6 +11,7 @@ import ast.expression.IntLiteral;
 import ast.expression.Logical;
 import ast.expression.Power;
 import ast.expression.RealLiteral;
+import ast.expression.Ternary;
 import ast.expression.UnaryMinus;
 import ast.expression.UnaryNot;
 import ast.expression.Variable;
@@ -137,6 +138,14 @@ public abstract class AbstractVisitor implements Visitor {
     @Override
     public Object visit(RealLiteral real, Object params) {
 	real.getType().accept(this, params);
+	return null;
+    }
+    
+    @Override
+    public Object visit(Ternary ter, Object params) {
+	ter.getCondition().accept(this, params);
+	ter.getFirst().accept(this, params);
+	ter.getSecond().accept(this, params);
 	return null;
     }
 

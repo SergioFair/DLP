@@ -10,6 +10,7 @@ import ast.expression.Indexing;
 import ast.expression.IntLiteral;
 import ast.expression.Logical;
 import ast.expression.RealLiteral;
+import ast.expression.Ternary;
 import ast.expression.UnaryMinus;
 import ast.expression.UnaryNot;
 import ast.expression.Variable;
@@ -112,6 +113,21 @@ public class ValueCGVisitor extends AbstractCGVisitor {
     @Override
     public Object visit(RealLiteral real, Object params) {
 	CodeGenerator.getInstance().push(real.getType(), real.getValue());
+	return null;
+    }
+
+    @Override
+    public Object visit(Ternary ter, Object params) {
+	int labelNumber = CodeGenerator.getInstance().getLabels(2);
+	ter.getCondition().accept(this, params);
+	CodeGenerator.getInstance().jz(labelNumber);
+	ter.getFirst().accept(this, params);
+	CodeGenerator.getInstance().convertTo(ter.getFirst().getType(),ter.getType());
+	CodeGenerator.getInstance().jmp(labelNumber + 1);
+	CodeGenerator.getInstance().label(labelNumber);
+	ter.getSecond().accept(this, params);
+	CodeGenerator.getInstance().convertTo(ter.getSecond().getType(),ter.getType());
+	CodeGenerator.getInstance().label(labelNumber + 1);
 	return null;
     }
 
