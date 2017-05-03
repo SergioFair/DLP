@@ -7,6 +7,7 @@
 - For statement
 - Do while
 - Multiple assignment
+- Ternary operator
 
 ## To do:
 1) **Allow structs and arrays to be passed as parameters**
