@@ -1,12 +1,17 @@
 int a, b;
 
-void f(int m, int n){
-	b = m > n ? m : n;
-}
+void f(){}
 
 void main(){
-	a = 3;
-	b = 2;
-	f(a,b);
-	write b;
+	a = b = 2;
+	switch(a){
+	case 2:
+		f();
+	case b:
+		a = 5;
+		break;
+	default:
+		b = 5;
+	}
+	write a, b;
 }

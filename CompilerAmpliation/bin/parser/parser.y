@@ -5,6 +5,7 @@ import scanner.Scanner;
 import ast.expression.*;
 import ast.program.*;
 import ast.statement.*;
+import ast.statement.switchCase.*;
 import ast.type.*;
 import ast.ASTNode;
 import java.util.*;
@@ -20,9 +21,10 @@ import java.util.*;
 %token VOID MAIN
 %token WRITE READ
 %token CHAR DOUBLE INT STRUCT
-%token IF ELSE WHILE RETURN FOR DO
+%token IF ELSE WHILE RETURN FOR DO SWITCH CASE DEFAULT
 %token INC DEC
 %token DIVIDEEQUALS TIMESEQUALS MINUSEQUALS PLUSEQUALS
+%token BREAK
 
 
 //Lower precedence go first
@@ -145,6 +147,7 @@ statement: expression ';'								{ $$ = (Expression) $1; }
 		 | if_else										{ $$ = (IfStatement) $1; }
 		 | while										{ $$ = (WhileStatement) $1; }
 		 | for											{ $$ = (ForStatement) $1; }
+		 | switch										{ $$ = (SwitchCase) $1; }
 		 | do_while										{ $$ = (DoWhileStatement) $1; }
 		 | return ';'									{ $$ = (Return) $1; }
 		 ;
@@ -254,7 +257,44 @@ for: FOR '(' statement expression ';' increment ')' body %prec IFX { List<Statem
 																			  $$ = new ForStatement(scanner.getLine(), scanner.getColumn()
 																			       , (Statement) $3, (Expression) $4, (Assignment) $6, body); }
    ;
-				
+   
+switch: SWITCH '(' expression ')' '{' switch_body '}'				{ List<Case> cases = (List<Case>)$6;
+																	  $$ = new SwitchCase(scanner.getLine(), scanner.getColumn()
+																	  		, (Expression)$3, cases); }
+	  ;
+													
+switch_body: listOfCases 											{ $$ = (List<Case>)$1; }
+		   | listOfCases default_case								{ List<Case> cases = (List<Case>)$1;
+		   															  cases.add((Case)$2);
+		   															  $$ = cases; }
+		   ;
+		   
+default_case: DEFAULT ':' listOfStatements break					{ List<Statement> stms = (List<Statement>)$3;
+																	  stms.add((BreakInstruction) $4);
+																	  $$ = new DefaultCase(scanner.getLine(), scanner.getColumn()
+																			, stms); }
+	| DEFAULT ':' listOfStatements									{ $$ = new DefaultCase(scanner.getLine(), scanner.getColumn()
+																			, (List<Statement>)$3); }
+    ;
+																  		
+listOfCases : listOfCases case										{ List<Case> cases = (List<Case>)$1;
+																	  cases.add((Case)$2);
+																	  $$ = cases; }
+			| case													{ List<Case> cases = new ArrayList<>();
+																	  cases.add((Case)$1);
+																	  $$ = cases; }
+			;
+			
+case: CASE expression ':' listOfStatements break					{ List<Statement> stms = (List<Statement>)$4;
+																	  stms.add((BreakInstruction) $5);
+																	  $$ = new NormalCase(scanner.getLine(), scanner.getColumn()
+																			, (Expression)$2, stms); }
+	| CASE expression ':' listOfStatements							{ $$ = new NormalCase(scanner.getLine(), scanner.getColumn()
+																			, (Expression)$2, (List<Statement>)$4); }
+    ;
+    
+break: BREAK ';'													{ $$ = new BreakInstruction(scanner.getLine(), scanner.getColumn()); }
+	 ;
           
 cast: '(' built_in_type ')' expression	%prec CAST					{ $$ = new Cast(scanner.getLine(), scanner.getColumn()
           																	,(Type) $2, (Expression) $4); }

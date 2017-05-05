@@ -15,7 +15,7 @@ import visitor.semantic.TypeCheckingVisitor;
 import ast.program.Program;
 import error_handler.ErrorHandler;
 
-public class Main {
+public class NoCodeGenerationMain {
 
     public static void main(String args[]) throws IOException {
 	if (args.length < 1) {

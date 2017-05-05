@@ -1,5 +1,8 @@
 package visitor.codegeneration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ast.expression.Expression;
 import ast.program.Definition;
 import ast.program.FunctionDefinition;
@@ -15,15 +18,20 @@ import ast.statement.Return;
 import ast.statement.Statement;
 import ast.statement.WhileStatement;
 import ast.statement.Write;
+import ast.statement.switchCase.BreakInstruction;
+import ast.statement.switchCase.DefaultCase;
+import ast.statement.switchCase.NormalCase;
+import ast.statement.switchCase.SwitchCase;
 import ast.type.FunctionType;
 import ast.type.IntType;
 import ast.type.VoidType;
 
+@SuppressWarnings("unchecked")
 public class ExecuteCGVisitor extends AbstractCGVisitor {
 
     private ValueCGVisitor valVisitor;
     private AddressCGVisitor addrVisitor;
-    String input;
+    private String input;
 
     public ExecuteCGVisitor(String input) {
 	this.input = input;
@@ -58,6 +66,20 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	as.getRight().accept(valVisitor, params);
 	CodeGenerator.getInstance().convertTo(as.getRight().getType(), as.getLeft().getType());
 	CodeGenerator.getInstance().store(as.getLeft().getType());
+	return null;
+    }
+
+    @Override
+    public Object visit(BreakInstruction br, Object params) {
+	Map<String, Integer> labels = (Map<String, Integer>) params;
+	CodeGenerator.getInstance().breakInstruction(labels.get("last"));
+	return null;
+    }
+
+    @Override
+    public Object visit(DefaultCase def, Object params) {
+	for (Statement st : def.getBody())
+	    st.accept(this, params);
 	return null;
     }
 
@@ -98,9 +120,9 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	CodeGenerator.getInstance().writeLine(ifst.getLine());
 	CodeGenerator.getInstance().comment("if");
 	int labelNumber;
-	if(ifst.getElseBody().isEmpty()){
+	if (ifst.getElseBody().isEmpty()) {
 	    labelNumber = CodeGenerator.getInstance().getLabels(1);
-	} else{
+	} else {
 	    labelNumber = CodeGenerator.getInstance().getLabels(2);
 	}
 	ifst.getCondition().accept(valVisitor, params);
@@ -122,8 +144,7 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 		CodeGenerator.getInstance().newLine();
 	    }
 	    CodeGenerator.getInstance().label(labelNumber + 1);
-	}
-	else
+	} else
 	    CodeGenerator.getInstance().label(labelNumber);
 	CodeGenerator.getInstance().newLine();
 	return null;
@@ -142,6 +163,17 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
     }
 
     @Override
+    public Object visit(NormalCase normalCase, Object params) {
+	Map<String, Integer> labels = (Map<String, Integer>) params;
+	normalCase.getExpression().accept(valVisitor, params);
+	CodeGenerator.getInstance().eq(normalCase.getExpression().getType());
+	CodeGenerator.getInstance().jz(labels.get("current") + 1);
+	for (Statement st : normalCase.getBody())
+	    st.accept(this, params);
+	return null;
+    }
+
+    @Override
     public Object visit(Read read, Object params) {
 	CodeGenerator.getInstance().writeLine(read.getLine());
 	CodeGenerator.getInstance().comment("read");
@@ -151,6 +183,26 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	    CodeGenerator.getInstance().store(exp.getType());
 	}
 	CodeGenerator.getInstance().newLine();
+	return null;
+    }
+
+    @Override
+    public Object visit(SwitchCase sw, Object params) {
+	int last = sw.getCases().size() - 1;
+	int labelNumber = CodeGenerator.getInstance().getLabels(last);
+	int aux = labelNumber;
+	Map<String, Integer> labels = new HashMap<>();
+	labels.put("current", aux);
+	labels.put("last", sw.getCases().size());
+	for (int i = 0; i < sw.getCases().size(); i++) {
+	    if (i > 0)
+		CodeGenerator.getInstance().label(aux);
+	    sw.getExpression().accept(valVisitor, params);
+	    sw.getCases().get(i).accept(this, labels);
+	    aux++;
+	    labels.put("current", aux);
+	}
+	CodeGenerator.getInstance().label(aux);
 	return null;
     }
 
@@ -186,7 +238,7 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 
     @Override
     public Object visit(VariableDefinition var, Object params) {
-	if(var.getScope()==0)
+	if (var.getScope() == 0)
 	    CodeGenerator.getInstance().varDefinition(var);
 	return null;
     }
@@ -218,7 +270,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	CodeGenerator.getInstance().comment("return");
 	ret.getExpression().accept(valVisitor, params);
 	FunctionDefinition funcDef = (FunctionDefinition) params;
-	CodeGenerator.getInstance().convertTo(ret.getExpression().getType(), ((FunctionType)funcDef.getType()).getReturnType());
+	CodeGenerator.getInstance().convertTo(ret.getExpression().getType(),
+		((FunctionType) funcDef.getType()).getReturnType());
 	CodeGenerator.getInstance().ret(funcDef.calculateReturnBytes(), funcDef.calculateLocalsBytes(),
 		funcDef.calculateParamsBytes());
 	CodeGenerator.getInstance().newLine();

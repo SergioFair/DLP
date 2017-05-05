@@ -29,6 +29,11 @@ import ast.statement.Return;
 import ast.statement.Statement;
 import ast.statement.WhileStatement;
 import ast.statement.Write;
+import ast.statement.switchCase.BreakInstruction;
+import ast.statement.switchCase.Case;
+import ast.statement.switchCase.DefaultCase;
+import ast.statement.switchCase.NormalCase;
+import ast.statement.switchCase.SwitchCase;
 import ast.type.ArrayType;
 import ast.type.CharType;
 import ast.type.ErrorType;
@@ -184,6 +189,18 @@ public abstract class AbstractVisitor implements Visitor {
 	    st.accept(this, params);
 	return null;
     }
+    
+    @Override
+    public Object visit(BreakInstruction br, Object params){
+	return null;
+    }
+
+    @Override
+    public Object visit(DefaultCase def, Object params){
+	for(Statement st : def.getBody())
+	    st.accept(this, params);
+	return null;
+    }
 
     @Override
     public Object visit(ForStatement forStatement, Object params) {
@@ -212,6 +229,14 @@ public abstract class AbstractVisitor implements Visitor {
 	    param.accept(this, params);
 	return null;
     }
+    
+    @Override
+    public Object visit(NormalCase normalCase, Object params){
+	normalCase.getExpression().accept(this, params);
+	for(Statement st : normalCase.getBody())
+	    st.accept(this, params);
+	return null;
+    }
 
     @Override
     public Object visit(Read read, Object params) {
@@ -223,6 +248,14 @@ public abstract class AbstractVisitor implements Visitor {
     @Override
     public Object visit(Return ret, Object params) {
 	ret.getExpression().accept(this, params);
+	return null;
+    }
+    
+    @Override
+    public Object visit(SwitchCase switchCase, Object params){
+	switchCase.getExpression().accept(this, params);
+	for(Case c : switchCase.getCases())
+	    c.accept(this, params);
 	return null;
     }
 

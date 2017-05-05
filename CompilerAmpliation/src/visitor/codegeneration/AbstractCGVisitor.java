@@ -26,6 +26,10 @@ import ast.statement.Read;
 import ast.statement.Return;
 import ast.statement.WhileStatement;
 import ast.statement.Write;
+import ast.statement.switchCase.BreakInstruction;
+import ast.statement.switchCase.DefaultCase;
+import ast.statement.switchCase.NormalCase;
+import ast.statement.switchCase.SwitchCase;
 import ast.type.ArrayType;
 import ast.type.CharType;
 import ast.type.ErrorType;
@@ -134,6 +138,16 @@ public abstract class AbstractCGVisitor implements Visitor {
     public Object visit(Assignment as, Object params) {
 	throw new IllegalArgumentException("Code generation was not possible");
     }
+    
+    @Override
+    public Object visit(BreakInstruction br, Object params){
+	throw new IllegalArgumentException("Code generation was not possible");
+    }
+
+    @Override
+    public Object visit(DefaultCase def, Object params){
+	throw new IllegalArgumentException("Code generation was not possible");
+    }
 
     @Override
     public Object visit(DoWhileStatement dowhile, Object params) {
@@ -154,6 +168,11 @@ public abstract class AbstractCGVisitor implements Visitor {
     public Object visit(Invocation inv, Object params) {
 	throw new IllegalArgumentException("Code generation was not possible");
     }
+    
+    @Override
+    public Object visit(NormalCase normalCase, Object params){
+	throw new IllegalArgumentException("Code generation was not possible");
+    }
 
     @Override
     public Object visit(Read read, Object params) {
@@ -162,6 +181,11 @@ public abstract class AbstractCGVisitor implements Visitor {
 
     @Override
     public Object visit(Return ret, Object params) {
+	throw new IllegalArgumentException("Code generation was not possible");
+    }
+    
+    @Override
+    public Object visit(SwitchCase sw, Object params){
 	throw new IllegalArgumentException("Code generation was not possible");
     }
 

@@ -93,6 +93,14 @@ for					{ yylval = "for";
 					  return Parser.FOR; }
 do					{ yylval = "do";
 					  return Parser.DO; }
+switch				{ yylval = "switch";
+					  return Parser.SWITCH; }
+case				{ yylval = "case";
+					  return Parser.CASE; }
+break				{ yylval = "break";
+					  return Parser.BREAK; }
+default				{ yylval = "default";
+					  return Parser.DEFAULT; }
 
 // * Constants
 

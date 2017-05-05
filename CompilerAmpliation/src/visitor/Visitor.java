@@ -26,6 +26,10 @@ import ast.statement.Read;
 import ast.statement.Return;
 import ast.statement.WhileStatement;
 import ast.statement.Write;
+import ast.statement.switchCase.BreakInstruction;
+import ast.statement.switchCase.DefaultCase;
+import ast.statement.switchCase.NormalCase;
+import ast.statement.switchCase.SwitchCase;
 import ast.type.ArrayType;
 import ast.type.CharType;
 import ast.type.ErrorType;
@@ -63,8 +67,12 @@ public interface Visitor {
     public Object visit(IntLiteral lit, Object params);
 
     public Object visit(Logical log, Object params);
+    
+    public Object visit(Power power, Object params);
 
     public Object visit(RealLiteral real, Object params);
+    
+    public Object visit(Ternary ternary, Object params);
 
     public Object visit(UnaryMinus minus, Object params);
 
@@ -76,13 +84,25 @@ public interface Visitor {
 
     public Object visit(Assignment as, Object params);
 
+    public Object visit(BreakInstruction breakInstruction, Object params);
+    
+    public Object visit(DefaultCase defaultCase, Object params);
+    
+    public Object visit(DoWhileStatement doWhileStatement, Object params);
+    
+    public Object visit(ForStatement forStatement, Object params);
+    
     public Object visit(IfStatement ifst, Object params);
 
     public Object visit(Invocation inv, Object params);
+    
+    public Object visit(NormalCase normalCase, Object params);
 
     public Object visit(Read read, Object params);
 
     public Object visit(Return ret, Object params);
+    
+    public Object visit(SwitchCase switchCase, Object params);
 
     public Object visit(WhileStatement whst, Object params);
 
@@ -107,12 +127,4 @@ public interface Visitor {
     public Object visit(Struct st, Object params);
 
     public Object visit(VoidType vt, Object params);
-
-    public Object visit(ForStatement forStatement, Object params);
-
-    public Object visit(DoWhileStatement doWhileStatement, Object params);
-
-    public Object visit(Power power, Object params);
-
-    public Object visit(Ternary ternary, Object params);
 }

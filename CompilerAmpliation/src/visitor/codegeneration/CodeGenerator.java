@@ -547,12 +547,12 @@ public class CodeGenerator {
 	try {
 	    output.write(funcDef.getName() + ":\n");
 	    output.write("\t' * Parameters\n");
-	    for(VariableDefinition var : ((FunctionType)funcDef.getType()).getParams())
+	    for (VariableDefinition var : ((FunctionType) funcDef.getType()).getParams())
 		varDefinition(var);
 	    output.write("\t' * Local variables\n");
-	    for(Statement st : funcDef.getBody())
-		if(st instanceof VariableDefinition)
-		    varDefinition((VariableDefinition)st);
+	    for (Statement st : funcDef.getBody())
+		if (st instanceof VariableDefinition)
+		    varDefinition((VariableDefinition) st);
 	    output.flush();
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -586,5 +586,9 @@ public class CodeGenerator {
 	default:
 	    throw new IllegalStateException("Code generation was not possible");
 	}
+    }
+
+    public void breakInstruction(int currentLabel) {
+	jmp(currentLabel + 1);
     }
 }

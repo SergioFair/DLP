@@ -28,6 +28,11 @@ import ast.statement.Read;
 import ast.statement.Return;
 import ast.statement.Statement;
 import ast.statement.WhileStatement;
+import ast.statement.switchCase.BreakInstruction;
+import ast.statement.switchCase.Case;
+import ast.statement.switchCase.DefaultCase;
+import ast.statement.switchCase.NormalCase;
+import ast.statement.switchCase.SwitchCase;
 import ast.type.ArrayType;
 import ast.type.ErrorType;
 import ast.type.FunctionType;
@@ -180,7 +185,6 @@ public class TypeCheckingVisitor extends AbstractVisitor {
     @Override
     public Object visit(Variable var, Object params) {
 	var.setLValue(true);
-	// var.getDefinition().accept(this, params);
 	var.setType(var.getDefinition().getType());
 	return null;
     }
@@ -205,6 +209,18 @@ public class TypeCheckingVisitor extends AbstractVisitor {
     }
 
     @Override
+    public Object visit(BreakInstruction br, Object params){
+	return null;
+    }
+
+    @Override
+    public Object visit(DefaultCase def, Object params){
+	for(Statement st : def.getBody())
+	    st.accept(this, params);
+	return null;
+    }
+
+    @Override
     public Object visit(DoWhileStatement dow, Object params) {
 	dow.getCondition().accept(this, params);
 	if (!dow.getCondition().getType().isLogical())
@@ -225,6 +241,18 @@ public class TypeCheckingVisitor extends AbstractVisitor {
 	    st.accept(this, params);
 	return null;
     }
+    
+    @Override
+    public Object visit(IfStatement ifstm, Object params) {
+	ifstm.getCondition().accept(this, params);
+	if (!ifstm.getCondition().getType().isLogical())
+	    new ErrorType(ifstm.getCondition(), "If condition is not logical");
+	for (Statement st : ifstm.getIfBody())
+	    st.accept(this, params);
+	for (Statement st : ifstm.getElseBody())
+	    st.accept(this, params);
+	return null;
+    }
 
     @Override
     public Object visit(Invocation inv, Object params) {
@@ -240,6 +268,14 @@ public class TypeCheckingVisitor extends AbstractVisitor {
 	    new ErrorType(inv, "Not valid Parameters");
 	return null;
     }
+    
+    @Override
+    public Object visit(NormalCase normalCase, Object params) {
+	normalCase.getExpression().accept(this, params);
+	for (Statement st : normalCase.getBody())
+	    st.accept(this, params);
+	return null;
+    }
 
     @Override
     public Object visit(Read read, Object params) {
@@ -252,33 +288,29 @@ public class TypeCheckingVisitor extends AbstractVisitor {
     }
 
     @Override
+    public Object visit(Return ret, Object params) {
+	ret.getExpression().accept(this, params);
+	ret.getExpression().setType(ret.getExpression().getType().promotesTo(((FunctionType) params).getReturnType()));
+	if (ret.getExpression().getType() == null)
+	    new ErrorType(ret, "Not valid return type");
+	return null;
+    }
+    
+    @Override
+    public Object visit(SwitchCase switchCase, Object params) {
+	switchCase.getExpression().accept(this, params);
+	for (Case c : switchCase.getCases())
+	    c.accept(this, params);
+	return null;
+    }
+
+    @Override
     public Object visit(WhileStatement wstm, Object params) {
 	wstm.getCondition().accept(this, params);
 	if (!wstm.getCondition().getType().isLogical())
 	    new ErrorType(wstm.getCondition(), "While condition is not logical");
 	for (Statement st : wstm.getWhileBody())
 	    st.accept(this, params);
-	return null;
-    }
-
-    @Override
-    public Object visit(IfStatement ifstm, Object params) {
-	ifstm.getCondition().accept(this, params);
-	if (!ifstm.getCondition().getType().isLogical())
-	    new ErrorType(ifstm.getCondition(), "If condition is not logical");
-	for (Statement st : ifstm.getIfBody())
-	    st.accept(this, params);
-	for (Statement st : ifstm.getElseBody())
-	    st.accept(this, params);
-	return null;
-    }
-
-    @Override
-    public Object visit(Return ret, Object params) {
-	ret.getExpression().accept(this, params);
-	ret.getExpression().setType(ret.getExpression().getType().promotesTo(((FunctionType) params).getReturnType()));
-	if (ret.getExpression().getType() == null)
-	    new ErrorType(ret, "Not valid return type");
 	return null;
     }
 
