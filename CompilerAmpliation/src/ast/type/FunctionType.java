@@ -34,8 +34,7 @@ public class FunctionType extends AbstractType {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder(getReturnType().toString()).append(" ")
-		.append(getName()).append(" (");
+	StringBuilder sb = new StringBuilder(getReturnType().toString()).append(" ").append(getName()).append(" (");
 	for (int i = 0; i < params.size(); i++) {
 	    sb.append(params.get(i).toString());
 	    if (i != params.size() - 1)
@@ -50,36 +49,35 @@ public class FunctionType extends AbstractType {
 	v.visit(this, params);
 	return null;
     }
-    
+
     @Override
     public Type parenthesis(List<Type> list) {
-	if(list.size()!=this.params.size()){
+	if (list.size() != this.params.size()) {
 	    new ErrorType(this, "Incorrect number of parameters");
 	    return null;
-	}
-	else{
-	    for(int i=0;i<list.size();i++)
-		if(list.get(i).promotesTo(this.params.get(i).type)==null)
+	} else {
+	    for (int i = 0; i < list.size(); i++)
+		if (list.get(i).promotesTo(this.params.get(i).type) == null)
 		    return null;
 	    return getReturnType();
 	}
     }
-    
+
     @Override
-    public int numberOfBytes(){
-	int total=0;
-	for(VariableDefinition varDef : params)
-	    total+=varDef.getType().numberOfBytes();
+    public int numberOfBytes() {
+	int total = 0;
+	for (VariableDefinition varDef : params)
+	    total += varDef.getType().numberOfBytes();
 	return total;
     }
-    
+
     @Override
-    public int getLine(){
+    public int getLine() {
 	return this.line;
     }
-    
+
     @Override
-    public int getColumn(){
+    public int getColumn() {
 	return this.column;
     }
 }

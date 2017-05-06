@@ -45,38 +45,55 @@ public class Struct extends AbstractType {
 	v.visit(this, params);
 	return null;
     }
-    
+
     @Override
-    public Type dot(String value){
-	for(RecordField rf : records){
-	    if(rf.getName().equals(value))
+    public Type dot(String value) {
+	for (RecordField rf : records) {
+	    if (rf.getName().equals(value))
 		return rf.getType();
 	}
 	return null;
     }
-    
+
     @Override
-    public int numberOfBytes(){
+    public int numberOfBytes() {
 	int total = 0;
-	for(RecordField rf : records){
-	    total+=rf.getType().numberOfBytes();
+	for (RecordField rf : records) {
+	    total += rf.getType().numberOfBytes();
 	}
 	return total;
     }
-    
+
     @Override
-    public RecordField getField(String id){
-	for(RecordField rf : records)
-	    if(rf.getName().equals(id))
+    public RecordField getField(String id) {
+	for (RecordField rf : records)
+	    if (rf.getName().equals(id))
 		return rf;
 	throw new IllegalStateException("Code generation was not possible");
     }
-    
-    public String toInstruction(){
+
+    @Override
+    public Type promotesTo(Type type) {
+	if (!(type instanceof Struct))
+	    return null;
+	else {
+	    Struct aux = (Struct) type;
+	    if (this.getRecords().size() == aux.getRecords().size()) {
+		for (int i = 0; i < this.getRecords().size(); i++)
+		    if (!(this.getRecords().get(i).getType().getClass()
+			    .equals(aux.getRecords().get(i).getType().getClass())))
+			return null;
+		return type;
+	    } else
+		return null;
+	}
+    }
+
+    public String toInstruction() {
 	StringBuilder sb = new StringBuilder("record(");
-	for(int i=0;i<getRecords().size();i++){
+	for (int i = 0; i < getRecords().size(); i++) {
 	    sb.append(getRecords().get(i).toInstruction());
-	    if(i<getRecords().size()-1)
+	    if (i < getRecords().size() - 1)
 		sb.append("x");
 	}
 	sb.append(")");

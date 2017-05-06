@@ -209,13 +209,13 @@ public class TypeCheckingVisitor extends AbstractVisitor {
     }
 
     @Override
-    public Object visit(BreakInstruction br, Object params){
+    public Object visit(BreakInstruction br, Object params) {
 	return null;
     }
 
     @Override
-    public Object visit(DefaultCase def, Object params){
-	for(Statement st : def.getBody())
+    public Object visit(DefaultCase def, Object params) {
+	for (Statement st : def.getBody())
 	    st.accept(this, params);
 	return null;
     }
@@ -241,7 +241,7 @@ public class TypeCheckingVisitor extends AbstractVisitor {
 	    st.accept(this, params);
 	return null;
     }
-    
+
     @Override
     public Object visit(IfStatement ifstm, Object params) {
 	ifstm.getCondition().accept(this, params);
@@ -268,7 +268,7 @@ public class TypeCheckingVisitor extends AbstractVisitor {
 	    new ErrorType(inv, "Not valid Parameters");
 	return null;
     }
-    
+
     @Override
     public Object visit(NormalCase normalCase, Object params) {
 	normalCase.getExpression().accept(this, params);
@@ -295,7 +295,7 @@ public class TypeCheckingVisitor extends AbstractVisitor {
 	    new ErrorType(ret, "Not valid return type");
 	return null;
     }
-    
+
     @Override
     public Object visit(SwitchCase switchCase, Object params) {
 	switchCase.getExpression().accept(this, params);

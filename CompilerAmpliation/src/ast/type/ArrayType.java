@@ -75,7 +75,7 @@ public class ArrayType extends AbstractType {
 
     @Override
     public String toInstruction() {
-	return "["+getSize() + "," + getOf().toInstruction()+"]";
+	return "[" + getSize() + "," + getOf().toInstruction() + "]";
     }
 
     @Override
@@ -85,6 +85,14 @@ public class ArrayType extends AbstractType {
 
     @Override
     public Type promotesTo(Type type) {
-	return of.promotesTo(type);
+	if(type instanceof ArrayType){
+	    ArrayType aux = (ArrayType) type;
+	    if(aux.getSize() == this.getSize())
+		if(aux.getOf().getClass().equals(this.getOf().getClass()))
+		    return aux.getOf().promotesTo(this.getOf());
+	    return null;
+	}
+	else
+	    return this.of.promotesTo(type);
     }
 }

@@ -138,6 +138,10 @@ listOfParameters: listOfParameters ',' parameter				{ List<VariableDefinition> l
 				
 parameter: built_in_type ID								{ $$ = new VariableDefinition(scanner.getLine(), scanner.getColumn()
 																, (String) $2, (Type) $1); }
+		 | struct ID									{ $$ = new VariableDefinition(scanner.getLine(), scanner.getColumn()
+																, (String) $2, (Type) $1); }
+		 | array_creation ID							{ $$ = new VariableDefinition(scanner.getLine(), scanner.getColumn()
+																, (String) $2, (Type) $1); }
 		 ;
 
 statement: expression ';'								{ $$ = (Expression) $1; }

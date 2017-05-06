@@ -78,6 +78,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 
     @Override
     public Object visit(DefaultCase def, Object params) {
+	CodeGenerator.getInstance().writeLine(def.getLine());
+	CodeGenerator.getInstance().comment("default");
 	for (Statement st : def.getBody())
 	    st.accept(this, params);
 	return null;
@@ -164,6 +166,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 
     @Override
     public Object visit(NormalCase normalCase, Object params) {
+	CodeGenerator.getInstance().writeLine(normalCase.getLine());
+	CodeGenerator.getInstance().comment("case");
 	Map<String, Integer> labels = (Map<String, Integer>) params;
 	normalCase.getExpression().accept(valVisitor, params);
 	CodeGenerator.getInstance().eq(normalCase.getExpression().getType());
@@ -188,6 +192,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 
     @Override
     public Object visit(SwitchCase sw, Object params) {
+	CodeGenerator.getInstance().writeLine(sw.getLine());
+	CodeGenerator.getInstance().comment("switch");
 	int last = sw.getCases().size() - 1;
 	int labelNumber = CodeGenerator.getInstance().getLabels(last);
 	int aux = labelNumber;
