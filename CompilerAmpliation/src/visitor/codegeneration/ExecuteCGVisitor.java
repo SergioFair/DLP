@@ -39,7 +39,6 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	this.addrVisitor = new AddressCGVisitor();
 	this.valVisitor.setAddressVisitor(this.addrVisitor);
 	this.addrVisitor.setValueVisitor(this.valVisitor);
-	this.addrVisitor.setExecuteVisitor(this);
     }
 
     @Override

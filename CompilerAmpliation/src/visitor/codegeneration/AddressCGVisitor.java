@@ -11,12 +11,15 @@ import visitor.Visitor;
 
 public class AddressCGVisitor extends AbstractCGVisitor {
 
-    private Visitor valueVisitor, execVisitor;
+    private Visitor valueVisitor;
 
     @Override
     public Object visit(Assignment as, Object params) {
-	as.accept(execVisitor, params);
 	as.getLeft().accept(this, params);
+	CodeGenerator.getInstance().dup(as.getLeft().getType());
+	as.getRight().accept(valueVisitor, params);
+	CodeGenerator.getInstance().convertTo(as.getRight().getType(), as.getLeft().getType());
+	CodeGenerator.getInstance().store(as.getLeft().getType());
 	return null;
     }
 
@@ -56,10 +59,6 @@ public class AddressCGVisitor extends AbstractCGVisitor {
 
     void setValueVisitor(Visitor visitor) {
 	this.valueVisitor = visitor;
-    }
-    
-    void setExecuteVisitor(Visitor visitor) {
-	this.execVisitor = visitor;
     }
 
 }
