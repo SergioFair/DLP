@@ -1,17 +1,9 @@
-//int[10] prueba;
-//struct{
-//	int b;
-//} pruebaStruct;
-int varA, varB;
-
-//void f(int[10] a, struct{int b;} c){
-//	c.b = 2;
-//	a[1] = c.b;
-//}
-
 void main(){
-	varA=(varB=3)=5;
-	write varA, varB;
-	varA = varB = 2;
-	write varA, varB;
+	int a, b;
+	a = 1;
+	b = 2;
+	switch(2){
+	default:
+		a = b;
+	}
 }

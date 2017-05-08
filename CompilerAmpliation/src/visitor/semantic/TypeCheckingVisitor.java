@@ -298,9 +298,15 @@ public class TypeCheckingVisitor extends AbstractVisitor {
 
     @Override
     public Object visit(SwitchCase switchCase, Object params) {
+	int cases = 0;
 	switchCase.getExpression().accept(this, params);
-	for (Case c : switchCase.getCases())
+	for (Case c : switchCase.getCases()){
+	    if(c instanceof DefaultCase)
+		cases++;
 	    c.accept(this, params);
+	}
+	if(cases>1)
+	    new ErrorType(switchCase, "Switch cannot have more than one default case");
 	return null;
     }
 

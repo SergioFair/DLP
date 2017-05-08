@@ -1,63 +1,57 @@
 #source "myInput.txt"
-	' * int varA(offset 0)
-	' * int varB(offset 2)
 call main
 halt
 main:
 	' * Parameters
 	' * Local variables
-enter 0
+	' * int a(offset -2)
+	' * int b(offset -4)
+enter 4
 
 
-#line 13
+
+
+
+
+#line 3
 ' * assignment
-pusha 0
-pusha 2
-dupi
-pushi 3
-storei
-dupi
-pushi 5
-storei
-loadi
+pusha bp
+pushi -2
+addi
+pushi 1
 storei
 
 
 
-#line 14
-' * write
-pusha 0
-loadi
-outi
-pusha 2
-loadi
-outi
-
-
-
-
-#line 15
+#line 4
 ' * assignment
-pusha 0
-pusha 2
-dupi
+pusha bp
+pushi -4
+addi
 pushi 2
 storei
+
+
+
+#line 8
+' * switch
+pushi 2
+
+#line 8
+' * default
+
+#line 7
+' * assignment
+pusha bp
+pushi -2
+addi
+pusha bp
+pushi -4
+addi
 loadi
 storei
+label2:
 
-
-
-#line 16
-' * write
-pusha 0
-loadi
-outi
-pusha 2
-loadi
-outi
-
-
-ret 0,0,0
+ret 0,4,0
 
 
