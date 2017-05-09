@@ -39,8 +39,7 @@ public class FunctionDefinition implements Definition {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder().append(getType().toString())
-		.append(" {\n");
+	StringBuilder sb = new StringBuilder().append(getType().toString()).append(" {\n");
 	for (Statement stm : getBody()) {
 	    sb.append("  ").append(stm.toString()).append("\n");
 	}
@@ -77,7 +76,10 @@ public class FunctionDefinition implements Definition {
     public int calculateParamsBytes() {
 	int bytesParams = 0;
 	for (VariableDefinition varDef : ((FunctionType) getType()).getParams())
-	    bytesParams += varDef.getType().numberOfBytes();
+	    if (varDef.isReference())
+		bytesParams += 2;
+	    else
+		bytesParams += varDef.getType().numberOfBytes();
 	return bytesParams;
     }
 

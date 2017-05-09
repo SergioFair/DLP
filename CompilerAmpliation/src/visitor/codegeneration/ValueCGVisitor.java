@@ -14,6 +14,7 @@ import ast.expression.Ternary;
 import ast.expression.UnaryMinus;
 import ast.expression.UnaryNot;
 import ast.expression.Variable;
+import ast.program.VariableDefinition;
 import ast.statement.Assignment;
 import ast.statement.Invocation;
 import ast.type.IntType;
@@ -150,7 +151,8 @@ public class ValueCGVisitor extends AbstractCGVisitor {
     @Override
     public Object visit(Variable var, Object params) {
 	var.accept(addrVisitor, params);
-	CodeGenerator.getInstance().load(var.getType());
+	if(!((VariableDefinition) var.getDefinition()).isReference())
+	    CodeGenerator.getInstance().load(var.getType());
 	return null;
     }
 

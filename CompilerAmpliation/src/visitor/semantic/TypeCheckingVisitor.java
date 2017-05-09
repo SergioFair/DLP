@@ -37,6 +37,7 @@ import ast.type.ArrayType;
 import ast.type.ErrorType;
 import ast.type.FunctionType;
 import ast.type.IntType;
+import ast.type.RealType;
 import ast.type.Type;
 
 /**
@@ -271,7 +272,10 @@ public class TypeCheckingVisitor extends AbstractVisitor {
 
     @Override
     public Object visit(NormalCase normalCase, Object params) {
+	Expression condition = (Expression) params;
 	normalCase.getExpression().accept(this, params);
+	if(normalCase.getExpression().getType().promotesTo(condition.getType()) == null)
+	    new ErrorType(normalCase.getExpression(),"Expression for case is not valid");
 	for (Statement st : normalCase.getBody())
 	    st.accept(this, params);
 	return null;
@@ -300,6 +304,9 @@ public class TypeCheckingVisitor extends AbstractVisitor {
     public Object visit(SwitchCase switchCase, Object params) {
 	int cases = 0;
 	switchCase.getExpression().accept(this, params);
+	if(switchCase.getExpression().getType().promotesTo(RealType.getInstance())==null)
+	    new ErrorType(switchCase.getExpression(), "Expression not valid for Switch");
+	params = switchCase.getExpression();
 	for (Case c : switchCase.getCases()){
 	    if(c instanceof DefaultCase)
 		cases++;

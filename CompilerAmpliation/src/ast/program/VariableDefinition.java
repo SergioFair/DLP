@@ -1,6 +1,8 @@
 package ast.program;
 
 import ast.statement.Statement;
+import ast.type.ArrayType;
+import ast.type.Struct;
 import ast.type.Type;
 import visitor.Visitor;
 
@@ -79,6 +81,10 @@ public class VariableDefinition implements Definition, Statement {
     @Override
     public void setScope(int scope) {
 	this.scope = scope;
+    }
+
+    public boolean isReference() {
+	return type instanceof ArrayType || type instanceof Struct;
     }
 
 }

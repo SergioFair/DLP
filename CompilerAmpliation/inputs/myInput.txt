@@ -1,9 +1,10 @@
+struct{double[10] a;} b;
+
+void f(struct{double[10] c;} d){
+	b.a[1]=2.5;
+}
+
 void main(){
-	int a, b;
-	a = 1;
-	b = 2;
-	switch(2){
-	default:
-		a = b;
-	}
+	f(b);
+	write b.a[1];
 }

@@ -47,12 +47,14 @@ public class AddressCGVisitor extends AbstractCGVisitor {
     @Override
     public Object visit(Variable var, Object params) {
 	VariableDefinition def = (VariableDefinition) var.getDefinition();
-	if (def.getScope() == 0)
+	if (def.getScope() == 0) {
 	    CodeGenerator.getInstance().pusha(def.getOffset());
-	else {
+	} else {
 	    CodeGenerator.getInstance().pushabp();
 	    CodeGenerator.getInstance().push(IntType.getInstance(), def.getOffset());
 	    CodeGenerator.getInstance().add(IntType.getInstance());
+	    if (def.isReference())
+		CodeGenerator.getInstance().load(IntType.getInstance());
 	}
 	return null;
     }
