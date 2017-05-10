@@ -18,11 +18,10 @@ import ast.program.VariableDefinition;
 import ast.statement.Assignment;
 import ast.statement.Invocation;
 import ast.type.IntType;
-import visitor.Visitor;
 
 public class ValueCGVisitor extends AbstractCGVisitor {
 
-    private Visitor addrVisitor;
+    private AddressCGVisitor addrVisitor;
 
     @Override
     public Object visit(Arithmetic ar, Object params) {

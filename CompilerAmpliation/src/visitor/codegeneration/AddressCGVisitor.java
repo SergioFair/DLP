@@ -7,11 +7,10 @@ import ast.program.VariableDefinition;
 import ast.statement.Assignment;
 import ast.type.ArrayType;
 import ast.type.IntType;
-import visitor.Visitor;
 
 public class AddressCGVisitor extends AbstractCGVisitor {
 
-    private Visitor valueVisitor;
+    private ValueCGVisitor valueVisitor;
 
     @Override
     public Object visit(Assignment as, Object params) {
@@ -59,7 +58,7 @@ public class AddressCGVisitor extends AbstractCGVisitor {
 	return null;
     }
 
-    void setValueVisitor(Visitor visitor) {
+    void setValueVisitor(ValueCGVisitor visitor) {
 	this.valueVisitor = visitor;
     }
 
