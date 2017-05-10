@@ -1,0 +1,84 @@
+// ************  Macros ********************
+Digit = [0-9]+
+Letter = [a-zA-Z]
+Spaces = [ \r\t\n]+
+Comment = "//".*
+MultiComment = "/*"~"*/"
+Char = '.'
+CharAscii = '\\[0-9]+'
+Real = {Digit}*"."{Digit}+|{Digit}+"."{Digit}*
+Identifier = {Letter}({Letter}|{Digit})*
+Mantissa = ({Real}|{Digit})[Ee](-|\+)?{Digit}
+
+
+%%
+// ************  Lexical Rules ********************
+
+// * Trash
+{Spaces}			
+
+{Comment}			
+
+{MultiComment}		
+
+// * KeyWords
+int				
+double				
+char				
+main				
+void				
+return				
+struct				
+while				
+if				
+else				
+and				
+or				
+read				
+write				
+for				
+do				
+switch				
+case				
+break				
+default			
+
+// * Constants
+
+{Digit}			
+
+'\\n'				
+
+'\\t'				
+
+'\\r'				
+
+{Char}				
+					  
+{CharAscii}			
+					  
+{Real}				
+					  
+{Mantissa}			
+
+{Identifier}			
+
+
+// * Operators of length 1
+
+("+"|"-"|"/"|"*"|"%"|">"|"<"|"="|"("|")"|"!"|"["|"]"|","|";"|"{"|"}"|"."|"?"|":")									
+
+// * Operators of length 2
+
+"=="				
+"<="				
+">="				
+"!="				
+"&&"				
+"||"				
+"++"				
+"--"				
+"+="				
+"-="				
+"*="				
+"/="

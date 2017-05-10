@@ -1,0 +1,207 @@
+// * Yacc declarations
+//   Token definition
+%token INT_CONSTANT CHAR_CONSTANT REAL_CONSTANT
+%token LEQ GEQ DOUBLEEQUALS DIFFERENT 
+%token AND OR
+%token ID
+%token WRITE READ
+%token VOID MAIN
+%token WRITE READ
+%token CHAR DOUBLE INT STRUCT
+%token IF ELSE WHILE RETURN FOR DO SWITCH CASE DEFAULT
+%token INC DEC
+%token DIVIDEEQUALS TIMESEQUALS MINUSEQUALS PLUSEQUALS
+%token BREAK
+
+
+//Lower precedence go first
+%nonassoc IFX
+%nonassoc ELSE
+%right '=' DIVIDEEQUALS TIMESEQUALS MINUSEQUALS PLUSEQUALS
+%left INC DEC
+%right '?' ':'
+%left AND OR '!'
+%left '>' GEQ '<' LEQ DIFFERENT DOUBLEEQUALS
+%left '+' '-'
+%left '*' '/' '%'
+%right 'unary_minus'
+%left CAST
+%nonassoc '[' ']'
+%left '.'
+%nonassoc '(' ')'
+
+
+%%
+// * Actions
+
+final: program										
+program: program_body main							
+	   ;
+	   
+program_body: program_body variable					
+			| program_body function					
+			| /*EMPTY*/								
+
+function: typed_function							
+		| void_function								
+		;
+		
+function_invocation: ID '(' listOfExpressions ')'			
+				   | ID '(' ')'								
+				   ;
+
+typed_function: built_in_type ID '(' listOfParameters ')' '{' function_body '}'		
+			  | built_in_type ID '(' ')' '{' function_body '}'						
+			  ;
+
+void_function: VOID ID '(' listOfParameters ')' '{' function_body '}'
+			 | VOID ID '(' ')' '{' function_body '}'
+			 ;
+		
+main: VOID MAIN '(' ')' '{' function_body '}'		
+	;
+		
+function_body: listOfVariables listOfStatements		
+			 ; 
+			 
+listOfStatements: listOfStatements statement			
+				| /*EMPTY*/								
+				;
+
+listOfParameters: listOfParameters ',' parameter		
+				| parameter								
+				;
+				
+parameter: built_in_type ID								
+		 | struct ID									
+		 | array_creation ID							
+		 ;
+
+statement: expression ';'								
+		 | read ';'										
+		 | write ';'									
+		 | if_else										
+		 | while										
+		 | for											
+		 | switch										
+		 | do_while										
+		 | return ';'									
+		 ;
+
+expression: expression '+' expression					
+          | expression '*' expression					
+          | expression '/' expression					
+          | expression '-' expression					
+          | expression '%' expression					
+          | assignment									
+          | ternary
+          | expression DOUBLEEQUALS expression			
+		  | expression '>' expression					
+		  | expression GEQ expression					
+		  | expression '<' expression					
+		  | expression LEQ expression					
+		  | expression DIFFERENT expression				
+          | expression AND expression					
+          | expression OR expression																				
+		  | '-' expression %prec 'unary_minus'			
+		  | '!' expression								
+          | function_invocation							
+          | '(' expression ')'							
+          | expression '.' expression					
+          | cast										
+          | array										
+          | INT_CONSTANT								
+          | REAL_CONSTANT								
+          | CHAR_CONSTANT								
+          | ID											
+          ;
+          
+if_else: IF '(' expression ')' body ELSE body				
+	   | IF '(' expression ')' body	%prec IFX				
+	   ;
+	   
+ternary: expression '?' expression ':' expression			
+	   
+body : '{'listOfStatements'}'								
+		| statement											
+		;
+	   
+while: WHILE '(' expression ')' body	%prec IFX			
+	 ;
+	 
+do_while: DO body %prec IFX WHILE '(' expression ')'			
+	 ;
+
+for: FOR '(' statement expression ';' assignment ')' body %prec IFX 
+   ;
+   
+switch: SWITCH '(' expression ')' '{' switch_body '}'				
+	  ;
+		   ;
+	
+switch_body : switch_body case										
+			| case													
+			;
+			
+case: CASE expression ':' listOfStatements break					
+	| CASE expression ':' listOfStatements							
+	| DEFAULT ':' listOfStatements break							
+	| DEFAULT ':' listOfStatements									
+    ;
+    
+break: BREAK ';'													
+	 ;
+          
+cast: '(' built_in_type ')' expression	%prec CAST					
+	;
+          
+listOfExpressions: listOfExpressions ',' expression 				
+				 | expression										
+				 ;
+
+listOfIds: listOfIds ',' ID											
+		 | ID														
+		 ;
+
+built_in_type: CHAR											
+			 | INT											
+			 | DOUBLE										
+			 ;
+			 		  
+array: expression '[' expression ']'						
+	 ;
+	 
+array_creation: array_creation '[' INT_CONSTANT ']'			
+	 		  | built_in_type '[' INT_CONSTANT ']'			
+			  | struct '[' INT_CONSTANT ']'					
+	 		  ;
+
+variable: built_in_type listOfIds ';'					
+		| array_creation listOfIds ';'					
+		| struct listOfIds ';'							
+		;
+		
+listOfVariables: listOfVariables variable				
+			   | /*EMPTY*/								
+			   ;
+	
+assignment: expression '=' expression					
+		  | expression INC									
+          | expression DEC									
+          | expression PLUSEQUALS expression				
+          | expression MINUSEQUALS expression				
+          | expression TIMESEQUALS expression				
+          | expression DIVIDEEQUALS expression				
+		  ;
+		  
+read: READ listOfExpressions					
+	;
+
+write: WRITE listOfExpressions					
+	 ;
+	 
+struct: STRUCT '{' listOfVariables '}'			
+	  ;
+	  
+return: RETURN expression						
+	  ;
