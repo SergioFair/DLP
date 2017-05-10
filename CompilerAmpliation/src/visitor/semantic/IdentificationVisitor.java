@@ -45,10 +45,13 @@ public class IdentificationVisitor extends AbstractVisitor {
 
     @Override
     public Object visit(Variable var, Object params) {
-	var.setDefinition(st.find(var.getName()));
+	var.setDefinition(st.findInCurrentScope(var.getName()));
 	if (var.getDefinition() == null) {
-	    var.setDefinition(new VariableDefinition(var.getLine(), var.getColumn(), var.getName(),
+	    var.setDefinition(st.find(var.getName()));
+	    if(var.getDefinition() == null){
+		var.setDefinition(new VariableDefinition(var.getLine(), var.getColumn(), var.getName(),
 		    new ErrorType(var, "Variable '" + var.getName() + "' not defined")));
+	    }
 	}
 	return null;
     }

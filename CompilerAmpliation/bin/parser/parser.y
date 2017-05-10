@@ -14,7 +14,7 @@ import java.util.*;
 // * Yacc declarations
 //   Token definition
 %token INT_CONSTANT CHAR_CONSTANT REAL_CONSTANT
-%token LEQ GEQ DOUBLEEQUALS DIFFERENT SHIFTLEFT SHIFTRIGHT
+%token LEQ GEQ DOUBLEEQUALS DIFFERENT 
 %token AND OR
 %token ID
 %token WRITE READ

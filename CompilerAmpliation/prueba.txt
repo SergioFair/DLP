@@ -1,58 +1,454 @@
-#source "myInput.txt"
-	' * record((a x [10,float])) b(offset 0)
+#source "input.txt"
+	' * int i(offset 0)
+	' * int n(offset 2)
+	' * int j(offset 4)
+	' * byte c(offset 6)
+	' * record((integer x int)x(character x byte)) pair(offset 7)
+	' * [10,[10,int]] matrix(offset 10)
 call main
 halt
-f:
+p:
 	' * Parameters
-	' * record((c x [10,float])) d(offset 4)
 	' * Local variables
 enter 0
+ret 0,0,0
 
 
-#line 4
+f:
+	' * Parameters
+	' * float r(offset 6)
+	' * int e(offset 4)
+	' * Local variables
+	' * float real(offset -4)
+	' * byte c(offset -5)
+enter 5
+
+
+
+
+
+
+#line 17
 ' * assignment
+pusha bp
+pushi -4
+addi
+pusha 7
+pushi 2
+addi
+loadb
+b2i
+i2f
+pusha 7
+pushi 0
+addi
+loadi
+i2f
+addf
+pusha bp
+pushi 6
+addi
+loadf
+addf
 pusha bp
 pushi 4
 addi
 loadi
-pushi 0
-addi
-pushi 1
-pushi 4
-muli
-addi
-pushf 2.5
+i2f
+addf
 storef
 
-ret 0,0,2
+
+
+#line 18
+' * assignment
+pusha bp
+pushi -5
+addi
+pushb 48
+storeb
+
+
+
+#line 19
+' * return
+pusha bp
+pushi -5
+addi
+loadb
+b2i
+ret 2,5,6
+
+
+
+
+fill:
+	' * Parameters
+	' * int row(offset 8)
+	' * int value(offset 6)
+	' * int increment(offset 4)
+	' * Local variables
+	' * int i(offset -2)
+	' * int inc(offset -4)
+enter 4
+
+
+
+
+
+
+#line 26
+' * assignment
+pusha bp
+pushi -2
+addi
+pushi 0
+storei
+
+
+
+#line 27
+' * assignment
+pusha bp
+pushi -4
+addi
+pusha bp
+pushi 4
+addi
+loadi
+storei
+
+
+
+#line 32
+' * while
+label1:
+pusha bp
+pushi -2
+addi
+loadi
+pushi 10
+lti
+jz label2
+
+#line 29
+' * assignment
+pusha 10
+pusha bp
+pushi 8
+addi
+loadi
+pushi 20
+muli
+addi
+pusha bp
+pushi -2
+addi
+loadi
+pushi 2
+muli
+addi
+pusha bp
+pushi 6
+addi
+loadi
+pusha bp
+pushi -4
+addi
+loadi
+addi
+storei
+
+
+#line 30
+' * assignment
+pusha bp
+pushi -2
+addi
+pusha bp
+pushi -2
+addi
+loadi
+pushi 1
+addi
+storei
+
+
+#line 31
+' * assignment
+pusha bp
+pushi -4
+addi
+pusha bp
+pushi -4
+addi
+loadi
+pusha bp
+pushi 4
+addi
+loadi
+addi
+storei
+
+jmp label1
+label2:
+
+ret 0,4,6
+
+
+show:
+	' * Parameters
+	' * int row(offset 4)
+	' * Local variables
+	' * int i(offset -2)
+enter 2
+
+
+
+
+#line 37
+' * assignment
+pusha bp
+pushi -2
+addi
+pushi 0
+storei
+
+
+
+#line 41
+' * while
+label3:
+pusha bp
+pushi -2
+addi
+loadi
+pushi 10
+lti
+jz label4
+
+#line 39
+' * write
+pushb 40
+outb
+pusha bp
+pushi 4
+addi
+loadi
+outi
+pushb 44
+outb
+pusha bp
+pushi -2
+addi
+loadi
+outi
+pushb 41
+outb
+pushb 58
+outb
+pusha 10
+pusha bp
+pushi 4
+addi
+loadi
+pushi 20
+muli
+addi
+pusha bp
+pushi -2
+addi
+loadi
+pushi 2
+muli
+addi
+loadi
+outi
+pushb 32
+outb
+
+
+
+#line 40
+' * assignment
+pusha bp
+pushi -2
+addi
+pusha bp
+pushi -2
+addi
+loadi
+pushi 1
+addi
+storei
+
+jmp label3
+label4:
+
+
+
+#line 42
+' * write
+pushb 10
+outb
+
+
+ret 0,2,2
 
 
 main:
 	' * Parameters
 	' * Local variables
-enter 0
+	' * int i(offset -2)
+enter 2
 
 
-#line 8
+
+
+#line 50
 ' * invocation
-pusha 0
-call f
+call p
 
 
 
-#line 9
-' * write
-pusha 0
+#line 51
+' * assignment
+pusha bp
+pushi -2
+addi
+pushi 0
+storei
+
+
+
+#line 52
+' * assignment
+pusha 7
+pushi 2
+addi
+pushb 48
+storeb
+
+
+
+#line 53
+' * assignment
+pusha 7
 pushi 0
 addi
-pushi 1
-pushi 4
-muli
+pushb 48
+b2i
+storei
+
+
+
+#line 54
+' * write
+pusha bp
+pushi -2
 addi
-loadf
-outf
+loadi
+i2f
+pusha 7
+pushi 2
+addi
+loadb
+b2i
+call f
+outi
+pushb 10
+outb
 
 
-ret 0,0,0
+
+
+#line 56
+' * invocation
+pushf 1.3
+pushi 2
+call f
+popi
+
+
+
+#line 58
+' * assignment
+pusha bp
+pushi -2
+addi
+pushi 0
+storei
+
+
+
+#line 59
+' * assignment
+pusha 4
+pushi 0
+storei
+
+
+
+#line 65
+' * while
+label5:
+pusha bp
+pushi -2
+addi
+loadi
+pushi 10
+lti
+jz label6
+
+#line 61
+' * invocation
+pusha bp
+pushi -2
+addi
+loadi
+pusha 4
+loadi
+pushi 1
+call fill
+
+
+#line 62
+' * invocation
+pusha bp
+pushi -2
+addi
+loadi
+call show
+
+
+#line 63
+' * assignment
+pusha bp
+pushi -2
+addi
+pusha bp
+pushi -2
+addi
+loadi
+pushi 1
+addi
+storei
+
+
+#line 64
+' * assignment
+pusha 4
+pusha bp
+pushi -2
+addi
+loadi
+pushi 10
+muli
+storei
+
+jmp label5
+label6:
+
+ret 0,2,0
 
 

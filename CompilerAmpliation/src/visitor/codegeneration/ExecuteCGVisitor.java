@@ -113,6 +113,27 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	CodeGenerator.getInstance().label(labelNumber + 1);
 	return null;
     }
+    
+    @Override
+    public Object visit(FunctionDefinition funcDef, Object params) {
+
+	// Information
+	CodeGenerator.getInstance().functionDefinition(funcDef);
+
+	// Execution
+	CodeGenerator.getInstance().enter(funcDef.calculateLocalsBytes());
+	params = funcDef;
+	for (Statement st : funcDef.getBody()) {
+	    CodeGenerator.getInstance().newLine();
+	    st.accept(this, params);
+	    CodeGenerator.getInstance().newLine();
+	}
+	if (((FunctionType) funcDef.getType()).getReturnType() instanceof VoidType) {
+	    CodeGenerator.getInstance().ret(0, funcDef.calculateLocalsBytes(), funcDef.calculateParamsBytes());
+	}
+	CodeGenerator.getInstance().newLine();
+	return null;
+    }
 
     @Override
     public Object visit(IfStatement ifst, Object params) {
@@ -188,6 +209,20 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
 	CodeGenerator.getInstance().newLine();
 	return null;
     }
+    
+    @Override
+    public Object visit(Return ret, Object params) {
+	CodeGenerator.getInstance().writeLine(ret.getLine());
+	CodeGenerator.getInstance().comment("return");
+	ret.getExpression().accept(valVisitor, params);
+	FunctionDefinition funcDef = (FunctionDefinition) params;
+	CodeGenerator.getInstance().convertTo(ret.getExpression().getType(),
+		((FunctionType) funcDef.getType()).getReturnType());
+	CodeGenerator.getInstance().ret(funcDef.calculateReturnBytes(), funcDef.calculateLocalsBytes(),
+		funcDef.calculateParamsBytes());
+	CodeGenerator.getInstance().newLine();
+	return null;
+    }
 
     @Override
     public Object visit(SwitchCase sw, Object params) {
@@ -245,41 +280,6 @@ public class ExecuteCGVisitor extends AbstractCGVisitor {
     public Object visit(VariableDefinition var, Object params) {
 	if (var.getScope() == 0)
 	    CodeGenerator.getInstance().varDefinition(var);
-	return null;
-    }
-
-    @Override
-    public Object visit(FunctionDefinition funcDef, Object params) {
-
-	// Information
-	CodeGenerator.getInstance().functionDefinition(funcDef);
-
-	// Execution
-	CodeGenerator.getInstance().enter(funcDef.calculateLocalsBytes());
-	params = funcDef;
-	for (Statement st : funcDef.getBody()) {
-	    CodeGenerator.getInstance().newLine();
-	    st.accept(this, params);
-	    CodeGenerator.getInstance().newLine();
-	}
-	if (((FunctionType) funcDef.getType()).getReturnType() instanceof VoidType) {
-	    CodeGenerator.getInstance().ret(0, funcDef.calculateLocalsBytes(), funcDef.calculateParamsBytes());
-	}
-	CodeGenerator.getInstance().newLine();
-	return null;
-    }
-
-    @Override
-    public Object visit(Return ret, Object params) {
-	CodeGenerator.getInstance().writeLine(ret.getLine());
-	CodeGenerator.getInstance().comment("return");
-	ret.getExpression().accept(valVisitor, params);
-	FunctionDefinition funcDef = (FunctionDefinition) params;
-	CodeGenerator.getInstance().convertTo(ret.getExpression().getType(),
-		((FunctionType) funcDef.getType()).getReturnType());
-	CodeGenerator.getInstance().ret(funcDef.calculateReturnBytes(), funcDef.calculateLocalsBytes(),
-		funcDef.calculateParamsBytes());
-	CodeGenerator.getInstance().newLine();
 	return null;
     }
 
