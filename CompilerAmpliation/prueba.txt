@@ -11,7 +11,10 @@ enter 0
 
 #line 4
 ' * assignment
-pusha 0
+pusha bp
+pushi 4
+addi
+loadi
 pushi 0
 addi
 pushi 1

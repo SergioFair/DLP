@@ -8,7 +8,6 @@ import ast.expression.FieldAccess;
 import ast.expression.Indexing;
 import ast.expression.IntLiteral;
 import ast.expression.Logical;
-import ast.expression.Power;
 import ast.expression.RealLiteral;
 import ast.expression.Ternary;
 import ast.expression.UnaryMinus;
@@ -68,8 +67,6 @@ public interface Visitor {
 
     public Object visit(Logical log, Object params);
     
-    public Object visit(Power power, Object params);
-
     public Object visit(RealLiteral real, Object params);
     
     public Object visit(Ternary ternary, Object params);

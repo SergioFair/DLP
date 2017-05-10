@@ -12,7 +12,6 @@ import ast.expression.FieldAccess;
 import ast.expression.Indexing;
 import ast.expression.IntLiteral;
 import ast.expression.Logical;
-import ast.expression.Power;
 import ast.expression.RealLiteral;
 import ast.expression.Ternary;
 import ast.expression.UnaryMinus;
@@ -36,7 +35,6 @@ import ast.statement.switchCase.SwitchCase;
 import ast.type.ArrayType;
 import ast.type.ErrorType;
 import ast.type.FunctionType;
-import ast.type.IntType;
 import ast.type.RealType;
 import ast.type.Type;
 
@@ -131,17 +129,6 @@ public class TypeCheckingVisitor extends AbstractVisitor {
 	log.setType(log.getLeft().getType().logical(log.getRight().getType()));
 	if (log.getType() == null)
 	    new ErrorType(log, "Not valid Logical construction");
-	return null;
-    }
-
-    @Override
-    public Object visit(Power pow, Object params) {
-	pow.getLeft().accept(this, params);
-	pow.getRight().accept(this, params);
-	pow.setLValue(false);
-	pow.setType(pow.getLeft().getType().arithmetic(pow.getRight().getType().promotesTo(IntType.getInstance())));
-	if (pow.getType() == null)
-	    new ErrorType(pow, "Power operation not valid");
 	return null;
     }
 

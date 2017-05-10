@@ -9,7 +9,6 @@ import ast.expression.FieldAccess;
 import ast.expression.Indexing;
 import ast.expression.IntLiteral;
 import ast.expression.Logical;
-import ast.expression.Power;
 import ast.expression.RealLiteral;
 import ast.expression.Ternary;
 import ast.expression.UnaryMinus;
@@ -133,13 +132,6 @@ public abstract class AbstractVisitor implements Visitor {
 	return null;
     }
     
-    @Override
-    public Object visit(Power pow, Object params) {
-	pow.getLeft().accept(this, params);
-	pow.getRight().accept(this, params);
-	return null;
-    }
-
     @Override
     public Object visit(RealLiteral real, Object params) {
 	real.getType().accept(this, params);

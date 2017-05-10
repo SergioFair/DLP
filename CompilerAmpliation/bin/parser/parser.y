@@ -37,7 +37,6 @@ import java.util.*;
 %left '>' GEQ '<' LEQ DIFFERENT DOUBLEEQUALS
 %left '+' '-'
 %left '*' '/' '%'
-%left POTENTIAL
 %right 'unary_minus'
 %left CAST
 %nonassoc '[' ']'
@@ -169,8 +168,6 @@ expression: expression '+' expression					{ $$ = new Arithmetic(scanner.getLine(
           
           | ternary 									{ $$ = (Ternary) $1; }
           
-          | expression POTENTIAL expression				{ $$ = new Power(scanner.getLine(), scanner.getColumn()
-          																,(Expression) $1, (Expression) $3); }
           | expression DOUBLEEQUALS expression			{ $$ = new Comparison(scanner.getLine(), scanner.getColumn()
           																,(Expression) $1,"==",(Expression) $3); }
 		  | expression '>' expression					{ $$ = new Comparison(scanner.getLine(), scanner.getColumn()

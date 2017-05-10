@@ -8,7 +8,6 @@ import ast.expression.FieldAccess;
 import ast.expression.Indexing;
 import ast.expression.IntLiteral;
 import ast.expression.Logical;
-import ast.expression.Power;
 import ast.expression.RealLiteral;
 import ast.expression.Ternary;
 import ast.expression.UnaryMinus;
@@ -99,11 +98,6 @@ public abstract class AbstractCGVisitor implements Visitor {
 
     @Override
     public Object visit(Logical log, Object params) {
-	throw new IllegalArgumentException("Code generation was not possible");
-    }
-
-    @Override
-    public Object visit(Power pow, Object params) {
 	throw new IllegalArgumentException("Code generation was not possible");
     }
 

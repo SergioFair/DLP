@@ -105,12 +105,6 @@ public class ValueCGVisitor extends AbstractCGVisitor {
 	return null;
     }
 
-    // @Override
-    // public Object visit(Power pow, Object params) {
-    // pow.getLeft().accept(this, params);
-    // return null;
-    // }
-
     @Override
     public Object visit(RealLiteral real, Object params) {
 	CodeGenerator.getInstance().push(real.getType(), real.getValue());
